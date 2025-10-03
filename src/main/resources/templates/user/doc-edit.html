@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/main/resources/static/user/css/doc-edit.css">
+
+    <script src="/src/main/resources/static/user/js/doc-edit.js"></script>
+
+    <title>전자결재 편집기</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+</head>
+
+<body>
+    <div class="doc-view">
+
+        <aside>
+            <div class="funs-zips grid-view">
+                <div class="grid-item">1</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">3</div>
+                <div class="grid-item">4</div>
+                <div class="grid-item">5</div>
+                <div class="grid-item">6</div>
+                <div class="grid-item">7</div>
+                <div class="grid-item">8</div>
+                <div class="grid-item">9</div>
+                <div class="grid-item">10</div>
+                <div class="grid-item">11</div>
+                <div class="grid-item">12</div>
+            </div>
+
+            <div class="btn-zip">
+                <div class="actionBtn">
+                    <button class="submitBtn btn">제출하기</button>
+                    <button class="deleteBtn btn" onclick="handleDelete()">삭제하기</button>
+                    <button class="draftBtn btn" onclick="handleDraftSave()">임시저장</button>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <form action="#" method="post">
+                <div class="edit-view">
+                    <div class="title"><input type="text" placeholder="기 안 서"></div>
+                    <div class="subtitle">아래와 같이 {기안서}를 제출합니다.</div>
+
+                    <div class="top-info">
+                        <!-- 상단 결재/문서번호 영역 -->
+                        <table class="doc-info">
+                            <tr>
+                                <th>문서번호</th>
+                                <td><input type="text" name="docNo"></td>
+                            </tr>
+                            <tr>
+                                <th>페이지번호</th>
+                                <td>
+                                    <input type="text" name="pageNo" class="short"> /
+                                    <input type="text" name="pageTotal" class="short"> Page
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>작성자</th>
+                                <td><input type="text" name="writer"></td>
+                            </tr>
+                            <tr>
+                                <th>작성일자</th>
+                                <td><input type="date" name="writeDate" style="width: 120px;"></td>
+                            </tr>
+                        </table>
+
+                        <!-- 결재선 테이블 -->
+                        <table class="approval-line">
+                            <tr>
+                                <th rowspan="3" class="approval-label">결재</th>
+                                <th>본부장</th>
+                                <th>대표이사</th>
+                            </tr>
+                            <tr class="sign-row">
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>/</td>
+                                <td>/</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- 기안자 정보 -->
+                    <table>
+                        <tr>
+                            <th rowspan="2">기안자</th>
+                            <th>사번</th>
+                            <td><input type="text" style="width:100%;"></td>
+                            <th>소속</th>
+                            <td><input type="text" style="width:100%;"></td>
+                        </tr>
+                        <tr>
+                            <th>직급</th>
+                            <td><input type="text" style="width:100%;"></td>
+                            <th>성명</th>
+                            <td><input type="text" style="width:100%;"></td>
+                        </tr>
+                        <tr>
+                            <th>기안일자</th>
+                            <td colspan="4"><input type="date" style="width:200px;"></td>
+                        </tr>
+                        <tr>
+                            <th>제목</th>
+                            <td colspan="4"><input type="text" style="width:100%;"></td>
+                        </tr>
+                        <tr>
+                            <th>상세내용</th>
+                            <td colspan="4">
+                                <div id="editor" class="content-area"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>특기사항</th>
+                            <td colspan="4"><textarea style="width:100%; height:80px;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <th>첨부목록</th>
+                            <td colspan="4"><input type="file"></td>
+                            <!-- <td colspan="4"><textarea style="width:100%; height:80px;"></textarea></td> -->
+                        </tr>
+                    </table>
+                </div>
+
+
+            </form>
+        </main>
+    </div>
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote']
+            })
+            .then(editor => {
+                editor.ui.view.editable.element.style.minHeight = "600px"; // 원하는 크기
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+    </script>
+
+</body>
+
+</html>
+
+<!-- 
+기안일자 |	문서를 **처음으로 기안(초안 작성)**한 날짜.
+작성일자 |	문서를 작성 완료한 날짜. 또는 실제로 문서에 작성된 날짜를 표기한 것.
+-->

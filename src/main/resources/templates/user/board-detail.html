@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/src/main/resources/static/user/css/common.css">
+    <link rel="stylesheet" href="/src/main/resources/static/user/css/board-detail.css">
+    <script src="/src/main/resources/static/user/js/board-detail.js"></script>
+
+    <title>board</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/src/main/resources/static/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div>
+            {홍길동} 님
+        </div>
+    </header>
+
+    <main>
+        <nav>
+            <div class="icon-bar">
+                <div class="icon-top">
+                    <a href="main.html">
+                        <i class="fa-solid fa-house"></i>
+                        <div class="icon-name">홈</div>
+                    </a>
+                    <a href="message.html">
+                        <i class="fa-regular fa-message"></i>
+                        <div class="icon-name">메시지</div>
+                    </a>
+                    <a href="schedule.html">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <div class="icon-name">스케줄</div>
+                    </a>
+                    <a href="user-mail.html">
+                        <i class="fa-regular fa-envelope"></i>
+                        <div class="icon-name">메일</div>
+                    </a>
+                    <a href="board.html">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <div class="icon-name">게시판</div>
+                    </a>
+                    <a href="doc.html">
+                        <i class="fa-regular fa-file"></i>
+                        <div class="icon-name">전자결재</div>
+                    </a>
+                </div>
+                <div class="icon-bottom">
+                    <a href="#" id="chat-view-status">+</a>
+                    <a href="#">
+                        🔔
+                        <div class="notification hidden">1</div>
+                    </a>
+                    <a href="#">⚙️</a>
+                </div>
+            </div>
+            <div class="chat-user">
+                <h3 class="chat-header">부서명</h3>
+                <div class="chat-content">
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                </div>
+                <button type="submit" class="newChatroom">+</button>
+            </div>
+        </nav>
+
+        <div class="main-view">
+          <div class="post-detail">
+            <h2 class="post-title">게시글 제목입니다</h2>
+      
+            <div class="post-meta">
+              <span class="author">작성자: 관리자</span>
+              <span class="date">작성일: 2025-09-23</span>
+              <span class="views">조회수: 123</span>
+            </div>
+      
+            <div class="post-content">
+              <p>
+                안녕하세요. 공지사항 게시판입니다.<br>
+                여기에 게시글 본문 내용이 표시됩니다.<br>
+                줄바꿈도 이렇게 적용됩니다.
+              </p>
+            </div>
+      
+            <div class="post-attachments">
+              <strong>첨부파일:</strong>
+              <ul>
+                <li><a href="#">첨부파일1.pdf</a></li>
+                <li><a href="#">첨부파일2.jpg</a></li>
+              </ul>
+            </div>
+      
+            <div class="post-actions">
+              <button class="btn-comments">댓글보기</button>
+              <button class="btn-list">목록</button>
+              <button class="btn-edit" onclick="location.href='board-detail-edit.html'">수정</button>
+              <button class="btn-delete">삭제</button>
+            </div>
+          </div>
+        </div>
+
+    </main>
+
+    <script src="/src/main/resources/static/user/js/common.js"></script>
+
+</body>
+</html>
+
+<!-- ui -> 9월 24일까지 완성
+ spring 생성: 25일 
+ docker 맟 DB 정의 : 30일 
+ 이후 -> 백엔드
+ -->

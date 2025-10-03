@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/src/main/resources/static/user/css/common.css">
+    <link rel="stylesheet" href="/src/main/resources/static/user/css/schedule.css">
+    <script src="/src/main/resources/static/user/js/schedule.js"></script>
+    <title>schedule</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/src/main/resources/static/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div>
+            {홍길동} 님
+        </div>
+    </header>
+
+    <main>
+        <nav>
+            <div class="icon-bar">
+                <div class="icon-top">
+                    <a href="main.html">
+                        <i class="fa-solid fa-house"></i>
+                        <div class="icon-name">홈</div>
+                    </a>
+                    <a href="message.html">
+                        <i class="fa-regular fa-message"></i>
+                        <div class="icon-name">메시지</div>
+                    </a>
+                    <a href="schedule.html">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <div class="icon-name">스케줄</div>
+                    </a>
+                    <a href="user-mail.html">
+                        <i class="fa-regular fa-envelope"></i>
+                        <div class="icon-name">메일</div>
+                    </a>
+                    <a href="board.html">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <div class="icon-name">게시판</div>
+                    </a>
+                    <a href="doc.html">
+                        <i class="fa-regular fa-file"></i>
+                        <div class="icon-name">전자결재</div>
+                    </a>
+                </div>
+                <div class="icon-bottom">
+                    <a href="#" id="chat-view-status">+</a>
+                    <a href="#">
+                        🔔
+                        <div class="notification hidden">1</div>
+                    </a>
+                    <a href="#">⚙️</a>
+                </div>
+            </div>
+            <div class="chat-user">
+                <h3 class="chat-header">부서명</h3>
+                <div class="chat-content">
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                </div>
+                
+                <button type="submit" class="newChatroom">+</button>
+            </div>
+        </nav>
+
+        <div class="main-view">
+            <section class="calendar-container">
+                <header class="calendar-header">
+                    <button id="prevMonth">&lt;</button>
+                    <h2 id="monthYear"></h2>
+                    <button id="nextMonth">&gt;</button>
+                    <button id="toggleView"
+                        style="background-color: #4CAF50; color: #fff; border: none; border-radius: 5px; width: 10px 10px;">주간
+                        보기</button>
+                </header>
+                <div id="calendar"></div>
+            </section>
+            <!-- 일정 추가/편집 모달 -->
+            <div id="scheduleModal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalTitle">일정 추가</h3>
+                        <span id="closeModal" class="close-btn">&times;</span>
+                    </div>
+                    <form id="scheduleForm">
+                        <div class="form-group">
+                            <label for="scheduleDate">날짜</label>
+                            <input type="date" id="scheduleDate" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleTime">시간</label>
+                            <input type="time" id="scheduleTime" />
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleTitle">제목</label>
+                            <input type="text" id="scheduleTitle" placeholder="일정 제목" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleDesc">설명</label>
+                            <textarea id="scheduleDesc" placeholder="상세 설명"></textarea>
+                        </div>
+                        <label>
+                            <input type="checkbox" />
+                            공적인 일정
+                        </label>
+                        <div class="modal-actions">
+                            <button type="submit" class="save-btn">저장</button>
+                            <button type="button" class="delete-btn" id="deleteSchedule">삭제</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="/src/main/resources/static/user/js/common.js"></script>
+
+</body>
+
+</html>

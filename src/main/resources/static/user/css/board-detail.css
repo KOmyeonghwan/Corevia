@@ -1,0 +1,102 @@
+.post-detail {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
+}
+
+.post-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.post-meta {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 10px;
+}
+
+.post-meta span {
+  margin-right: 20px;
+}
+
+.post-content {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 30px;
+  line-height: 1.8;
+  white-space: pre-line; /* 줄바꿈 유지 */
+}
+
+.post-attachments {
+  margin-bottom: 30px;
+  font-size: 15px;
+}
+
+.post-attachments strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.post-attachments ul {
+  list-style: disc;
+  padding-left: 20px;
+  color: #007bff;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.post-actions button {
+  padding: 10px 18px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #fff;
+}
+
+.post-actions .btn-comments {
+  background-color: #6c757d;
+}
+
+.post-actions .btn-back:hover {
+  background-color: #5a6268;
+}
+
+.post-actions .btn-list {
+  background-color: #17a2b8;
+}
+
+.post-actions .btn-list:hover {
+  background-color: #138496;
+}
+
+.post-actions .btn-edit {
+  background-color: #28a745;
+}
+
+.post-actions .btn-edit:hover {
+  background-color: #218838;
+}
+
+.post-actions .btn-delete {
+  background-color: #dc3545;
+}
+
+.post-actions .btn-delete:hover {
+  background-color: #c82333;
+}
+
+/* 댓글 구현 */

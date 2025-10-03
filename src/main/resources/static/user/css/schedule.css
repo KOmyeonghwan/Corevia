@@ -1,0 +1,142 @@
+  /* 기본 레이아웃 */
+  .main-view {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.calendar-header h2 {
+    flex-grow: 1;
+    text-align: center;
+}
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+.day,
+.empty {
+    padding: 10px;
+    border: 1px solid #ddd;
+    min-height: 80px;
+    position: relative;
+    cursor: pointer;
+    background-color: #F9F9F9;
+}
+.day.today {
+    background-color: #E0F7FA;
+    font-weight: bold;
+}
+.day .date-number {
+    font-weight: bold;
+}
+.schedule {
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 2px 4px;
+    background-color: #3498DB;
+    color: white;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* 화면 전체 높이 */
+    display: flex;
+    justify-content: center;
+    /* 가로 중앙 */
+    align-items: center;
+    /* 세로 중앙 */
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+}
+.modal.hidden {
+    display: none;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    width: 350px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.close-btn {
+    cursor: pointer;
+    font-size: 20px;
+    color: #888;
+    transition: color 0.2s;
+}
+.close-btn:hover {
+    color: #F44336;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+.form-group label {
+    margin-bottom: 4px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #555;
+}
+.form-group input,
+.form-group textarea {
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #2196F3;
+}
+textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.save-btn {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 14px;
+    cursor: pointer;
+}
+.delete-btn {
+    background-color: #F44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 14px;
+    cursor: pointer;
+}
+.save-btn:hover {
+    background-color: #1976D2;
+}
+.delete-btn:hover {
+    background-color: #D32F2F;
+}
