@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/mail.css">
+    <script src="/user/js/mail.js"></script>
+
+    <title>user mail</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div>
+            {{loginUser.userName}} 님
+        </div>
+    </header>
+
+    <main>
+        <nav>
+            <div class="icon-bar">
+                <div class="icon-top">
+                    <a href="/usermain">
+                        <i class="fa-solid fa-house"></i>
+                        <div class="icon-name">홈</div>
+                    </a>
+                    <a href="/usermessage">
+                        <i class="fa-regular fa-message"></i>
+                        <div class="icon-name">메시지</div>
+                    </a>
+                    <a href="/userschedule">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <div class="icon-name">스케줄</div>
+                    </a>
+                    <a href="/usermail">
+                        <i class="fa-regular fa-envelope"></i>
+                        <div class="icon-name">메일</div>
+                    </a>
+                    <a href="/userboard">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <div class="icon-name">게시판</div>
+                    </a>
+                    <a href="/userdoc">
+                        <i class="fa-regular fa-file"></i>
+                        <div class="icon-name">전자결재</div>
+                    </a>
+                </div>
+                <div class="icon-bottom">
+                    <a href="#" id="chat-view-status">+</a>
+                    <a href="#">
+                        🔔
+                        <div class="notification hidden">1</div>
+                    </a>
+                    <a href="#">⚙️</a>
+                </div>
+            </div>
+            <div class="chat-user">
+                <h3 class="chat-header">부서명</h3>
+                <div class="chat-content">
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                </div>
+                <button type="submit" class="newChatroom">+</button>
+            </div>
+        </nav>
+        </nav>
+        <div class="main-view">
+            <section class="mail-page">
+                <div class="mail-header">
+                    <h2>받은 메일함</h2>
+
+                    <!-- 모달 창 -->
+                    <div id="composeModal" class="compose-modal hidden">
+                        <div class="modal-content">
+                            <h2>메일 쓰기</h2>
+                            <input type="text" placeholder="받는 사람 email" />
+                            <input type="text" placeholder="제목" />
+                            <textarea placeholder="내용을 입력하세요..."></textarea>
+                            <input type="file">
+
+                            <div class="modal-actions">
+                                <button id="send-mail">보내기</button>
+                                <button id="close-compose">닫기</button>
+                            </div>
+                        </div>
+                    </div><button id="open-compose">메일 쓰기</button>
+                </div>
+
+                <div class="mail-list">
+                    <!-- 메일 항목 예시 -->
+                    <a class="mail-item" href="/usermaildetail">
+                        <div class="mail-from">김유진 과장</div>
+                        <div class="mail-subject">[공지] 10월 워크숍 안내</div>
+                        <div class="mail-status">sent</div>
+                        <div class="mail-time">09:41 AM</div>
+                    </a>
+
+                    <a class="mail-item" href="/usermaildetail">
+                        <div class="mail-from">이승훈 차장</div>
+                        <div class="mail-subject">결재 요청드립니다 (업무 보고서)</div>
+                        <div class="mail-status">read</div>
+                        <div class="mail-time">어제</div>
+                    </a>
+
+                    <a class="mail-item" href="/usermaildetail">
+                        <div class="mail-from">인사팀</div>
+                        <div class="mail-subject">10월 급여 명세서 안내</div>
+                        <div class="mail-status">sent</div>
+                        <div class="mail-time">9월 15일</div>
+                    </a>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- 모달 창 -->
+    <div id="composeModal" class="compose-modal hidden">
+        <div class="modal-content">
+            <h2>메일 쓰기</h2>
+            <input type="text" placeholder="받는 사람" />
+            <input type="text" placeholder="제목" />
+            <textarea placeholder="내용을 입력하세요..."></textarea>
+            <input type="file">
+
+            <div class="modal-actions">
+                <button id="send-mail">보내기</button>
+                <button id="close-compose">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/user/js/common.js"></script>
+
+</body>
+
+</html>
+
+<!-- ui -> 9월 24일까지 완성
+ spring 생성: 25일 
+ docker : 26일 
+ 이후 -> 백엔드
+ -->

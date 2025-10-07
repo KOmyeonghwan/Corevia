@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <title>관리자 게시판 수정 페이지</title>
+    <style>
+        .edit-form {
+            width: 100%;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-form label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .edit-form input,
+        .edit-form textarea,
+        .edit-form select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .detail-item {
+            margin-bottom: 12px;
+        }
+
+
+        .form-buttons {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .form-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-buttons button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .form-buttons button[type="button"] {
+            background-color: #f44336;
+            color: white;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="sidebar">
+            <h2>관리자 메뉴</h2>
+            <ul>
+                <li><a href="admindashboard">대시보드</a></li>
+                <li><a href="adminuser">회원 관리</a></li>
+                <li><a href="addepartment">부서 관리</a></li>
+                <li><a href="adboard">게시판 관리</a></li>
+                <li><a href="adcomment">댓글/답글 관리</a></li>
+                <li><a href="adapprovallist">전자 결재 관리</a></li>
+                <li><a href="#">설정</a></li>
+            </ul>
+
+            <button style="margin-top: auto;">홈으로</button>
+        </div>
+
+        <div class="main-content">
+            <h2>게시글 수정</h2>
+
+            <form class="edit-form">
+                <div class="detail-item">
+                    <label for="title">제목</label>
+                    <input type="text" id="title" name="title" value="기존 제목">
+                </div>
+                <div class="detail-item">
+                    <label for="author">작성자</label>
+                    <input type="text" value="user01" disabled>
+                </div>
+                <div class="detail-item">
+                    <label for="category">카테고리</label>
+                    <select id="category" name="category">
+                        <option value="공지">공지</option>
+                        <option value="자유">자유</option>
+                        <option value="Q&A">Q&A</option>
+                    </select>
+                </div>
+                <div class="detail-item">
+                    <label for="content">내용</label>
+                    <textarea id="commentContent" rows="5">이 글 정말 유익하네요!</textarea>
+                </div>
+                <div class="detail-item">
+                    <label for="file">첨부파일</label>
+                    <input type="file" id="file" name="file">
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit">저장</button>
+                    <button type="button">취소</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

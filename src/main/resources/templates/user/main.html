@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/main.css">
+    <script src="/user/js/main.js"></script>
+    <title>메인</title>
+</head>
+
+<body>
+    <!-- 로그인 시 근태 관리 기능 동작해야 됨(1일 최초 로그인 시, 시간 admin으로 넘기기) -->
+    <header>
+        <div class="logo">
+            <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+    </header>
+
+    <main>
+        <nav>
+            <div class="icon-bar">
+                <div class="icon-top">
+                    <a href="/usermain">
+                        <i class="fa-solid fa-house"></i>
+                        <div class="icon-name">홈</div>
+                    </a>
+                    <a href="/usermessage">
+                        <i class="fa-regular fa-message"></i>
+                        <div class="icon-name">메시지</div>
+                    </a>
+                    <a href="/userschedule">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <div class="icon-name">스케줄</div>
+                    </a>
+                    <a href="/usermail">
+                        <i class="fa-regular fa-envelope"></i>
+                        <div class="icon-name">메일</div>
+                    </a>
+                    <a href="/userboard">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <div class="icon-name">게시판</div>
+                    </a>
+                    <a href="/userdoc">
+                        <i class="fa-regular fa-file"></i>
+                        <div class="icon-name">전자결재</div>
+                    </a>
+                </div>
+                <div class="icon-bottom">
+                    <a href="#" id="chat-view-status">+</a>
+                    <a href="#">
+                        🔔
+                        <div class="notification hidden">1</div>
+                    </a>
+                    <a href="#" id="func">⚙️</a>
+                </div>
+            </div>
+            <div class="chat-user">
+                <h3 class="chat-header">부서명</h3>
+                <div class="chat-content">
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                </div>
+                <button type="submit" class="newChatroom">+</button>
+            </div>
+        </nav>
+
+        <div class="main-view">
+            <section>
+                <div>
+                    <h1>인트라넷</h1>
+                </div>
+                <div class="user-info">
+                    <div><strong>사용자:&nbsp;</strong>{{loginUser.userName}} 님</div>
+                    <div><strong>로그인 시간:&nbsp;</strong><span id="currentTime"></span></div>
+                </div>
+            </section>
+            <!-- 주요 공지사항 -->
+            <section class="notice-section">
+                <h2>📢 주요 공지사항</h2>
+                <ul>
+                    <li>2025년 10월 31일: 전사 워크샵 안내</li>
+                    <li>2025년 11월 5일: 보안 업데이트 실시 예정</li>
+                    <li>2025년 11월 10일: 연말 휴가 계획 제출 마감</li>
+                </ul>
+            </section>
+
+            <!-- 빠른 메뉴 -->
+            <section class="quick-menu">
+                <a href="/mail" class="menu-mail">📧 메일</a>
+                <a href="/schedule" class="menu-schedule">📅 일정</a>
+                <a href="/docs" class="menu-docs">📂 문서함</a>
+            </section>
+
+            <!-- 최근 알림/업무 -->
+            <section class="notification-section">
+                <h2>⏰ 최근 알림 / 업무</h2>
+                <ul>
+                    <li>[메일] 홍길동님이 신규 메일을 받았습니다. <small>(10분 전)</small></li>
+                    <li>[일정] 팀 미팅 일정이 30분 후 시작됩니다. <small>(1시간 전)</small></li>
+                    <li>[업무] 결재 요청서가 승인 대기 중입니다. <small>(3시간 전)</small></li>
+                </ul>
+            </section>
+
+        </div>
+
+    </main>
+
+    <script src="/user/js/common.js"></script>
+
+    <script>
+        const now = new Date();
+    
+        // 연도, 월, 일
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // 월은 0~11이므로 +1
+        const day = String(now.getDate()).padStart(2, '0');
+    
+        // 시, 분
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+    
+        // AM/PM 처리
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours === 0 ? 12 : hours; // 12시 처리
+        const formattedHours = String(hours).padStart(2, '0');
+    
+        const formatted = `${year}-${month}-${day} ${formattedHours}:${minutes} ${ampm}`;
+    
+        document.getElementById('currentTime').textContent = formatted;
+    </script>
+    
+
+</body>
+
+</html>

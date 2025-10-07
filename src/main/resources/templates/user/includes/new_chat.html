@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* h1,
+    h2,
+    h3{
+      margin-bottom: 0;
+    } */
+
+    /* .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    } */
+
+    .newChatModal {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+    }
+
+    .newChatModal label {
+      text-align: left;
+      width: 97%;
+    }
+
+    .newChatModal h2 {
+      margin: 10px;
+    }
+
+    .newChatModal input,
+    .newChatModal select {
+      width: 90%;
+      padding: 8px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .newChatModal select {
+      width: 96%;
+      height: 100px;
+    }
+
+    .modal-buttons {
+      text-align: right;
+    }
+
+    .modal-buttons button {
+      padding: 8px 12px;
+      margin-left: 8px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .btn-secondary {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- <div class="modal-overlay" id="modalOverlay"> -->
+    <div class="newChatModal">
+      <h2>채팅방 추가</h2>
+
+      <input type="text" id="chatRoomName" placeholder="채팅방 이름 입력" />
+
+      <label for="userSelect">참여자 선택 (Ctrl 또는 ⌘ 키로 다중 선택):</label>
+      <select id="userSelect" multiple>
+        <!-- 사용자 목록은 JS에서 추가 -->
+      </select>
+
+      <div class="modal-buttons">
+        <button class="btn-secondary" id="cancelBtn">취소</button>
+        <button class="btn-primary" id="addBtn">추가</button>
+      </div>
+    </div>
+  <!-- </div> -->
+
+
+  
+  <script>
+    const users = ['홍길동', '김철수', '이영희', '박민수', '최유리'];
+
+    const modalOverlay = document.getElementById('modalOverlay');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const addBtn = document.getElementById('addBtn');
+    const chatRoomNameInput = document.getElementById('chatRoomName');
+    const userSelect = document.getElementById('userSelect');
+
+    // 사용자 목록 렌더링
+    function populateUserSelect() {
+      userSelect.innerHTML = '';
+      users.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user;
+        option.textContent = user;
+        userSelect.appendChild(option);
+      });
+    }
+
+
+    // 추가 버튼 클릭
+    addBtn.addEventListener('click', () => {
+      const roomName = chatRoomNameInput.value.trim();
+      const selectedUsers = Array.from(userSelect.selectedOptions).map(option => option.value);
+
+      if (roomName === '') {
+        alert('채팅방 이름을 입력해주세요.');
+        return;
+      }
+
+      if (selectedUsers.length === 0) {
+        alert('최소 한 명의 참여자를 선택해주세요.');
+        return;
+      }
+
+      // 결과 출력
+      console.log('채팅방 이름:', roomName);
+      console.log('참여자:', selectedUsers);
+
+      // 여기에 서버 전송 or 상태 업데이트 코드 삽입 가능
+
+  
+    });
+  </script>
+
+</body>
+
+</html>

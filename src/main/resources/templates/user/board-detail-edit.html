@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="user/css/board-detail-edit.css">
+    <script src="/user/js/board-detail-edit.js"></script>
+
+    <title>board</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div>
+            {{loginUser.userName}} 님
+        </div>
+    </header>
+
+    <main>
+        <nav>
+            <div class="icon-bar">
+                <div class="icon-top">
+                    <a href="/usermain">
+                        <i class="fa-solid fa-house"></i>
+                        <div class="icon-name">홈</div>
+                    </a>
+                    <a href="/usermessage">
+                        <i class="fa-regular fa-message"></i>
+                        <div class="icon-name">메시지</div>
+                    </a>
+                    <a href="/userschedule">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <div class="icon-name">스케줄</div>
+                    </a>
+                    <a href="/usermail">
+                        <i class="fa-regular fa-envelope"></i>
+                        <div class="icon-name">메일</div>
+                    </a>
+                    <a href="/userboard">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <div class="icon-name">게시판</div>
+                    </a>
+                    <a href="/userdoc">
+                        <i class="fa-regular fa-file"></i>
+                        <div class="icon-name">전자결재</div>
+                    </a>
+                </div>
+                <div class="icon-bottom">
+                    <a href="#" id="chat-view-status">+</a>
+                    <a href="#">
+                        🔔
+                        <div class="notification hidden">1</div>
+                    </a>
+                    <a href="#">⚙️</a>
+                </div>
+            </div>
+            <div class="chat-user">
+                <h3 class="chat-header">부서명</h3>
+                <div class="chat-content">
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                </div>
+                <button type="submit" class="newChatroom">+</button>
+            </div>
+        </nav>
+
+        <div class="main-view">
+            <h2>게시글 수정</h2>
+            <form class="edit-form">
+                <div class="detail-item">
+                    <label for="title">제목</label>
+                    <input type="text" id="title" name="title" value="기존 제목">
+                </div>
+                <div class="detail-item">
+                    <label for="author">작성자</label>
+                    <input type="text" value="user01" disabled>
+                </div>
+                <div class="detail-item">
+                    <label for="category">카테고리</label>
+                    <select id="category" name="category">
+                        <option value="공지">공지</option>
+                        <option value="자유">자유</option>
+                        <option value="Q&A">Q&A</option>
+                    </select>
+                </div>
+                <div class="detail-item">
+                    <label for="content">내용</label>
+                    <textarea id="commentContent" rows="5">이 글 정말 유익하네요!</textarea>
+                </div>
+                <div class="detail-item">
+                    <label for="file">첨부파일</label>
+                    <input type="file" id="file" name="file">
+                </div>
+                <div class="form-buttons">
+                    <button type="submit">저장</button>
+                    <button type="button">취소</button>
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+    <script src="/user/js/common.js"></script>
+
+</body>
+</html>
+
+<!-- ui -> 9월 25일까지 완성
+ spring 생성 및 환경 세팅: 26일 
+ 이후 -> 백엔드
+
+
+ -->

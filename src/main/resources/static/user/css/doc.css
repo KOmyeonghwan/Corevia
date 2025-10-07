@@ -1,0 +1,301 @@
+.main-view {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  flex: 1;
+  padding-top: 30px;
+
+  position: relative;
+}
+
+/* --------------- */
+/* 빠른 메뉴 */
+.quick-menu {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  cursor: none;
+}
+
+.quick-menu a {
+  flex: 1;
+  color: black;
+  text-align: center;
+  padding: 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.quick-menu a:nth-child(1){
+  background-color: #e3ffe2;
+}
+.quick-menu a:nth-child(2){
+  background-color: #e2eeff;
+}
+.quick-menu a:nth-child(3){
+  background-color: rgb(255, 186, 186);
+}
+
+.quick-menu a:hover {
+  filter: brightness(90%);
+}
+
+/* ---------------- */
+
+
+/* 탭 컨테이너 */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid navy;
+  margin-bottom: 20px;
+  justify-content: center;
+  /* 탭 중앙 정렬 */
+}
+
+/* 탭 버튼 */
+.tab {
+  padding: 12px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  color: navy;
+  border: 1px solid transparent;
+  border-bottom: none;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s, color 0.3s;
+  user-select: none;
+  margin-right: 8px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  text-align: center;
+  /* 텍스트 중앙 정렬 */
+  min-width: 100px;
+  /* 탭 너비 최소값 */
+}
+
+.tab:hover {
+  background-color: #e2e6ea;
+  color: darkblue;
+}
+
+/* 활성화된 탭 */
+.tab.active {
+  background-color: white;
+  color: var(--main-color);
+  border: 1px solid var(--main-color);
+  border-bottom: none;
+  font-weight: 700;
+}
+
+
+/* 탭 콘텐츠 */
+.board-view {
+  background-color: white;
+  border-radius: 0 6px 6px 6px;
+  padding: 20px;
+}
+
+/* 탭 콘텐츠 숨김 */
+.tab-content.hidden {
+  display: none;
+}
+
+/* 테이블 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  text-align: center;
+  /* 테이블 전체 중앙 정렬 */
+}
+
+thead tr {
+  background-color: var(--main-color);
+  color: white;
+  font-weight: 600;
+}
+
+th,
+td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+tbody tr:hover {
+  background-color: #c7c7c7;
+}
+
+/* 링크 스타일 */
+tbody a {
+  color: navy;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+}
+
+tbody a:hover {
+  text-decoration: underline;
+}
+
+
+/* 페이지네이션 버튼s */
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination button {
+  color: #333;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 8px 14px;
+  margin: 0 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+  user-select: none;
+}
+
+.pagination button:hover:not(.active) {
+  background-color: #e0e0e0;
+}
+
+.pagination button.active {
+  background-color: var(--main-color);
+  color: white;
+  border-color: var(--main-color);
+  cursor: default;
+  font-weight: 600;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 게시글 작성 버튼 */
+#open-compose {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s;
+}
+
+#open-compose:hover {
+  background-color: #0056b3;
+}
+
+
+/* 모달 */
+.compose-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 내부 박스 */
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+/* 입력 필드 스타일 */
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* 텍스트 영역 높이 고정 */
+.modal-content textarea {
+  height: 120px;
+  resize: none;
+}
+
+/* 버튼 영역 */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* 버튼 공통 스타일 */
+.modal-actions button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* 보내기 버튼 */
+#send-mail {
+  background-color: #3498db;
+  color: white;
+}
+
+#send-mail:hover {
+  background-color: #2980b9;
+}
+
+/* 닫기 버튼 */
+#close-compose {
+  background-color: #bdc3c7;
+}
+
+#close-compose:hover {
+  background-color: #a4b0be;
+}
+
+
+
+
+/* 반응형 간단 처리 */
+@media (max-width: 600px) {
+  .tab {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  th,
+  td {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+}

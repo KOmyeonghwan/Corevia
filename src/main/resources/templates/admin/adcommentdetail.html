@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <title>관리자 댓글 상세보기</title>
+    <style>
+        .contents-upper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .main-content h1 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .detail-box {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background: #fafafa;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            margin-bottom: 12px;
+        }
+
+        .detail-item strong {
+            display: inline-block;
+            width: 80px;
+            color: #555;
+        }
+
+
+        .action-buttons {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #34495e;
+            padding: 6px 12px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background: #007bff;
+            color: #fff;
+        }
+
+        .btn-edit a {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .btn-hide {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .reply-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .reply-list th,
+        .reply-list td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .reply-list th {
+            background: #f1f1f1;
+        }
+
+        /* 대댓글 들여쓰기 */
+        .reply-row.nested td {
+            padding-left: 40px;
+            /* 들여쓰기 정도 */
+            background: #f9f9f9;
+            /* 약간 다른 배경 */
+        }
+
+        .reply-row.nested td.content {
+            color: #0056b3;
+            /* 강조 색상 */
+        }
+
+
+        /* 말줄임 처리 */
+        .reply-list td.content {
+            max-width: 250px;
+            /* 최대 폭 */
+            white-space: nowrap;
+            /* 한 줄로 유지 */
+            overflow: hidden;
+            /* 넘치면 숨김 */
+            text-overflow: ellipsis;
+            /* ... 표시 */
+            cursor: pointer;
+            color: #007bff;
+        }
+
+        .reply-list table {
+            width: 100%;
+            border-collapse: collapse;
+            max-height: 300px;
+            /* 테이블 최대 높이 */
+            display: block;
+            overflow-y: auto;
+            /* 세로 스크롤 */
+        }
+
+        .reply-list thead,
+        .reply-list tbody {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            /* 칼럼 고정 */
+        }
+
+        .reply-list td.content {
+            white-space: normal;
+            /* 줄바꿈 허용 */
+            word-wrap: break-word;
+        }
+
+        .board-table th {
+            background: #34495e;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 6px;
+            width: 500px;
+        }
+
+        .close {
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .modal-actions button {
+            margin-right: 5px;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: end;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div class="sidebar">
+            <h2>관리자 메뉴</h2>
+            <ul>
+                <li><a href="admindashboard">대시보드</a></li>
+                <li><a href="adminuser">회원 관리</a></li>
+                <li><a href="addepartment">부서 관리</a></li>
+                <li><a href="adboard">게시판 관리</a></li>
+                <li><a href="adcomment">댓글/답글 관리</a></li>
+                <li><a href="adapprovallist">전자 결재 관리</a></li>
+                <li><a href="#">설정</a></li>
+            </ul>
+
+            <button style="margin-top: auto;">홈으로</button>
+        </div>
+
+        <div class="main-content">
+            <!-- 상단 제목 -->
+            <div class="contents-upper">
+                <h2>댓글 상세보기</h2>
+                <div class="action-buttons">
+                    <button class="btn"><a href="adcomment.html">목록</a></button>
+                    <button class="btn btn-edit"><a href="adcommentedit.html">수정</a></button>
+                </div>
+            </div>
+
+            <!-- 원댓글 카드 -->
+            <div class="detail-box">
+                <div class="detail-item">
+                    <h3>원 댓글</h3>
+                </div>
+                <div class="detail-item">
+                    <p><strong>작성일:</strong> 2025-09-22 13:45</p>
+                </div>
+                <div class="detail-item">
+                    <p><strong>작성자:</strong> 홍길동</p>
+                </div>
+                <div class="detail-item">
+                    <p><strong>댓글 ID:</strong> 123</p>
+                </div>
+                <div class="detail-item">
+                    <p><strong>내용:</strong> 이 글 정말 유익하네요!</p>
+                </div>
+                <div class="detail-item">
+                    <p><strong>상태:</strong> 정상</p>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn btn-hide">숨김</button>
+                    <button class="btn btn-delete">삭제</button>
+                </div>
+            </div>
+
+            <!-- 대댓글 리스트 -->
+            <!-- 대댓글 리스트 -->
+            <div class="reply-list">
+                <h3>대댓글 목록</h3>
+                <table class="board-table">
+                    <thead>
+                        <tr>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                            <th>내용</th>
+                            <th>상태</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 원댓글 -->
+                        <tr class="reply-row">
+                            <td>홍길동</td>
+                            <td>2025-09-22 13:45</td>
+                            <td class="content" onclick="openModal('이 글 정말 유익하네요!')">
+                                이 글 정말 유익하네요!
+                            </td>
+                            <td>정상</td>
+                            <td>
+                                <button class="btn btn-hide">숨김</button>
+                                <button class="btn btn-delete">삭제</button>
+                            </td>
+                        </tr>
+                        <!-- 대댓글 -->
+                        <tr class="reply-row nested">
+                            <td>user02</td>
+                            <td>2025-09-22</td>
+                            <td class="content" onclick="openModal('저도 그렇게 생각해요!')">
+                                저도 그렇게 생각해요!
+                            </td>
+                            <td>정상</td>
+                            <td>
+                                <button class="btn btn-hide">숨김</button>
+                                <button class="btn btn-delete">삭제</button>
+                            </td>
+                        </tr>
+                        <tr class="reply-row nested">
+                            <td>user03</td>
+                            <td>2025-09-22</td>
+                            <td class="content" onclick="openModal('추가 정보 감사합니다.')">
+                                추가 정보 감사합니다.
+                            </td>
+                            <td>정상</td>
+                            <td>
+                                <button class="btn btn-hide">숨김</button>
+                                <button class="btn btn-delete">삭제</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <!-- 모달 -->
+    <div id="replyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>대댓글 내용</h3>
+            <p id="modalText"></p>
+        </div>
+    </div>
+</body>
+
+<script>
+    function openModal(text) {
+        document.getElementById("modalText").innerText = text;
+        document.getElementById("replyModal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("replyModal").style.display = "none";
+    }
+
+    // 모달 바깥 클릭 시 닫기
+    window.onclick = function (event) {
+        const modal = document.getElementById("replyModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+
+</html>

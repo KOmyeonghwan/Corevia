@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/message.css">
+    <script src="/user/js/message.js"></script>
+    <title>사용자 message</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div>
+            {{loginUser.userName}} 님
+        </div>
+    </header>
+
+    <main>
+        <nav>
+            <div class="icon-bar">
+                <div class="icon-top">
+                    <a href="/usermain">
+                        <i class="fa-solid fa-house"></i>
+                        <div class="icon-name">홈</div>
+                    </a>
+                    <a href="/usermessage">
+                        <i class="fa-regular fa-message"></i>
+                        <div class="icon-name">메시지</div>
+                    </a>
+                    <a href="/userschedule">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <div class="icon-name">스케줄</div>
+                    </a>
+                    <a href="/usermail">
+                        <i class="fa-regular fa-envelope"></i>
+                        <div class="icon-name">메일</div>
+                    </a>
+                    <a href="/userboard">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <div class="icon-name">게시판</div>
+                    </a>
+                    <a href="/userdoc">
+                        <i class="fa-regular fa-file"></i>
+                        <div class="icon-name">전자결재</div>
+                    </a>
+                </div>
+                <div class="icon-bottom">
+                    <a href="#" id="chat-view-status">+</a>
+                    <a href="#">
+                        🔔
+                        <div class="notification hidden">1</div>
+                    </a>
+                    <a href="#">⚙️</a>
+                </div>
+            </div>
+            <div class="chat-user">
+                <h3 class="chat-header">부서명</h3>
+                <div class="chat-content">
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                    <div class="coworker-card">
+                        <span><b>이름</b>
+                            <p>참여인원</p>
+                        </span>
+                        <p>최종 대화 내용</p>
+                    </div>
+                </div>
+                <button type="submit" class="newChatroom">+</button>
+            </div>
+        </nav>
+
+        <div class="main-chat-view">
+            <section class="chat-room">
+                <header class="chatroom-header">
+                    <h2>메신저</h2>
+                </header>
+
+                <div class="chat-messages" role="log" aria-live="polite" aria-relevant="additions" tabindex="0">
+
+                    <div class="message received">
+                        <div class="sender-name">사용자</div>
+                        <p>안녕하세요! 어떻게 도와드릴까요?</p>
+                        <span class="time">10:30 AM</span>
+                    </div>
+
+                    <div class="message sent">
+                        <p>안녕하세요! 문의 드릴게 있습니다.</p>
+                        <span class="time">10:31 AM</span>
+                    </div>
+
+                    <div class="message received">
+                        <div class="sender-name">사용자</div>
+                        <p>네, 무엇을 도와드릴까요?</p>
+                        <span class="time">10:32 AM</span>
+                    </div>
+                </div>
+
+                <form class="chat-input" onsubmit="event.preventDefault(); sendMessage();">
+                    <input type="text" id="chat-input-text" placeholder="메시지를 입력하세요." autocomplete="off" />
+                    <button type="submit">전송</button>
+                </form>
+            </section>
+        </div>
+
+    </main>
+
+    <script src="/user/js/common.js"></script>
+</body>
+
+</html>

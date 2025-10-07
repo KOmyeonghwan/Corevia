@@ -1,0 +1,81 @@
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     font-family: 'Noto Sans KR', sans-serif;
+ }
+
+ body {
+     display: flex;
+     background-color: #eef1f4;
+ }
+
+ .wrapper {
+     margin: 0 auto;
+     width: 1500px;
+     height: 100vh;
+ }
+
+ .sidebar {
+     width: 240px;
+     height: 100vh;
+     background-color: #2d3e50;
+     color: #fff;
+     padding: 20px;
+     position: fixed;
+     font-size: 14px;
+     border-right: 2px solid #34495e;
+
+
+     display: flex;
+     /* flex 컨테이너로 변경 */
+     flex-direction: column;
+     /* 세로 정렬 */
+ }
+
+ .sidebar h2 {
+     font-size: 18px;
+     margin-bottom: 20px;
+     color: #bdc3c7;
+ }
+
+ .sidebar ul {
+     list-style: none;
+ }
+
+ .sidebar ul li {
+     margin: 15px 0;
+ }
+
+ .sidebar ul li a {
+     text-decoration: none;
+     color: #ecf0f1;
+     font-size: 15px;
+     display: block;
+     padding: 10px;
+     border-radius: 5px;
+     transition: background-color 0.3s;
+ }
+
+ .sidebar ul li a:hover {
+     background-color: #3498db;
+     color: #fff;
+ }
+
+ .main-content {
+     margin-left: 240px;
+     padding: 30px;
+     width: 1250px;
+     background-color: #fff;
+     height: 100vh;
+ }
+
+ .sidebar button {
+     margin-top: auto;
+     padding: 10px;
+     border: none;
+     border-radius: 5px;
+     background-color: #3498db;
+     color: #fff;
+     cursor: pointer;
+ }
