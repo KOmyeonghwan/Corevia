@@ -1,7 +1,7 @@
-package com.example.corenet.common.security;
+package com.example.corenet.common.dto;
 
-import com.example.corenet.admin.users.entity.Users;
-import com.example.corenet.common.dto.LoginUserDTO;
+import com.example.corenet.common.entity.User;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,11 +9,14 @@ import java.util.Collection;
 import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
+    private final User user;  // user entity 주입
 
-    private final Users user;  // user entity 주입
-
-    public CustomUserDetails(Users user) {
+    public CustomUserDetails(User user) {
         this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public LoginUserDTO toLoginUserDTO() {

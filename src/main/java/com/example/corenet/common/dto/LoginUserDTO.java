@@ -11,5 +11,7 @@ public class LoginUserDTO {
     private String userName;
     private String email;
     private Integer jobcode;
-    private Integer role; // 0=관리자, 1=사용자
+    private Integer role; // 0=관리자, 2=사용자
+
+    private String loginDateTime;
 }

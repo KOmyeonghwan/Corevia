@@ -1,7 +1,9 @@
-package com.example.corenet.common.security;
+package com.example.corenet.common.service;
 
-import com.example.corenet.admin.users.entity.Users;
+import com.example.corenet.common.dto.CustomUserDetails;
+import com.example.corenet.common.entity.User;
 import com.example.corenet.common.repository.UserRepository;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Users user = usersRepository.findByUserId(userId)
+        User user = usersRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + userId));
         return new CustomUserDetails(user);
     }

@@ -47,24 +47,23 @@ public class ShowPageController {
     }
 
     
+    // @GetMapping("/login")
+    // public String showLoginPage() {
+    //     return "user/login";
+    // }
 
-    @GetMapping("/login")
-    public String showLoginPage() {
-        return "user/login";
-    }
+    // @GetMapping("/usermain")
+    // public String showUserMainPage(HttpSession session, Model model) {
+    //     Users user = (Users) session.getAttribute("loginUser");
+    //     if (user == null)
+    //         return "redirect:/login";
 
-    @GetMapping("/usermain")
-    public String showUserMainPage(HttpSession session, Model model) {
-        Users user = (Users) session.getAttribute("loginUser");
-        if (user == null)
-            return "redirect:/login";
-
-        if (user.getRole() == 0) { // 관리자는 관리자 페이지로
-            return "redirect:/admindashboard";
-        }
-        model.addAttribute("loginUser", user);
-        return "user/main";
-    }
+    //     if (user.getRole() == 0) { // 관리자는 관리자 페이지로
+    //         return "redirect:/admindashboard";
+    //     }
+    //     model.addAttribute("loginUser", user);
+    //     return "user/main";
+    // }
 
     @GetMapping("/admindashboard")
     public String showAdminUserPage(HttpSession session) {
