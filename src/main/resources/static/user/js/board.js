@@ -17,12 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   });
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.add("hidden");
-    }
-  });
-
 
   //페이지 네이션 및 tab 구현
   const itemsPerPage = 10;

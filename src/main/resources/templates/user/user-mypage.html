@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/user-mypage.css">
+
+    <title>마이페이지</title>
+</head>
+
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div>
+            {{loginUser.userName}} 님
+        </div>
+    </header>
+
+    <main>
+        {{> fragments/usernav}}
+
+        <div class="main-view">
+            <div class="my-page-title">
+                <h1>마이페이지</h1>
+            </div>
+            <div class="card">
+                <div class="card-face">
+
+                </div>
+                <div class="profile-info">
+                    <h2 class="profile-name">{{loginUser.userName}}</h2>
+                    <div class="profile-meta">
+                        <span>{{loginUser.departmentName}}</span>
+                        <span class="divider">|</span>
+                        <span>{{loginUser.positionTitle}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-list">
+                <div class="card-show">
+                    <h2>내가 쓴 게시글</h2>
+                    <p>{{postCount}}</p>
+                </div>
+
+                <div class="card-show">
+                    <h2>내가 쓴 댓글</h2>
+                    <p>{{commentCount}}</p>
+                </div>
+
+                <div class="card-show">
+                    <h2>전자결재</h2>
+                    <p>{{docCount}}</p>
+                </div>
+            </div>
+
+            <div class="privacy-change">
+                <h2 class="privacy-title">개인정보 수정</h2>
+
+                <div class="privacy-form">
+                    <div class="form-group">
+                        <label>🔒 새 비밀번호</label>
+                        <input type="password" id="newPassword" placeholder="새 비밀번호 입력">
+                    </div>
+
+                    <div class="form-group">
+                        <label>🔒 비밀번호 확인</label>
+                        <input type="password" id="confirmPassword" placeholder="비밀번호 확인">
+                    </div>
+                    <div class="form-group">
+                        <label>📧 이메일</label>
+                        <input type="email" id="email" value="{{loginUser.email}}" placeholder="이메일 입력">
+                    </div>
+
+                    <button class="privacy-btn" onclick="changePassword()">비밀번호 변경</button>
+                    <button class="privacy-btn" onclick="changeEmail()">이메일 변경</button>
+                </div>
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <script src="/user/js/common.js"></script>
+
+
+    <script>
+        function changePassword() {
+            const newPassword = document.getElementById("newPassword").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (!newPassword || !confirmPassword) {
+                alert("비밀번호를 입력해주세요.");
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+            fetch("/user/mypage/password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({
+                    newPassword: newPassword
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+        }
+
+        function changeEmail() {
+            const email = document.getElementById("email").value;
+
+            if (!email) {
+                alert("이메일을 입력해주세요.");
+                return;
+            }
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+            fetch("/user/mypage/email", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({ email })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+        }
+    </script>
+
+
+</body>
+
+</html>

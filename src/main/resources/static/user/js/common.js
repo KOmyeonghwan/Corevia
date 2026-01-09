@@ -1,278 +1,369 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const topLinks = document.querySelectorAll(".icon-top a");
+    let loginUserId = null; // 로그인 사용자 ID
+    let currentRoomId = null;
 
-  const chatUser = document.querySelector(".chat-user");
-  const chatLink = document.getElementById("chat-view-status");
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
-  if (chatUser && chatLink) {
-    // 페이지 로드 시 상태 복원
-    const savedState = localStorage.getItem("chatUserVisible") === "true";
+    // ===================== 함수 영역 =====================
 
-    if (savedState) {
-      chatUser.classList.add("active");
-      chatLink.classList.add("active");
+    // 새로운 채팅방 생성 모달 열기
+    function openNewChatModal() {
+        if (!loginUserId) return console.error("로그인 정보 없음: 채팅 생성 불가");
+
+        if (document.querySelector(".newChatModal")) {
+            console.warn("이미 채팅 생성 모달이 열려 있습니다.");
+            return;
+        }
+
+        fetch("/new_chat")
+            .then(res => res.text())
+            .then(html => {
+                const wrapper = document.createElement("div");
+                Object.assign(wrapper.style, {
+                    position: "absolute",
+                    top: "100px",
+                    left: "100px",
+                    width: "400px",
+                    height: "450px",
+                    borderRadius: "8px",
+                    cursor: "move",
+                    boxSizing: "border-box",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    zIndex: "1000",
+                });
+                wrapper.innerHTML = html;
+                document.body.appendChild(wrapper);
+
+                const newChatModal = wrapper.querySelector(".newChatModal");
+                const searchBtn = wrapper.querySelector("#searchBtn");
+                const searchInput = wrapper.querySelector("#searchInput");
+                const userSelect = wrapper.querySelector("#userSelect");
+                const addBtn = wrapper.querySelector("#addBtn");
+                const cancelBtn = wrapper.querySelector("#cancelBtn");
+
+                // 드래그 기능
+                let isDragging = false, startX, startY, origX, origY;
+                newChatModal?.addEventListener("mousedown", e => {
+                    if (e.target.closest("input, textarea, select")) return;
+                    isDragging = true;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    origX = parseInt(wrapper.style.left, 10) || 0;
+                    origY = parseInt(wrapper.style.top, 10) || 0;
+                    e.preventDefault();
+                });
+                document.addEventListener("mousemove", e => {
+                    if (!isDragging) return;
+                    wrapper.style.left = origX + (e.clientX - startX) + "px";
+                    wrapper.style.top = origY + (e.clientY - startY) + "px";
+                });
+                document.addEventListener("mouseup", () => { isDragging = false; });
+
+                // 유저 검색
+                searchBtn.addEventListener("click", () => {
+                    const keyword = searchInput.value.trim();
+                    if (!keyword) return;
+                    fetch(`/chat/search-user?keyword=${encodeURIComponent(keyword)}`)
+                        .then(res => res.json())
+                        .then(users => {
+                            userSelect.innerHTML = "";
+                            users.forEach(u => {
+                                const option = document.createElement("option");
+                                option.value = u.id;
+                                let text = `${u.userName} (사번: ${u.jobcode})`;
+                                if (u.position) text += `, ${u.position.positionTitle}`;
+                                if (u.department) text += `, ${u.department.departmentName}`;
+                                option.textContent = text;
+                                userSelect.appendChild(option);
+                            });
+                        });
+                });
+
+                // 채팅방 생성
+                addBtn.addEventListener("click", () => {
+                    const selectedUsers = Array.from(userSelect.selectedOptions).map(opt => Number(opt.value));
+                    if (!selectedUsers.length) return alert("참여자를 선택하세요");
+                    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+                    fetch("/chat/create", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", [csrfHeader]: csrfToken },
+                        body: JSON.stringify(selectedUsers)
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log("채팅방 생성 완료:", data);
+                            wrapper.remove();
+                            loadChatRooms();
+                        });
+                });
+
+                cancelBtn.addEventListener("click", () => wrapper.remove());
+            })
+            .catch(err => console.error("모달 로딩 실패:", err));
     }
 
-    chatLink.addEventListener("click", (e) => {
-      e.preventDefault();
 
-      const isActive = chatUser.classList.toggle("active");
-      chatLink.classList.toggle("active");
+    // 채팅방 목록 불러오기
+    function loadChatRooms() {
+        if (!loginUserId) return;
 
-      localStorage.setItem("chatUserVisible", isActive);
-    });
-  }
+        fetch("/chat/my-rooms")
+            .then(res => res.json())
+            .then(chatRooms => {
+                const container = document.querySelector(".chat-content");
+                if (!container) return;
+                container.innerHTML = "";  // 기존 채팅방 내용 초기화
 
-  // 페이지 로드 시 localStorage에서 활성화된 링크 복원
-  const savedHref = localStorage.getItem("activeLinkHref");
-  if (savedHref) {
-    topLinks.forEach((link) => {
-      if (link.href === savedHref) {
-        link.classList.add("focus");
-      }
-    });
-  }
+                chatRooms.forEach(room => {
+                    const card = document.createElement("div");
+                    card.className = "coworker-card";
+                    card.dataset.roomId = room.id;
 
-  topLinks.forEach((link) => {
-    link.addEventListener("click", (e) => {
-      // 모든 링크에서 focus 클래스 제거
-      topLinks.forEach((l) => l.classList.remove("focus"));
+                    // 채팅방 이름
+                    const nameSpan = document.createElement("span");
+                    nameSpan.innerHTML = `<b>${room.roomName}</b>`;
+                    card.appendChild(nameSpan);
 
-      // 클릭한 링크에 focus 클래스 추가
-      link.classList.add("focus");
+                    // 삭제 버튼
+                    const delBtn = document.createElement("button");
+                    delBtn.textContent = "삭제";
+                    delBtn.className = "delete-btn";
 
-      // 선택한 링크 href를 저장
-      localStorage.setItem("activeLinkHref", link.href);
-    });
-  });
+                    // 삭제 버튼 클릭 시 채팅방 삭제 처리
+                    delBtn.addEventListener("click", (e) => {
+                        e.stopPropagation(); // 카드 클릭 이벤트 막기
+                        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+                        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+                        if (confirm("정말 채팅방을 삭제하시겠습니까?")) {
+                            fetch(`/chat/delete?roomId=${room.id}`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json", [csrfHeader]: csrfToken }
+                            })
+                                .then(res => res.json())
+                                .then(data => {
+                                    console.log(data);
+                                    // 삭제 성공 시 채팅방 UI에서 제거
+                                    card.remove();
+                                    loadChatRooms(); // 삭제 후 채팅방 목록을 다시 불러오기
+                                })
+                                .catch(err => {
+                                    console.error("채팅방 삭제 실패:", err);
+                                });
+                        }
+                    });
 
-  // [chat-user card click 시 chat_modal.html 화면에 출력]
-  const coWorkers = document.querySelectorAll(".coworker-card");
-  coWorkers.forEach((card) => {
-    card.addEventListener("click", () => {
-      fetch("includes/chat_modal.html") // 문자열로 존재
-        .then((response) => response.text())
-        .then((html) => {
-          const container = document.querySelector(".main-view");
-          if (!container) {
-            console.error("출력할 위치를 찾을 수 없습니다.");
-            return;
-          }
-          const wrapper = document.createElement("div");
+                    // 삭제 버튼을 span 밖에 추가
+                    card.appendChild(delBtn);
 
-          Object.assign(wrapper.style, {
-            position: "absolute",
-            top: "100px",
-            left: "100px",
-            width: "360px", // ✅ CSS와 동일하게 고정
-            height: "600px", // ✅ CSS와 동일하게 고정
-            borderRadius: "8px",
-            backgroundColor: "white",
-            cursor: "move",
-            boxSizing: "border-box",
-            overflow: "hidden", // ✅ 전체 스크롤 제거 (스크롤은 chat-messages에서만)
-            display: "flex", // ✅ 내부 flex layout 지원
-            flexDirection: "column",
-            fontFamily: "'Segoe UI', sans-serif",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            zIndex: "1000",
-          });
+                    // 카드 클릭 이벤트 (채팅 열기)
+                    card.addEventListener("click", () => openChatModal(room.id));
 
-          // HTML 삽입
-          wrapper.innerHTML = html;
-          document.body.appendChild(wrapper); // DOM에 붙이기
-
-          // 모달 드래그 기능
-          let isDragging = false;
-          let startX, startY, origX, origY;
-
-          const chatHeader = wrapper.querySelector(".chatroom-header");
-          const chatMessages = wrapper.querySelector(".chat-messages");
-
-          [chatHeader, chatMessages].forEach((el) => {
-            el.addEventListener("mousedown", (e) => {
-              isDragging = true;
-              startX = e.clientX;
-              startY = e.clientY;
-              origX = parseInt(wrapper.style.left, 10);
-              origY = parseInt(wrapper.style.top, 10);
-              e.preventDefault();
+                    // 채팅방 카드 컨테이너에 추가
+                    container.appendChild(card);
+                });
+            })
+            .catch(err => {
+                console.error("채팅방 목록 로딩 실패:", err);
             });
-          });
+    }
 
-          [chatHeader, chatMessages].forEach((el) => {
-            el.addEventListener("mousemove", (e) => {
-              if (!isDragging) return;
-              const deltaX = e.clientX - startX;
-              const deltaY = e.clientY - startY;
-              wrapper.style.left = origX + deltaX + "px";
-              wrapper.style.top = origY + deltaY + "px";
-            });
-          });
+    // 채팅 모달 열기
+    function openChatModal(roomId) {
+        if (!loginUserId) return console.error("로그인 정보 없음: 채팅 불가");
 
-          [chatHeader, chatMessages].forEach((el) => {
-            el.addEventListener("mouseup", (e) => {
-              isDragging = false;
-            });
-          });
+        fetch(`/chat-modal?roomId=${roomId}`)
+            .then(res => res.text())
+            .then(html => {
+                const wrapper = document.createElement("div");
+                Object.assign(wrapper.style, {
+                    position: "absolute",
+                    top: "100px",
+                    left: "100px",
+                    width: "360px",
+                    height: "600px",
+                    borderRadius: "8px",
+                    backgroundColor: "white",
+                    cursor: "move",
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    zIndex: "1000",
+                });
+                wrapper.innerHTML = html;
+                document.body.appendChild(wrapper);
 
-          // 모달 내부 요소는 wrapper가 DOM에 붙은 후에 선택해야 동작함
-          const chatForm = wrapper.querySelector(".chat-input");
-          const input = wrapper.querySelector("#chat-input-text");
-          const closeBtn = wrapper.querySelector("#backChatMotal");
+                currentRoomId = roomId;
+                const chatMessages = wrapper.querySelector(".chat-messages");
 
-          if (!chatForm || !input || !chatMessages) {
-            console.error("모달 내부 요소를 찾을 수 없습니다.");
-            return;
-          }
+                // 기존 메시지 불러오기
+                fetch(`/chat/messages/${roomId}`)
+                    .then(res => res.json())
+                    .then(messages => {
+                        chatMessages.innerHTML = "";
+                        messages.forEach(msg => {
+                            const div = document.createElement("div");
+                            div.className = `message ${msg.senderId === loginUserId ? "sent" : "received"}`;
+                            if (msg.senderId !== loginUserId) {
+                                const sender = document.createElement("div");
+                                sender.className = "sender-name";
+                                sender.textContent = msg.senderName || "사용자";
+                                div.appendChild(sender);
+                            }
+                            const p = document.createElement("p");
+                            p.textContent = msg.message;
+                            const span = document.createElement("span");
+                            span.className = "time";
+                            span.textContent = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            div.appendChild(p);
+                            div.appendChild(span);
+                            chatMessages.appendChild(div);
+                        });
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    });
 
-          // form submit 이벤트 연결
-          chatForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            sendMessage();
-          });
+                const chatForm = wrapper.querySelector(".chat-input");
+                const chatInput = chatForm.querySelector("input, textarea");
 
-          // 모달 닫기
-          if (closeBtn) {
-            closeBtn.addEventListener("click", () => {
-              wrapper.remove();
-            });
-          }
+                // 전송 버튼: Enter 누르면 전송
+                chatInput.addEventListener("keydown", e => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage(wrapper);
+                    }
+                });
+
+                chatForm.addEventListener("submit", e => {
+                    e.preventDefault();
+                    sendMessage(wrapper);
+                });
+
+                const closeBtn = wrapper.querySelector("#backChatMotal");
+                closeBtn?.addEventListener("click", () => wrapper.remove());
+
+                // ESC 키로 모달 닫기
+                const escListener = e => {
+                    if (e.key === "Escape") {
+                        wrapper.remove();
+                        document.removeEventListener("keydown", escListener);
+                    }
+                };
+                document.addEventListener("keydown", escListener);
+
+                // 드래그 기능
+                let isDragging = false;
+                let offsetX = 0, offsetY = 0;
+
+                const header = wrapper.querySelector(".chat-header") || wrapper; // 헤더 없으면 전체 div
+                header.addEventListener("mousedown", e => {
+                    isDragging = true;
+                    offsetX = e.clientX - wrapper.offsetLeft;
+                    offsetY = e.clientY - wrapper.offsetTop;
+                    wrapper.style.cursor = "grabbing";
+                });
+
+                document.addEventListener("mousemove", e => {
+                    if (isDragging) {
+                        wrapper.style.left = `${e.clientX - offsetX}px`;
+                        wrapper.style.top = `${e.clientY - offsetY}px`;
+                    }
+                });
+
+                document.addEventListener("mouseup", () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        wrapper.style.cursor = "move";
+                    }
+                });
+
+            })
+            .catch(err => console.error("채팅 모달 로딩 실패:", err));
+    }
+
+    // 메시지 전송
+    function sendMessage(wrapper) {
+        if (!loginUserId || !currentRoomId) return;
+
+        const input = wrapper.querySelector("#chat-input-text");
+        const text = input.value.trim();
+        if (!text) return;
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+        fetch("/chat/message", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", [csrfHeader]: csrfToken },
+            body: JSON.stringify({ roomId: currentRoomId, message: text })
         })
-        .catch((err) => {
-          console.error("모달 로딩 실패:", err);
-        });
-    });
-  });
-
-  // 채팅방 생성
-  const newChatBtn = document.querySelector(".newChatroom");
-
-  newChatBtn.addEventListener("click", () => {
-    if (document.querySelector(".newChatModal")) {
-      console.warn("이미 채팅 생성 모달이 열려 있습니다.");
-      return;
+            .then(res => res.json())
+            .then(saved => {
+                const chatMessages = wrapper.querySelector(".chat-messages");
+                const div = document.createElement("div");
+                div.className = "message sent";
+                const p = document.createElement("p");
+                p.textContent = saved.message;
+                const span = document.createElement("span");
+                span.className = "time";
+                span.textContent = new Date(saved.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                div.appendChild(p);
+                div.appendChild(span);
+                chatMessages.appendChild(div);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                input.value = "";
+                input.focus();
+            })
+            .catch(err => console.error(err));
     }
 
-    fetch("includes/new_chat.html")
-      .then((response) => response.text())
-      .then((html) => {
-        const container = document.querySelector(".main-view, .main-chat-view");
-        if (!container) {
-          console.error("출력할 위치를 찾을 수 없습니다.");
-          return;
+    // ===================== 페이지 초기화 =====================
+    function initPage() {
+        const topLinks = document.querySelectorAll(".icon-top a");
+        const chatUser = document.querySelector(".chat-user");
+        const chatLink = document.getElementById("chat-view-status");
+
+        if (chatUser && chatLink) {
+            if (localStorage.getItem("chatUserVisible") === "true") {
+                chatUser.classList.add("active");
+                chatLink.classList.add("active");
+            }
+            chatLink.addEventListener("click", e => {
+                e.preventDefault();
+                const isActive = chatUser.classList.toggle("active");
+                chatLink.classList.toggle("active");
+                localStorage.setItem("chatUserVisible", isActive);
+            });
         }
-        const wrapper = document.createElement("div");
-        Object.assign(wrapper.style, {
-          position: "absolute",
-          top: "100px",
-          left: "100px",
-          width: "340px",
-          height: "330px",
-          borderRadius: "8px",
-          cursor: "move",
-          boxSizing: "border-box",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-          zIndex: "1000",
+
+        const savedHref = localStorage.getItem("activeLinkHref");
+        if (savedHref) topLinks.forEach(l => { if (l.href === savedHref) l.classList.add("focus"); });
+        topLinks.forEach(l => l.addEventListener("click", () => {
+            topLinks.forEach(link => link.classList.remove("focus"));
+            l.classList.add("focus");
+            localStorage.setItem("activeLinkHref", l.href);
+        }));
+
+        const newChatBtn = document.querySelector(".newChatroom");
+        newChatBtn?.addEventListener("click", openNewChatModal);
+
+        loadChatRooms();
+    }
+
+    // ===================== 로그인 정보 가져오기 =====================
+    fetch("/chat/my-info")
+        .then(res => res.json())
+        .then(user => {
+            loginUserId = user.id ?? user.ID ?? user.Objectid ?? user.objectid ?? null;
+            if (!loginUserId) {
+                alert("로그인 정보가 없어 채팅 기능을 사용할 수 없습니다.");
+                return;
+            }
+            initPage(); // 로그인 정보가 로딩된 이후에만 초기화
+        })
+        .catch(err => {
+            console.error("로그인 정보 가져오기 실패", err);
+            alert("로그인 정보가 없어 채팅 기능을 사용할 수 없습니다.");
         });
-
-        wrapper.innerHTML = html;
-        document.body.appendChild(wrapper); 
-
-        let isDragging = false;
-        let startX, startY, origX, origY;
-
-        const newChatModal = wrapper.querySelector(".newChatModal");
-        if (newChatModal) {
-          newChatModal.addEventListener("mousedown", (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            origX = parseInt(wrapper.style.left, 10) || 0;
-            origY = parseInt(wrapper.style.top, 10) || 0;
-            e.preventDefault();
-          });
-
-          document.addEventListener("mousemove", (e) => {
-            if (!isDragging) return;
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-            wrapper.style.left = origX + deltaX + "px";
-            wrapper.style.top = origY + deltaY + "px";
-          });
-
-          document.addEventListener("mouseup", () => {
-            isDragging = false;
-          });
-        } else {
-          console.warn("드래그할 .modal 요소를 찾을 수 없습니다.");
-        }
-
-        const newChatRoomForm = document.getElementById("addBtn");
-        // form submit 이벤트 연결
-        newChatRoomForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          newChatroom();
-        });
-
-        const closeBtn = document.getElementById("cancelBtn");
-        // 모달 닫기
-        if (closeBtn) {
-          closeBtn.addEventListener("click", () => {
-            wrapper.remove();
-          });
-        }
-      });
-  });
 });
-
-// ***[함수 영역]***
-function sendMessage() {
-  // 채팅 입력창
-  const input = document.getElementById("chat-input-text");
-  const text = input.value.trim();
-  if (!text) return;
-
-  console.log("text: " + text);
-
-  // 채팅창 전체
-  const chatMessages = document.querySelector(".chat-messages");
-
-  // 새 메시지 요소 생성
-  const messageDiv = document.createElement("div");
-  // <div class="message sent">내용</div>
-  messageDiv.classList.add("message", "sent"); // messageDiv라는 요소에 "message"와 "sent"라는 두 개의 클래스를 추가하는 역할
-
-  // 메시지 내용
-  const messageText = document.createElement("p");
-  messageText.textContent = text;
-
-  // 시간 표시 내용
-  const timeSpan = document.createElement("span");
-  timeSpan.className = "time";
-
-  // 현재 시간 표시 (HH:MM AM/PM)
-  const now = new Date();
-  let hours = now.getHours();
-  const minutes = now.getMinutes().toString().padStart(2, "0");
-  const ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12 || 12;
-  timeSpan.textContent = `${hours}:${minutes} ${ampm}`;
-
-  // 데이터 입히기
-  messageDiv.appendChild(messageText);
-  messageDiv.appendChild(timeSpan);
-
-  // 채팅창에 메시지 붙이기
-  chatMessages.appendChild(messageDiv);
-
-  // 스크롤을 제일 아래로 내림
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-
-  // 입력창 초기화 및 포커스 유지
-  input.value = "";
-  input.focus();
-}
-
-// 새로운 채팅방 생성 함수
-function newChatroom() {}

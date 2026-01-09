@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
     <style>
         .main-chat-view {
             height: 100vh;
@@ -145,31 +148,75 @@
                 <button id="backChatMotal">X</button>
             </header>
 
-            <div class="chat-messages" role="log" aria-live="polite" aria-relevant="additions" tabindex="0">
-                <div class="message received">
-                    <div class="sender-name">사용자</div>
-                    <p>안녕하세요! 어떻게 도와드릴까요?</p>
-                    <span class="time">10:30 AM</span>
-                </div>
+            <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-relevant="additions"
+                tabindex="0">
 
-                <div class="message sent">
-                    <p>안녕하세요! 문의 드릴게 있습니다.</p>
-                    <span class="time">10:31 AM</span>
-                </div>
-
-                <div class="message received">
-                    <div class="sender-name">사용자</div>
-                    <p>네, 무엇을 도와드릴까요?</p>
-                    <span class="time">10:32 AM</span>
-                </div>
             </div>
 
-            <form class="chat-input" onsubmit="event.preventDefault(); sendMessage();">
-                <input type="text" id="chat-input-text" placeholder="메시지를 입력하세요." autocomplete="off" />
+            <form class="chat-input" id="chat-form">
+                <input type="text" id="chat-input-text" placeholder="메시지를 입력하세요." />
                 <button type="submit">전송</button>
             </form>
         </section>
     </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script>
+        let stompClient = null;
+
+        const chatMessages = document.getElementById('chat-messages');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input-text');
+
+        function connect() {
+            const socket = new SockJS('/ws/chat');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/room/public', function (msg) {
+                    const message = JSON.parse(msg.body);
+                    showMessage(message);
+                });
+            }, function (error) {
+                console.log('STOMP error:', error);
+            });
+        }
+
+        function showMessage(message) {
+            const div = document.createElement('div');
+            div.classList.add('message', message.senderId === 1 ? 'sent' : 'received');
+            div.innerHTML = `
+                    <div class="sender-name">${message.senderName}</div>
+                    <div class="message-text">${message.message}</div>
+                    <div class="time">${new Date().toLocaleTimeString()}</div>
+                `;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        chatForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (text && stompClient) {
+                const message = {
+                    roomId: 1,
+                    senderId: 1,
+                    senderName: "홍길동",
+                    message: text,
+                    type: 'CHAT'
+                };
+                stompClient.send('/send/chat', {}, JSON.stringify(message));
+                chatInput.value = '';
+            }
+        });
+
+        // 바로 연결 시도
+        connect();
+
+    </script>
 </body>
 
 </html>

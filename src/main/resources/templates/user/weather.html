@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/weather.css">
+    <script src="/user/js/weather.js"></script>
+    <!-- <script src="/user/js/weather.js"></script> -->
+    <title>날씨</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div>
+            {{loginUser.userName}} 님
+        </div>
+    </header>
+
+    <main>
+        {{> fragments/usernav}}
+
+        <!-- <div class="weather-controls"> -->
+
+            <div class="weather-box" id="weatherBox">
+                <div class="city-choice">
+                    <label for="citySelect">도시 선택:</label>
+                </div>
+                <div class="city-option">
+                    <select id="citySelect">
+                        <option value="">-- 도시 선택 --</option>
+                    </select>
+                </div>
+                <p class="weather-loading">📡 현재 위치의 날씨를 불러오는 중...</p>
+            </div>
+        <!-- </div> -->
+
+
+    </main>
+
+    <!-- <script src="/user/js/common.js"></script> -->
+</body>
+
+</html>

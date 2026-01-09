@@ -1,26 +1,155 @@
 package com.example.corenet;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable() // CSRF 비활성화
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // 모든 요청 허용
-                )
-                .formLogin().disable() // 로그인 화면 비활성화
-                .httpBasic().disable(); // 기본 인증 비활성화
+        // @Bean
+        // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
+        // Exception {
 
-        return http.build();
-    }
+        // http
+        // // ✅ CSRF 활성화 (기본 ON)
+        // .csrf(csrf -> csrf
+        // .ignoringRequestMatchers("/login") // 로그인만 예외
+        // )
 
+        // // ✅ 권한 설정
+        // .authorizeHttpRequests(auth -> auth
+        // .requestMatchers(
+        // "/login",
+        // "/css/**",
+        // "/js/**",
+        // "/images/**")
+        // .permitAll()
 
+        // // 관리자 페이지
+        // .requestMatchers("/admindashboard/**", "/admin/**")
+        // .hasRole("ADMIN")
+
+        // // 일반 사용자 페이지
+        // .requestMatchers("/usermain/**", "/user/**")
+        // .hasAnyRole("USER", "ADMIN")
+
+        // .anyRequest().authenticated())
+
+        // // ❌ Security 기본 로그인 비활성화
+        // .formLogin(form -> form.disable())
+
+        // // ❌ Basic Auth 비활성화
+        // .httpBasic(basic -> basic.disable())
+
+        // // ✅ 세션 기반
+        // .sessionManagement(session -> session
+        // .maximumSessions(1));
+
+        // return http.build();
+        // }
+
+        // @Bean
+        // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
+        // Exception {
+
+        // http
+        // .csrf(csrf -> csrf
+        // .ignoringRequestMatchers("/login"))
+
+        // .authorizeHttpRequests(auth -> auth
+        // .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+        // .permitAll()
+
+        // .requestMatchers("/login").permitAll()
+        // .requestMatchers("/admindashboard/**", "/admin/**").hasRole("ADMIN")
+        // .requestMatchers("/usermain/**", "/user/**").hasAnyRole("USER", "ADMIN")
+        // .anyRequest().authenticated())
+
+        // .formLogin(form -> form.disable())
+        // .httpBasic(basic -> basic.disable())
+        // .sessionManagement(session -> session.maximumSessions(1));
+
+        // return http.build();
+        // }
+
+        private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+        private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+        public SecurityConfig(CustomAuthenticationFailureHandler customAuthenticationFailureHandler, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+                this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
+                this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+                http
+                                // ✅ CSRF 활성화 (로그인만 예외)
+                                .csrf(csrf -> csrf
+                                                .ignoringRequestMatchers("/login"))
+
+                                .authorizeHttpRequests(auth -> auth
+
+                                                // 🔓 공통 정적 리소스
+                                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                                                .permitAll()
+
+                                                // 🔓 user 정적 리소스
+                                                .requestMatchers(
+                                                                "/user/css/**",
+                                                                "/user/js/**",
+                                                                "/user/images/**")
+                                                .permitAll()
+
+                                                // 🔓 admin 정적 리소스
+                                                .requestMatchers(
+                                                                "/admin/*.css",
+                                                                "/admin/*.js",
+                                                                "/admin/images/**")
+                                                .permitAll()
+
+                                                // 🔓 로그인
+                                                .requestMatchers("/login").permitAll()
+
+                                                // 🔐 관리자 페이지
+                                                .requestMatchers("/admin/**")
+                                                .hasRole("ADMIN")
+
+                                                // 🔐 사용자 페이지
+                                                .requestMatchers("/user/**")
+                                                .hasAnyRole("USER", "ADMIN")
+
+                                                // 🔐 나머지
+                                                .anyRequest().authenticated())
+
+                                // ❌ Spring Security 기본 로그인 사용 안 함
+
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .loginProcessingUrl("/login") // POST
+                                                .usernameParameter("userId")
+                                                .passwordParameter("password")
+                                                .failureHandler(customAuthenticationFailureHandler)
+                                                .successHandler(customAuthenticationSuccessHandler)
+                                )
+
+                                // ❌ Basic Auth 비활성화
+                                .httpBasic(basic -> basic.disable())
+
+                                // ✅ 세션 기반 인증
+                                .sessionManagement(session -> session
+                                                .maximumSessions(1));
+
+                return http.build();
+        }
 }

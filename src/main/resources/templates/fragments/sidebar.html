@@ -1,0 +1,40 @@
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="side-left">
+            <h2>관리자 메뉴</h2>
+        </div>
+        <div class="side-right">
+            <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+        </div>
+    </div>
+
+    <ul>
+        <li><a href="/admindashboard">대시보드</a></li>
+        <li><a href="/adminuser">인사 관리</a></li>
+        <li><a href="/addepartment">부서 관리</a></li>
+        <li><a href="/adboard">게시판 관리</a></li>
+        <li><a href="/adcomment">댓글/답글 관리</a></li>
+        <li><a href="/adapprovallist">전자 결재 관리</a></li>
+        {{#isSystemAdmin}}
+        <li>
+            <a href="javascript:void(0)" class="submenu-toggle" onclick="toggleSubmenu()">설정 ⚙️</a>
+            <ul class="submenu">
+                <li><a href="/adminlog">로그 조회</a></li>
+            </ul>
+        </li>
+        {{/isSystemAdmin}}
+    </ul>
+
+    <!-- <button class="home-btn">홈으로</button> -->
+    <button class="home-btn" onclick="window.location.href='/usermain'">홈으로</button>
+
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("collapsed");
+    }
+    function toggleSubmenu() {
+        document.querySelector(".submenu").classList.toggle("open");
+    }
+</script>

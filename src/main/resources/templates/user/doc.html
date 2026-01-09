@@ -4,11 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="_csrf" content="{{_csrf.token}}">
+  <meta name="_csrf_header" content="{{_csrf.headerName}}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="/src/main/resources/static/user/css/common.css">
-  <link rel="stylesheet" href="/src/main/resources/static/user/css/doc.css">
+  <link rel="stylesheet" href="/user/css/common.css">
+  <link rel="stylesheet" href="/user/css/doc.css">
 
-  <script src="/src/main/resources/static/user/js/doc.js"></script>
+  <script src="/user/js/doc.js"></script>
 
   <title>전자결재 </title>
 </head>
@@ -17,137 +19,32 @@
   <!-- document approval(CKeditor5) -->
   <header>
     <div class="logo">
-      <img src="/src/main/resources/static/user/images/logo.png" alt="CoreNet">
+      <img src="/user/images/logo.png" alt="CoreNet">
     </div>
     <div>
-      {홍길동} 님
+      {{loginUser.userName}} 님
     </div>
   </header>
 
   <main>
-    <nav>
-      <div class="icon-bar">
-        <div class="icon-top">
-          <a href="main.html">
-            <i class="fa-solid fa-house"></i>
-            <div class="icon-name">홈</div>
-          </a>
-          <a href="message.html">
-            <i class="fa-regular fa-message"></i>
-            <div class="icon-name">메시지</div>
-          </a>
-          <a href="schedule.html">
-            <i class="fa-solid fa-calendar-days"></i>
-            <div class="icon-name">스케줄</div>
-          </a>
-          <a href="user-mail.html">
-            <i class="fa-regular fa-envelope"></i>
-            <div class="icon-name">메일</div>
-          </a>
-          <a href="board.html">
-            <i class="fa-solid fa-pen-to-square"></i>
-            <div class="icon-name">게시판</div>
-          </a>
-          <a href="doc.html">
-            <i class="fa-regular fa-file"></i>
-            <div class="icon-name">전자결재</div>
-          </a>
-        </div>
-        <div class="icon-bottom">
-          <a href="#" id="chat-view-status">+</a>
-          <a href="#">
-            🔔
-            <div class="notification hidden">1</div>
-          </a>
-          <a href="#" id="func">⚙️</a>
-        </div>
-      </div>
-      <div class="chat-user">
-        <h3 class="chat-header">부서명</h3>
-        <div class="chat-content">
-          <div class="coworker-card">
-            <span><b>이름</b>
-              <p>참여인원</p>
-            </span>
-            <p>최종 대화 내용</p>
-          </div>
-          <div class="coworker-card">
-            <span><b>이름</b>
-              <p>참여인원</p>
-            </span>
-            <p>최종 대화 내용</p>
-          </div>
-          <div class="coworker-card">
-            <span><b>이름</b>
-              <p>참여인원</p>
-            </span>
-            <p>최종 대화 내용</p>
-          </div>
-          <div class="coworker-card">
-            <span><b>이름</b>
-              <p>참여인원</p>
-            </span>
-            <p>최종 대화 내용</p>
-          </div>
-          <div class="coworker-card">
-            <span><b>이름</b>
-              <p>참여인원</p>
-            </span>
-            <p>최종 대화 내용</p>
-          </div>
-          <div class="coworker-card">
-            <span><b>이름</b>
-              <p>참여인원</p>
-            </span>
-            <p>최종 대화 내용</p>
-          </div>
-          <div class="coworker-card">
-            <span><b>이름</b>
-              <p>참여인원</p>
-            </span>
-            <p>최종 대화 내용</p>
-          </div>
-          <div class="coworker-card">
-            <span><b>이름</b>
-              <p>참여인원</p>
-            </span>
-            <p>최종 대화 내용</p>
-          </div>
-        </div>
-        <button type="submit" class="newChatroom">+</button>
-      </div>
-    </nav>
+    {{> fragments/usernav}}
 
     <div class="main-view">
       <section class="quick-menu">
-        <a href="/draft" class="menu-approval">
-          <div>결재완료</div>
-          <div>3개</div>
-        </a>
-        <a href="/completed" class="menu-completed disabled">
-          <div>임시저장</div>
-          <div>1/3</div>
-        </a>
-        <a href="/returned" class="menu-returned">
-          <div>결재반려</div>
-          <div>1/3</div>
-        </a>
-        <a href="/approval" class="menu-approval">
-          <div>결재대기</div>
-          <div>1/3</div>
-        </a>
+        {{#docs}}
+        <button data-doc-code="{{docCode}}" class="menu-approval">{{docName}}</button>
+        {{/docs}}
       </section>
+
       <section>
         <div class="tabs">
-          <div class="tab active" data-tab="1">결재완료</div>
-          <div class="tab" data-tab="2">임시저장</div>
-          <div class="tab" data-tab="3">결재반려</div>
-          <!-- 관리자에서 추가하면 버튼 생기게 구현 -->
-          <div class="tab" data-tab="4">결재대기</div>
-
+          <div class="tab active" data-tab="approved">결재완료</div>
+          <div class="tab" data-tab="draft">임시저장</div>
+          <div class="tab" data-tab="rejected">결재반려</div>
+          <div class="tab" data-tab="pending">결재대기</div>
         </div>
 
-        <button id="open-compose" onclick="location.href='doc-edit.html'">문서 쓰기</button>
+        <button id="open-compose" onclick="location.href='/userdocedit'">문서 쓰기</button>
 
         <div class="board-view">
           <div id="content-1" class="tab-content">
@@ -160,299 +57,146 @@
                   <th>작성일</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><a href="doc-detail.html">1</a></td>
-                  <td><a href="doc-detail.html">공지사항</a></td>
-                  <td><a href="doc-detail.html">관리자</a></td>
-                  <td><a href="doc-detail.html">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="doc-detail.html">2</a></td>
-                  <td><a href="doc-detail.html">자유게시판</a></td>
-                  <td><a href="doc-detail.html">관리자</a></td>
-                  <td><a href="doc-detail.html">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지사항</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">자유게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지사항</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">자유게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지사항</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">자유게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지사항</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">자유게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지사항</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">자유게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지사항</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">자유게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지사항</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">자유게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지사항</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">자유게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지사항</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">자유게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">공지사항 게시판</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="content-2" class="tab-content hidden">
-            <table>
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>제목</th>
-                  <th>작성자</th>
-                  <th>작성일</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">제목입니다.</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">두 번째 제목입니다.</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">두 번째 제목입니다.</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="content-3" class="tab-content hidden">
-            <table>
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>제목</th>
-                  <th>작성자</th>
-                  <th>작성일</th>
-                  <!-- <th>views</th> [공지사항에서만 추가] -->
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지항 게시판입니다.</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">두 번째 제목입니다.</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">두 번째 제목입니다.</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+              <tbody id="docTableBody">
 
-          <div id="content-4" class="tab-content hidden">
-            <table>
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>제목</th>
-                  <th>작성자</th>
-                  <th>작성일</th>
-                  <!-- <th>views</th> [공지사항에서만 추가] -->
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><a href="#">1</a></td>
-                  <td><a href="#">공지항 게시판입니다.</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-20</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">두 번째 제목입니다.</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">2</a></td>
-                  <td><a href="#">두 번째 제목입니다.</a></td>
-                  <td><a href="#">관리자</a></td>
-                  <td><a href="#">2025-09-21</a></td>
-                </tr>
               </tbody>
             </table>
+
+            <div id="pagination"></div>
           </div>
         </div>
+      </section>
     </div>
-
-    </section>
-
-    </div>
-
   </main>
 
-  <script src="/src/main/resources/static/user/js/common.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      let currentPage = 1;
+      const pageSize = 10;
+      let currentStatus = 'APPROVED';
+      let currentDocType = null;
+
+      const statusMap = {
+        approved: 'APPROVED',
+        draft: 'DRAFT',
+        rejected: 'REJECTED',
+        pending: 'PENDING'
+      };
+
+      // 문서 버튼
+      document.querySelectorAll('.menu-approval').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentDocType = btn.dataset.docCode;
+          currentPage = 1;
+          console.log('📄 docType =', currentDocType);
+          loadDocs();
+        });
+      });
+
+      // 탭 클릭
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          currentStatus = statusMap[tab.dataset.tab];
+          currentPage = 1;
+
+          console.log('🟩 status =', currentStatus);
+          loadDocs();
+        });
+      });
+
+      // ✅ 초기 자동 선택 (여기가 핵심)
+      const defaultDocBtn = document.querySelector('.menu-approval[data-doc-code="draft"]');
+      const defaultTab = document.querySelector('.tab[data-tab="approved"]');
+
+      if (defaultDocBtn && defaultTab) {
+
+        // ✅ 기존 활성화 전부 제거
+        document.querySelectorAll('.menu-approval.active')
+          .forEach(btn => btn.classList.remove('active'));
+
+        document.querySelectorAll('.tab.active')
+          .forEach(tab => tab.classList.remove('active'));
+
+        // ✅ 기본값 활성화
+        defaultTab.classList.add('active');
+        defaultDocBtn.classList.add('active');
+
+        // docType 설정 + 목록 로딩
+        currentDocType = defaultDocBtn.dataset.docCode;
+        currentStatus = statusMap[defaultTab.dataset.tab];
+        currentPage = 1;
+
+        loadDocs();
+      }
+
+      function loadDocs() {
+        if (!currentDocType) return;
+
+        fetch(`/userdoc/ajax?docType=${currentDocType}&page=${currentPage}&pageSize=${pageSize}&status=${currentStatus}`)
+          .then(res => res.json())
+          .then(data => {
+            renderTable(data.doclist);
+            updatePagination(data.currentPage, data.totalPages);
+          })
+          .catch(console.error);
+      }
+
+      function renderTable(doclist) {
+        const tbody = document.getElementById("docTableBody");
+        tbody.innerHTML = "";
+
+        if (!doclist || doclist.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4">데이터가 없습니다.</td></tr>`;
+          return;
+        }
+
+        console.log("currentStatus =", currentStatus);
+
+
+        doclist.forEach(doc => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>
+              <a href="/userdocdetail/${doc.docId}?docType=${currentDocType}&status=${currentStatus}">
+                ${doc.docNo}
+              </a>
+            </td>
+            <td>
+              <a href="/userdocdetail/${doc.docId}?docType=${currentDocType}&status=${currentStatus}">
+                ${doc.detailTitle}
+              </a>
+            </td>
+            <td>${doc.writer}</td>
+            <td>${doc.writeDate}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function updatePagination(current, total) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        for (let i = 1; i <= total; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          if (i === current) btn.classList.add("active");
+          btn.onclick = () => {
+            currentPage = i;
+            loadDocs();
+          };
+          pagination.appendChild(btn);
+        }
+      }
+    });
+  </script>
+
+
+  <script src="/user/js/common.js"></script>
 </body>
 
 </html>

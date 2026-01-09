@@ -1,0 +1,114 @@
+        .contents-upper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .add-btn{
+            display: flex;
+            justify-content: end;
+        }
+
+        .btn-add {
+            background-color: #4CAF50;
+            color: white;
+            width: 70px;
+            border: 1px solid;
+            height: 30px;
+            /* display: flex;
+            justify-content: end; */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .board-table th {
+            background: #34495e;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .edit-btn{
+            display: flex;
+            justify-content: end;
+        }
+
+        .btn-edit {
+            background-color: #2196F3;
+            color: white;
+            padding: 4px 8px;
+            margin-right: 3px;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+            padding: 4px 8px;
+        }
+
+        .add-depart {
+            justify-content: end;
+            display: flex;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        #addDepartmentForm input {
+            width: 100%;
+            padding: 6px;
+            margin: 6px 0 12px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }

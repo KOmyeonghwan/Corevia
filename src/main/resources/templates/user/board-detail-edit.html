@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="/src/main/resources/static/user/css/common.css">
-    <link rel="stylesheet" href="/src/main/resources/static/user/css/board-detail-edit.css">
-    <script src="/src/main/resources/static/user/js/board-detail-edit.js"></script>
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/board-detail-edit.css">
+    <script src="/user/js/board-detail-edit.js"></script>
 
     <title>board</title>
 </head>
@@ -15,151 +17,81 @@
 <body>
     <header>
         <div class="logo">
-            <img src="/src/main/resources/static/user/images/logo.png" alt="CoreNet">
+            <img src="/user/images/logo.png" alt="CoreNet">
         </div>
         <div>
-            {홍길동} 님
+            {{loginUser.userName}} 님
         </div>
     </header>
 
     <main>
-        <nav>
-            <div class="icon-bar">
-                <div class="icon-top">
-                    <a href="main.html">
-                        <i class="fa-solid fa-house"></i>
-                        <div class="icon-name">홈</div>
-                    </a>
-                    <a href="message.html">
-                        <i class="fa-regular fa-message"></i>
-                        <div class="icon-name">메시지</div>
-                    </a>
-                    <a href="schedule.html">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <div class="icon-name">스케줄</div>
-                    </a>
-                    <a href="user-mail.html">
-                        <i class="fa-regular fa-envelope"></i>
-                        <div class="icon-name">메일</div>
-                    </a>
-                    <a href="board.html">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                        <div class="icon-name">게시판</div>
-                    </a>
-                    <a href="doc.html">
-                        <i class="fa-regular fa-file"></i>
-                        <div class="icon-name">전자결재</div>
-                    </a>
-                </div>
-                <div class="icon-bottom">
-                    <a href="#" id="chat-view-status">+</a>
-                    <a href="#">
-                        🔔
-                        <div class="notification hidden">1</div>
-                    </a>
-                    <a href="#">⚙️</a>
-                </div>
-            </div>
-            <div class="chat-user">
-                <h3 class="chat-header">부서명</h3>
-                <div class="chat-content">
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                </div>
-                <button type="submit" class="newChatroom">+</button>
-            </div>
-        </nav>
+        {{> fragments/usernav}}
 
         <div class="main-view">
             <h2>게시글 수정</h2>
-            <form class="edit-form">
+            <form class="edit-form" action="/boarddetailedit" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}">
+
                 <div class="detail-item">
                     <label for="title">제목</label>
-                    <input type="text" id="title" name="title" value="기존 제목">
+                    <input type="text" id="title" name="title" value="{{post.title}}">
                 </div>
                 <div class="detail-item">
                     <label for="author">작성자</label>
-                    <input type="text" value="user01" disabled>
+                    <input type="text" value="{{post.userName}}" readonly>
                 </div>
                 <div class="detail-item">
                     <label for="category">카테고리</label>
-                    <select id="category" name="category">
-                        <option value="공지">공지</option>
-                        <option value="자유">자유</option>
-                        <option value="Q&A">Q&A</option>
-                    </select>
+                    <input type="text" name="boardCode" value="{{post.boardCode}}" readonly>
                 </div>
                 <div class="detail-item">
                     <label for="content">내용</label>
-                    <textarea id="commentContent" rows="5">이 글 정말 유익하네요!</textarea>
+                    <textarea id="commentContent" name="content" rows="5">{{post.content}}</textarea>
                 </div>
+
                 <div class="detail-item">
                     <label for="file">첨부파일</label>
-                    <input type="file" id="file" name="file">
+
+                    <!-- 기존 첨부파일 링크 -->
+                    <ul>
+                        {{#post.fileUrl}}
+                        <li>
+                            <a href="{{post.fileUrl}}"
+                                target="_blank">{{#post.fileName}}{{post.fileName}}{{/post.fileName}}</a>
+                        </li>
+                        {{/post.fileUrl}}
+                    </ul>
+
+                    <!-- 새 파일 업로드 input -->
+                    <input type="file" name="file" id="file">
+
+                    <!-- 기존 파일 정보 hidden으로 보존, 값 없으면 빈 문자열 처리 -->
+                    <input type="hidden" name="existingFileUrl"
+                        value="{{#post.fileUrl}}{{post.fileUrl}}{{/post.fileUrl}}">
+                    <input type="hidden" name="existingFileName"
+                        value="{{#post.fileName}}{{post.fileName}}{{/post.fileName}}">
                 </div>
+
+                <input type="hidden" name="postId" value="{{post.id}}">
+                <input type="hidden" name="positionLevel" value="{{loginUser.positionLevel}}">
+
+
                 <div class="form-buttons">
                     <button type="submit">저장</button>
-                    <button type="button">취소</button>
+                    <button type="button" onclick="location.href='/userboard'">취소</button>
                 </div>
             </form>
         </div>
 
     </main>
 
-    <script src="/src/main/resources/static/user/js/common.js"></script>
+    <script src="/user/js/common.js"></script>
 
 </body>
+
 </html>
 
 <!-- ui -> 9월 25일까지 완성
  spring 생성 및 환경 세팅: 26일 
  이후 -> 백엔드
-
-
  -->

@@ -4,227 +4,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
     <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adpprovaldetail.css">
     <title>관리자 전자결재 상세 보기 페이지</title>
-    <style>
-        .main-content {
-            margin-left: 240px;
-            /* 사이드바 공간 확보 */
-            padding: 20px;
-        }
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-        }
-
-        .card h2 {
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: #444;
-            border-left: 4px solid #007bff;
-            padding-left: 10px;
-        }
-
-        .card p {
-            margin: 8px 0;
-            color: #555;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        table th,
-        table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        table th {
-            background: #f0f2f5;
-            color: #333;
-        }
-
-        .status-approve {
-            color: green;
-            font-weight: bold;
-        }
-
-        .status-reject {
-            color: red;
-            font-weight: bold;
-        }
-
-        .status-wait {
-            color: gray;
-            font-weight: bold;
-        }
-
-        .actions {
-            text-align: right;
-            margin-top: 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 8px 16px;
-            margin-left: 8px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            border: none;
-            transition: 0.2s;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .btn.primary {
-            background: #007bff;
-            color: white;
-        }
-
-        .btn.danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn.default {
-            background: #6c757d;
-            color: white;
-        }
-
-        /* 모달 기본 스타일 */
-        .modal {
-            display: none;
-            /* 처음엔 숨김 */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            width: 400px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-content h3 {
-            margin-bottom: 10px;
-        }
-
-        .modal-content textarea {
-            width: 100%;
-            height: 80px;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            resize: none;
-        }
-
-        .modal-actions {
-            margin-top: 15px;
-            text-align: right;
-        }
-    </style>
 </head>
 
 <body>
     <div class="wrapper">
-        <div class="sidebar">
-            <h2>관리자 메뉴</h2>
-            <ul>
-                <li><a href="admindashboard">대시보드</a></li>
-                <li><a href="adminuser">회원 관리</a></li>
-                <li><a href="addepartment">부서 관리</a></li>
-                <li><a href="adboard">게시판 관리</a></li>
-                <li><a href="adcomment">댓글/답글 관리</a></li>
-                <li><a href="adapprovallist">전자 결재 관리</a></li>
-                <li><a href="#">설정</a></li>
-            </ul>
-
-            <button style="margin-top: auto;">홈으로</button>
-        </div>
+        {{> fragments/sidebar}}
 
         <div class="main-content">
             <h1>전자결재 상세 보기</h1>
 
             <!-- 문서 본문 -->
-            <div class="card">
-                <h2>기안서</h2>
+            <div class="card" id="docDetailCard" data-doc-id="{{docdetail.docId}}"
+                data-doc-status="{{docdetail.docStatus}}" data-dept-code="{{docdetail.deptCode}}">
+                {{#docdetail}}
+                <h2>{{docName}}</h2>
                 <table>
                     <tr>
-                        <th>페이지 넘버</th>
-                        <td>1</td>
+                        <th>No</th>
+                        <td>{{docId}}</td>
                         <th>문서 번호</th>
-                        <td>doc-101</td>
-                        <th>기안일자</th>
-                        <td>2022.02.05</td>
-                        <th>기안자</th>
-                        <td>홍길동</td>
+                        <td>{{docNo}}</td>
+                        <th>작성일자</th>
+                        <td>{{writeDate}}</td>
+                        <th>작성자</th>
+                        <td>{{writer}}</td>
                     </tr>
                     <tr>
                         <th>소속</th>
-                        <td>개발부</td>
+                        <td>{{deptCode}}</td>
                         <th>사번</th>
-                        <td>101-05</td>
+                        <td>{{drafterEmpNo}}</td>
                         <th>직급</th>
-                        <td>대리</td>
-                        <th>성명</th>
-                        <td>홍길동</td>
+                        <td>{{drafterPosition}}</td>
+                        <th>기안자</th>
+                        <td>{{drafterName}}</td>
                     </tr>
                     <tr>
                         <th>제목</th>
-                        <td colspan="7">휴가 지출서입니다.</td>
+                        <td colspan="7">{{detailTitle}}</td>
                     </tr>
                     <tr>
                         <th>상세 내용</th>
-                        <td colspan="7">신혼여행으로 휴가를 제출합니다.</td>
+                        <td colspan="7">{{detailContent}}</td>
                     </tr>
-
-                    <!-- 나중에 표 추가 할 부분 -->
-                    <tr>
-
-                    </tr>
-
+                    <tr></tr>
                     <tr>
                         <th>특이사항</th>
-                        <td colspan="3">해당없음</td>
-                        <th>첨부파일</th>
-                        <td colspan="3">
-                            <a href="path/to/file.pdf" target="_blank">file.pdf</a>
+                        <td colspan="2">{{detailNote}}</td>
+                        <th>문서상태</th>
+                        <td colspan="2" id="docstatusColor" data-color="{{statusColor}}">
+                            {{docStatus}}
                         </td>
+
+                        <th>첨부파일</th>
+                        <td colspan="2">
+                            {{#files}}
+                            <div>
+                                <a href="{{path}}" target="_blank">{{name}}</a>
+                                <span style="color:#888; font-size:12px;">
+                                    ({{size}} bytes / {{createdDate}})
+                                </span>
+                            </div>
+                            {{/files}}
+                        
+                            {{^files}}
+                            첨부파일 없음
+                            {{/files}}
+                        </td>
+                        
+                        
                     </tr>
                 </table>
+                {{/docdetail}}
             </div>
 
             <!-- 결재선 현황 -->
             <div class="card">
                 <h2>결재선</h2>
-                <table>
+                <table id="approvalTable" data-doc-id="{{docdetail.docId}}">
                     <tr>
                         <th>결재자</th>
                         <th>직급</th>
@@ -232,20 +95,22 @@
                         <th>처리일</th>
                         <th>의견</th>
                     </tr>
-                    <tr>
-                        <td>김과장</td>
-                        <td>과장</td>
-                        <td>승인</td>
-                        <td>2025-09-23</td>
-                        <td>승인합니다.</td>
+                    {{#approvers}}
+                    <tr class="approver-row" data-approver-emp-no="{{approverEmpNo}}"
+                        data-approver-name="{{approverName}}" data-approver-position="{{approverPosition}}"
+                        data-approval-status="{{approvalStatus}}">
+                        <td>{{approverName}}</td>
+                        <td>{{PositionName}}</td>
+                        <td class="status-{{approvalStatus}}">{{ApprovalStatusKor}}</td>
+                        <td>{{approvalDateStr}}</td>
+                        <td>{{approvalComments}}</td>
                     </tr>
+                    {{/approvers}}
+                    {{^approvers}}
                     <tr>
-                        <td>이부장</td>
-                        <td>부장</td>
-                        <td>대기</td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td colspan="5">결재자가 없습니다.</td>
                     </tr>
+                    {{/approvers}}
                 </table>
             </div>
 
@@ -255,76 +120,337 @@
             </div>
         </div>
 
-        <!-- 반려 사유 모달 -->
-        <div id="rejectModal" class="modal">
-            <div class="modal-content">
-                <h3>반려 사유 입력</h3>
-                <textarea id="rejectReason" placeholder="반려 사유를 입력하세요..."></textarea>
-                <div class="modal-actions">
-                    <button class="btn primary" onclick="submitReject()">확인</button>
-                    <button class="btn default" onclick="closeModal()">취소</button>
-                </div>
-            </div>
-        </div>
+        <!-- 로그인 사용자 정보 -->
+        <input type="hidden" id="loginUser" data-dept-code="{{loginUser.department_id}}"
+            data-user-name="{{loginUser.userName}}" data-jobcode="{{loginUser.jobcode}}"
+            data-position-level="{{loginUser.positionLevel}}">
+
+        <!-- docType -->
+        <input type="hidden" id="docType" data-doc-type="{{docCode}}">
     </div>
 
 
-    <script>
-        // 예시: 서버에서 받아온 문서 상태 (진행중 / 승인대기 / 완료 / 반려)
-        const docStatus = "진행중"; // 이 값은 동적으로 변경됨
+    <!-- 반려 사유 모달 -->
+    <div id="rejectModal" class="modal">
+        <div class="modal-content">
+            <h3>반려 사유 입력</h3>
+            <textarea id="rejectReason" placeholder="반려 사유를 입력하세요..."></textarea>
+            <div class="modal-actions">
+                <button class="btn primary" onclick="submitReject()">확인</button>
+                <button class="btn default" onclick="closeModal()">취소</button>
+            </div>
+        </div>
+    </div>
+    </div>
 
+    <script>
+        // ===== CSRF 토큰 =====
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        // ===== 문서 정보 =====
+        const docCard = document.getElementById("docDetailCard");
+        const docId = docCard.dataset.docId;
+        const docStatus = docCard.dataset.docStatus;
+        const deptCode = docCard.dataset.deptCode;
+        console.log("문서 정보 >", docId, docStatus, deptCode);
+
+
+        // 기안자 정보
+        const approverRows = document.querySelectorAll('#approvalTable .approver-row');
+        const approvers = [];
+
+        approverRows.forEach(row => {
+            const approver = {
+                name: row.dataset.approverName,
+                position: row.dataset.approverPosition,
+                status: row.dataset.approvalStatus
+            };
+
+            approvers.push(approver);
+        });
+        console.log(approvers);
+
+        const docType = document
+            .getElementById("docType")
+            .dataset.docType;
+
+        console.log("docType >", docType);
+        console.log("docType type >", typeof docType);
+
+        // docstatusColor -> 문서 상태 컬러 작업
+        const statusTd = document.getElementById("docstatusColor");
+        const color = statusTd.dataset.color;
+
+        if (color) {
+            statusTd.style.color = color;
+        }
+
+
+        // ===== 로그인 사용자 정보 =====
+        const loginUserEl = document.getElementById('loginUser');
+
+        const loginUserDeptCode = loginUserEl.dataset.deptCode;       // 부서 코드
+        const loginUserName = loginUserEl.dataset.userName;           // 사용자 이름
+        const loginUserJobcode = loginUserEl.dataset.jobcode;          // 사용자 사번
+        const loginUserPositionLevel = loginUserEl.dataset.positionLevel; // 직급/직책 레벨
+
+        console.log(loginUserDeptCode, loginUserName, loginUserJobcode, loginUserPositionLevel);
+
+        // ===== 버튼 영역 =====
         const actionDiv = document.getElementById("actionButtons");
         let buttons = "";
 
-        // 반려 버튼 누르면 모달 열기
-        if (docStatus === "진행중") {
-            buttons += `<button class="btn primary">승인</button>`;
-            buttons += `<button class="btn danger" onclick="openRejectModal()">반려</button>`;
-            buttons += `<button class="btn danger">폐기</button>`;
-            buttons += `<button class="btn default">목록으로</button>`;
-        }
-        else if (docStatus === "승인대기") {
-            buttons += `<button class="btn primary">승인</button>`;
-            buttons += `<button class="btn danger">반려</button>`;
-            buttons += `<button class="btn danger">폐기</button>`;
-            buttons += `<button class="btn default">목록으로</button>`;
-        } else if (docStatus === "결재완료") {
-            buttons += `<button class="btn">인쇄</button>`;
-            buttons += `<button class="btn danger">폐기</button>`;
-            buttons += `<button class="btn default">목록으로</button>`;
-        } else if (docStatus === "반려") {
-            buttons += `<button class="btn primary">재상신</button>`;
-            buttons += `<button class="btn danger">폐기</button>`;
-            buttons += `<button class="btn default">목록으로</button>`;
-        }
+        const approveBtn = () => `<button class="btn primary" onclick="approveDocument()">승인</button>`;
+        const rejectBtn = () => `<button class="btn danger" onclick="openRejectModal()">반려</button>`;
+        const discardBtn = () => `<button class="btn danger" onclick="discardDocument()">폐기</button>`;
 
+        const printBtn = () => `<button class="btn" onclick="printDocument()">인쇄</button>`;
+        const resubmitBtn = () => `<button class="btn primary" onclick="resubmitDocument()">재상신</button>`;
+        const listBtn = () => `<button class="btn default" onclick="goList()">목록으로</button>`;
+
+        const loginApprover = Array.isArray(approvers)
+            ? approvers.find(a => a.name === loginUserName || a.empNo === loginUserJobcode)
+            : null;
+
+        const doc = docStatus?.toUpperCase();
+        const approverStatus = loginApprover?.status?.toUpperCase();
+
+        console.log("docStatus 원본:", docStatus);
+        console.log("doc 변환:", doc);
+        console.log("loginApprover:", loginApprover);
+        console.log("approverStatus:", approverStatus);
+
+        // 결재자
+        if (loginApprover) {
+            // 본인 결재 차례
+            if (doc === "PENDING" && approverStatus === "PENDING") {
+                buttons += approveBtn();
+                buttons += rejectBtn();
+                buttons += discardBtn();
+            }
+            // 문서 승인 완료
+            if (doc === "APPROVED") {
+                // buttons += printBtn();
+                buttons += discardBtn();
+            }
+
+            // 폐기
+            if (doc === "DISCARDED") {
+            }
+
+            // 결재 항목 없는 서류
+            if (doc === "NO_APPROVAL") { // 있으나 없으나 차이는 없음
+                // buttons += printBtn();
+                buttons += discardBtn();
+            }
+
+        }
+        else {
+            if (doc === "REJECTED") {
+                buttons += resubmitBtn();
+            }
+
+            if (doc === "APPROVED") {
+                buttons += printBtn();
+            }
+        }
+        // 공통
+        buttons += listBtn();
         actionDiv.innerHTML = buttons;
 
-        // 모달 열기
+        // ===== 모달 =====
         function openRejectModal() {
             document.getElementById("rejectModal").style.display = "flex";
         }
-
-        // 모달 닫기
         function closeModal() {
             document.getElementById("rejectModal").style.display = "none";
         }
 
-        // 반려 처리
+        // ==== 반려 ====
         function submitReject() {
-            const reason = document.getElementById("rejectReason").value.trim();
-            if (!reason) {
-                alert("반려 사유를 입력하세요.");
+            console.log("=== 반려 처리 ===");
+            const rejectReason = document.getElementById("rejectReason").value.trim();
+            if (!rejectReason) {
+                alert("반려 사유를 입력해주세요.");
                 return;
             }
-            // 여기서 서버로 반려 사유 전송 (Ajax 또는 fetch)
-            console.log("반려 사유:", reason);
 
-            // 모달 닫기
-            closeModal();
+            const docId = document.getElementById("docDetailCard").getAttribute("data-doc-id");
+
+            const bodyData = {
+                approverEmpNo: loginUserJobcode,
+                approverName: loginUserName,
+                approverPosition: Number(loginUserPositionLevel),
+                approvalComments: rejectReason || "", // 반려 사유
+                approvalStatus: 'REJECTED',
+                docType: docType
+            };
+
+            console.log("보낼 body 데이터 >", bodyData);
+
+            fetch(`/api/approval/updateStatus/${docId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify(bodyData)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("서버 응답 >", data);
+                    if (data.success) {
+                        alert("반려되었습니다.");
+                        closeModal();
+                        location.href = "/adapprovallist";
+                    } else {
+                        alert("반려 처리에 실패했습니다.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error rejecting document:", error);
+                    alert("반려 처리 중 오류가 발생했습니다.");
+                });
+
         }
 
+        // ===== 승인 처리 =====
+        function approveDocument() {
+            console.log("=== 승인 처리 ===");
+            const approvalComments = "Approved"; // 예시: 승인 의견
+
+            // 전송할 body 데이터
+            const bodyData = {
+                approverEmpNo: loginUserJobcode, // 결재자 사번
+                approverName: loginUserName,
+                approverPosition: Number(loginUserPositionLevel),  // 결재자 직급( 숫자 )
+                approvalComments: approvalComments || "",
+                approvalStatus: 'APPROVED',
+                docType: docType
+            };
+            console.log("보낼 body 데이터 >", bodyData);
+
+            fetch(`/api/approval/updateStatus/${docId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify(bodyData)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("서버 응답 >", data);
+                    if (data.success) {
+                        alert("승인되었습니다.");
+                        location.href = "/adapprovallist";
+                    } else {
+                        alert("승인 처리에 실패했습니다.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error approving document:", error);
+                    alert("승인 처리 중 오류가 발생했습니다.");
+                });
+        }
+
+        // ===== 폐기 처리 =====
+        function discardDocument() {
+            console.log("폐기 처리");
+            const approvalComments = "Discarded";
+
+            // 전송할 body 데이터
+            const bodyData = {
+                approverEmpNo: loginUserJobcode, // 결재자 사번
+                approverName: loginUserName,
+                approverPosition: Number(loginUserPositionLevel),  // 결재자 직급( 숫자 )
+                approvalComments: approvalComments || "",
+                approvalStatus: 'DISCARDED',
+                docType: docType
+            };
+            console.log("보낼 body 데이터 >", bodyData);
+
+            fetch(`/api/approval/updateStatus/${docId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify(bodyData)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("서버 응답 >", data);
+                    if (data.success) {
+                        alert("폐기되었습니다.");
+                        location.href = "/adapprovallist";
+                    } else {
+                        alert("폐기 처리에 실패했습니다.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error approving document:", error);
+                    alert("폐기 처리 중 오류가 발생했습니다.");
+                });
+        }
+
+        // ===== 기타 버튼 기능 =====
+        function resubmitDocument() {
+            console.log("재상신 처리");
+        }
+        function printDocument() {
+            console.log("인쇄 처리");
+        }
+        function goList() {
+            // window.history.back();
+            location.href = "/adapprovallist";
+        }
+
+        // 페이지 로드 시 상태 복원
+        function loadStateFromLocalStorage() {
+            const status = localStorage.getItem('docStatus');
+            const docCode = localStorage.getItem('docCode');
+            const page = localStorage.getItem('page');
+
+            // 상태가 모두 존재하면 목록 페이지를 복원
+            if (status && docCode && page) {
+                // 이 상태를 활용해 목록을 다시 불러오기
+                goList(status, docCode, page);
+            }
+        }
+
+
+        // ===== 결재선 테이블 갱신 =====
+        // function updateApprovalTable(approvers) {
+        //     const approversTable = document.getElementById("approvalTable");
+        //     approversTable.innerHTML = `<tr>
+        //         <th>결재자</th><th>직급</th><th>상태</th><th>처리일</th><th>의견</th>
+        //     </tr>`; // 초기화 후 갱신
+
+        //     approvers.forEach(approver => {
+        //         const tr = document.createElement("tr");
+        //         tr.innerHTML = `
+        //             <td>${approver.approverName}</td>
+        //             <td>${approver.approverPosition}</td>
+        //             <td class="status-${approver.status}">${approver.status}</td>
+        //             <td>${approver.approvalDate || '미결제'}</td>
+        //             <td>${approver.approvalComment || '없음'}</td>
+        //         `;
+        //         approversTable.appendChild(tr);
+        //     });
+        // }
     </script>
+
 </body>
 
 </html>

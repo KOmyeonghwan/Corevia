@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="/src/main/resources/static/user/css/common.css">
-    <link rel="stylesheet" href="/src/main/resources/static/user/css/board-detail.css">
-    <script src="/src/main/resources/static/user/js/board-detail.js"></script>
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/board-detail.css">
+    <script src="/user/js/board-detail.js"></script>
 
     <title>board</title>
 </head>
@@ -15,151 +17,321 @@
 <body>
     <header>
         <div class="logo">
-            <img src="/src/main/resources/static/user/images/logo.png" alt="CoreNet">
+            <img src="/user/images/logo.png" alt="CoreNet">
         </div>
         <div>
-            {홍길동} 님
+            {{loginUser.userName}} 님
         </div>
     </header>
 
     <main>
-        <nav>
-            <div class="icon-bar">
-                <div class="icon-top">
-                    <a href="main.html">
-                        <i class="fa-solid fa-house"></i>
-                        <div class="icon-name">홈</div>
-                    </a>
-                    <a href="message.html">
-                        <i class="fa-regular fa-message"></i>
-                        <div class="icon-name">메시지</div>
-                    </a>
-                    <a href="schedule.html">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <div class="icon-name">스케줄</div>
-                    </a>
-                    <a href="user-mail.html">
-                        <i class="fa-regular fa-envelope"></i>
-                        <div class="icon-name">메일</div>
-                    </a>
-                    <a href="board.html">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                        <div class="icon-name">게시판</div>
-                    </a>
-                    <a href="doc.html">
-                        <i class="fa-regular fa-file"></i>
-                        <div class="icon-name">전자결재</div>
-                    </a>
-                </div>
-                <div class="icon-bottom">
-                    <a href="#" id="chat-view-status">+</a>
-                    <a href="#">
-                        🔔
-                        <div class="notification hidden">1</div>
-                    </a>
-                    <a href="#">⚙️</a>
-                </div>
-            </div>
-            <div class="chat-user">
-                <h3 class="chat-header">부서명</h3>
-                <div class="chat-content">
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                </div>
-                <button type="submit" class="newChatroom">+</button>
-            </div>
-        </nav>
+        {{> fragments/usernav}}
 
         <div class="main-view">
-          <div class="post-detail">
-            <h2 class="post-title">게시글 제목입니다</h2>
-      
-            <div class="post-meta">
-              <span class="author">작성자: 관리자</span>
-              <span class="date">작성일: 2025-09-23</span>
-              <span class="views">조회수: 123</span>
+            <div class="post-detail">
+
+                <h2 class="post-title">제목 : {{post.title}}</h2>
+
+                <div class="post-meta">
+                    <span class="author">작성자: {{post.userName}}</span>
+                    <span class="date">작성일: {{post.createAtFormatted}}</span>
+                    <span class="views">조회수: {{post.views}}</span>
+                </div>
+
+                <div class="post-content">
+                    {{{post.content}}}
+                </div>
+
+                {{#post.fileUrl}}
+                <div class="post-attachments">
+                    <strong>첨부파일:</strong>
+                    <ul>
+                        <li>
+                            <a href="{{post.fileUrl}}" target="_blank" rel="noopener noreferrer"
+                                download="{{post.fileName}}">
+                                {{post.fileName}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                {{/post.fileUrl}}
+
+
+                <!-- 댓글창 -->
+                <div class="chat-box hidden">
+                    <div class="close-compose">X</div>
+
+                    <!-- 댓글 리스트는 JS에서 렌더링 -->
+
+                    <!-- 입력창 -->
+                    <form action="" class="chat-input">
+                        <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}">
+
+                        <input type="text" class="chat-text" placeholder="댓글을 입력하세요…" />
+                        <button class="chat-submit">등록</button>
+                    </form>
+                </div>
+
+                <!-- 하단 버튼 -->
+                <div class="post-actions">
+                    <button class="btn-comments">
+                        댓글보기
+                    </button>
+
+                    <button class="btn-list" onclick="location.href='/userboard'">목록</button>
+
+                    {{#isAuthor}}
+                    <button class="btn-edit"
+                        onclick="location.href='/userboarddetailedit/{{post.boardCode}}/{{post.id}}'">
+                        수정
+                    </button>
+
+                    <button class="btn-delete" data-id="{{post.id}}" data-board="{{post.boardCode}}">
+                        삭제
+                    </button>
+                    {{/isAuthor}}
+
+
+                </div>
             </div>
-      
-            <div class="post-content">
-              <p>
-                안녕하세요. 공지사항 게시판입니다.<br>
-                여기에 게시글 본문 내용이 표시됩니다.<br>
-                줄바꿈도 이렇게 적용됩니다.
-              </p>
-            </div>
-      
-            <div class="post-attachments">
-              <strong>첨부파일:</strong>
-              <ul>
-                <li><a href="#">첨부파일1.pdf</a></li>
-                <li><a href="#">첨부파일2.jpg</a></li>
-              </ul>
-            </div>
-      
-            <div class="post-actions">
-              <button class="btn-comments">댓글보기</button>
-              <button class="btn-list">목록</button>
-              <button class="btn-edit" onclick="location.href='board-detail-edit.html'">수정</button>
-              <button class="btn-delete">삭제</button>
-            </div>
-          </div>
         </div>
+
+
+
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const boardCode = "{{post.boardCode}}";
+                const postId = "{{post.id}}";
+
+                // 댓글창 버튼 활성화
+                const openBtn = document.querySelector(".btn-comments");
+
+                // 댓글창과 닫기 버튼
+                const closeBtn = document.querySelector(".close-compose");
+                const boardChatBox = document.querySelector(".chat-box");
+
+                // 수정 버튼
+                const editBtn = document.querySelector(".btn-edit");
+
+                openBtn.addEventListener("click", () => {
+                    boardChatBox.classList.remove("hidden"); 
+                });
+
+                closeBtn.addEventListener("click", () => {
+                    boardChatBox.classList.add("hidden"); 
+                });
+
+
+                // 페이지 로딩 시 댓글 불러오기
+                loadComments(boardCode, postId);
+
+                // 최상위 댓글 등록 이벤트
+                document.querySelector(".chat-input").addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    const textInput = this.querySelector(".chat-text");
+                    const text = textInput.value.trim();
+                    if (!text) { alert("댓글을 입력하세요."); return; }
+
+                    addComment(boardCode, postId, text, null, 0, () => {
+                        textInput.value = "";
+                        loadComments(boardCode, postId);
+                    });
+                });
+            });
+
+            /** ============================
+             * 댓글/답글 추가 함수
+             * @param parentId : 부모 댓글 ID (null이면 최상위 댓글)
+             * @param depth : 0=댓글, 1=대댓글, 2=2단 댓글
+             */
+            function addComment(boardCode, postId, content, parentId, depth, callback) {
+                const params = new URLSearchParams();
+                params.append("content", content);
+                if (parentId) params.append("parentId", parentId);
+                params.append("depth", depth);
+
+                // 로그인한 유저의 부서 코드 가져오기
+                const deptCode = "{{loginUser.department_id}}";
+                params.append("deptCode", deptCode);
+
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+                fetch(`/userboard/comment/${boardCode}/${postId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        [csrfHeader]: csrfToken
+                    },
+                    body: params.toString()
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === "success") callback();
+                        else alert(data.message);
+                    })
+                    .catch(err => { console.error(err); alert("댓글 등록 중 오류 발생"); });
+            }
+
+            /** ============================
+             * 댓글 불러오기
+             */
+            function loadComments(boardCode, postId) {
+                fetch(`/userboard/comments/${boardCode}/${postId}`)
+                    .then(res => res.json())
+                    .then(comments => renderComments(comments))
+                    .catch(err => console.error("댓글 불러오기 오류:", err));
+            }
+
+            /** ============================
+             * 댓글 렌더링 (트리 구조)
+             */
+            function renderComments(comments) {
+                const chatBox = document.querySelector(".chat-box");
+                const inputForm = chatBox.querySelector(".chat-input");
+
+                // 기존 댓글 제거
+                [...chatBox.querySelectorAll(".chat-item")].forEach(e => e.remove());
+
+
+                if (!comments || comments.length === 0) {
+                    // 댓글 없으면 메시지 표시
+                    const emptyDiv = document.createElement("div");
+                    emptyDiv.classList.add("chat-item");
+                    emptyDiv.innerHTML = `<div class="no-comments">댓글이 없습니다.</div>`;
+                    chatBox.insertBefore(emptyDiv, inputForm);
+                    return;
+                }
+
+                // 댓글 map 생성
+                const commentMap = {};
+                comments.forEach(c => commentMap[c.id] = { ...c, children: [] });
+
+                // 부모-자식 구조 생성
+                const roots = [];
+                comments.forEach(c => {
+                    if (c.parentId) {
+                        commentMap[c.parentId]?.children.push(commentMap[c.id]);
+                    } else {
+                        roots.push(commentMap[c.id]);
+                    }
+                });
+
+                // 트리 구조 재귀 렌더링
+                roots.forEach(c => {
+                    const el = createCommentElement(c);
+                    chatBox.insertBefore(el, inputForm);
+                });
+            }
+
+            /** ============================
+             * 재귀적으로 댓글 HTML 생성
+             */
+            function createCommentElement(comment) {
+                const div = document.createElement("div");
+                div.classList.add("chat-item");
+                div.dataset.commentId = comment.id;
+                div.dataset.commentDepth = comment.depth;
+
+                let depthClass = "";
+                if (comment.depth === 1) depthClass = "second-chat";
+                else if (comment.depth === 2) depthClass = "third-chat";
+
+                div.innerHTML = `
+                    <div class="${depthClass || "main-chat"}">
+                        <div class="chat-header">
+                            <span class="author">${comment.userName}</span>
+                            <span class="time">${comment.createAtFormatted}</span>
+                        </div>
+                        <div class="chat-content">${comment.content}</div>
+                        ${comment.depth < 2 ? '<div class="reply-btn">답글</div>' : ''}
+                    </div>
+                `;
+
+                // 자식 댓글 재귀적 추가
+                comment.children.forEach(child => {
+                    const childEl = createCommentElement(child);
+                    div.appendChild(childEl);
+                });
+
+                return div;
+            }
+
+            /** ============================
+             * 답글 버튼 클릭 이벤트
+             */
+            document.addEventListener("click", function (e) {
+                if (!e.target.classList.contains("reply-btn")) return;
+
+                const parentChat = e.target.closest(".chat-item");
+                if (!parentChat) return;
+
+                // 이미 답글 입력창이 있으면 무시
+                if (parentChat.querySelector(".reply-input")) return;
+
+                const replyInput = document.createElement("div");
+                replyInput.classList.add("reply-input");
+                replyInput.innerHTML = `
+                    <input type="text" class="chat-text" placeholder="답글을 입력하세요…" />
+                    <button class="chat-submit">등록</button>
+                `;
+                parentChat.appendChild(replyInput);
+
+                replyInput.querySelector(".chat-submit").addEventListener("click", function () {
+                    const text = replyInput.querySelector(".chat-text").value.trim();
+                    if (!text) { alert("답글을 입력하세요."); return; }
+
+                    const boardCode = "{{post.boardCode}}";
+                    const postId = "{{post.id}}";
+                    const parentId = parentChat.dataset.commentId;
+                    const depth = parseInt(parentChat.dataset.commentDepth) + 1;
+
+                    addComment(boardCode, postId, text, parentId, depth, () => {
+                        loadComments(boardCode, postId); // 전체 리로드
+                    });
+                });
+
+            });
+
+            // 게시글 삭제
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+                    const postId = btn.dataset.id;
+                    const boardCode = btn.dataset.board;
+
+                    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+                    try {
+                        const res = await fetch(`/post/${postId}?boardCode=${boardCode}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                [csrfHeader]: csrfToken
+                            }
+                        });
+
+                        if (res.ok) {
+                            alert('삭제 성공');
+                            window.location.href = '/userboard';
+                        } else {
+                            const msg = await res.text();
+                            alert('삭제 실패: ' + msg);
+                        }
+                    } catch (err) {
+                        alert('삭제 중 오류 발생: ' + err);
+                    }
+                });
+            });
+        </script>
 
     </main>
 
-    <script src="/src/main/resources/static/user/js/common.js"></script>
+    <script src="/user/js/common.js"></script>
 
 </body>
-</html>
 
-<!-- ui -> 9월 24일까지 완성
- spring 생성: 25일 
- docker 맟 DB 정의 : 30일 
- 이후 -> 백엔드
- -->
+</html>

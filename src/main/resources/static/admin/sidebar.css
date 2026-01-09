@@ -1,81 +1,147 @@
- * {
-     margin: 0;
-     padding: 0;
-     box-sizing: border-box;
-     font-family: 'Noto Sans KR', sans-serif;
- }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+}
 
- body {
-     display: flex;
-     background-color: #eef1f4;
- }
+body {
+    display: flex;
+    background-color: #eef1f4;
+}
 
- .wrapper {
-     margin: 0 auto;
-     width: 1500px;
-     height: 100vh;
- }
+.wrapper {
+    margin: 0 auto;
+    width: 1500px;
+    height: 100vh;
+}
 
- .sidebar {
-     width: 240px;
-     height: 100vh;
-     background-color: #2d3e50;
-     color: #fff;
-     padding: 20px;
-     position: fixed;
-     font-size: 14px;
-     border-right: 2px solid #34495e;
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background-color: #2d3e50;
+    color: #fff;
+    padding: 20px;
+    position: fixed;
+    font-size: 14px;
+    border-right: 2px solid #34495e;
+    display: flex;
+    /* flex 컨테이너로 변경 */
+    flex-direction: column;
+    /* 세로 정렬 */
+}
 
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+}
 
-     display: flex;
-     /* flex 컨테이너로 변경 */
-     flex-direction: column;
-     /* 세로 정렬 */
- }
+.sidebar h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #bdc3c7;
+}
 
- .sidebar h2 {
-     font-size: 18px;
-     margin-bottom: 20px;
-     color: #bdc3c7;
- }
+.sidebar ul {
+    list-style: none;
+}
 
- .sidebar ul {
-     list-style: none;
- }
+.sidebar ul li {
+    margin: 15px 0;
+}
 
- .sidebar ul li {
-     margin: 15px 0;
- }
+.sidebar ul li a {
+    text-decoration: none;
+    color: #ecf0f1;
+    font-size: 15px;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
 
- .sidebar ul li a {
-     text-decoration: none;
-     color: #ecf0f1;
-     font-size: 15px;
-     display: block;
-     padding: 10px;
-     border-radius: 5px;
-     transition: background-color 0.3s;
- }
+.sidebar ul li a:hover {
+    background-color: #3498db;
+    color: #fff;
+}
 
- .sidebar ul li a:hover {
-     background-color: #3498db;
-     color: #fff;
- }
+.main-content {
+    margin-left: 240px;
+    padding: 30px;
+    /* width: 1250px; */
+    flex: 1;
+    background-color: #fff;
+    height: 100vh;
+}
 
- .main-content {
-     margin-left: 240px;
-     padding: 30px;
-     width: 1250px;
-     background-color: #fff;
-     height: 100vh;
- }
+.sidebar button {
+    margin-top: auto;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3498db;
+    color: #fff;
+    cursor: pointer;
+}
 
- .sidebar button {
-     margin-top: auto;
-     padding: 10px;
-     border: none;
-     border-radius: 5px;
-     background-color: #3498db;
-     color: #fff;
-     cursor: pointer;
- }
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #ecf0f1;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* 기본 상태 */
+.sidebar {
+    width: 240px;
+    transition: width 0.3s ease;
+}
+
+/* 접힌 상태 */
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.sidebar.collapsed h2 {
+    display: none;
+}
+
+.sidebar.collapsed ul li a {
+    text-align: center;
+    padding: 10px 0;
+    font-size: 13px;
+}
+
+/* 메인 콘텐츠도 같이 이동 */
+.main-content {
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.collapsed~.main-content {
+    margin-left: 70px;
+}
+
+.submenu {
+    display: none;
+    list-style: none;
+    padding-left: 15px;
+}
+
+.submenu li {
+    margin: 5px 0;
+}
+
+.submenu.open {
+    display: block;
+}
+
+.submenu-toggle {
+    cursor: pointer;
+}

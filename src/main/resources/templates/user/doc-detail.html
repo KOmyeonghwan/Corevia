@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/src/main/resources/static/user/css/doc-detail.css">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/user/css/doc-detail.css">
 
-    <script src="/src/main/resources/static/user/js/doc-detail.js"></script>
+    <script src="/user/js/doc-detail.js"></script>
 
-    <title>전자결재 편집기</title>
+    <title>전자결재 상세보기</title>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 
 </head>
@@ -19,132 +21,315 @@
         <aside>
             <div class="rejection-box">
                 <h3 class="rejection-title">반려 사유</h3>
+                {{#approvers}}
                 <div class="rejection-reason">
-                    ※ 작성하신 내용 중 일부가 기준에 부합하지 않습니다.
+                    {{approverName}} : {{approvalComments}}
                 </div>
+                {{/approvers}}
+                {{^approvers}}
+                {{/approvers}}
             </div>
-            
+
+
+
             <div class="btn-zip">
                 <div class="actionBtn">
-                    <button class="submitBtn btn" onclick="location.href='doc-edit.html'">수정하기</button>
-                    <button class="deleteBtn btn" onclick="confirmDelete()">삭제하기</button>
+                    <button type="button" class="submitBtn btn" id="editBtn">
+                        수정하기
+                    </button>
+                    <button class="deleteBtn btn">
+                        삭제하기
+                    </button>
                 </div>
-                <button class="backBtn btn" onclick="location.href='doc.html'">홈으로</button>
+
+                <button class="backBtn btn" onclick="location.href='/userdoc'">
+                    목록으로
+                </button>
             </div>
         </aside>
 
         <main>
-            <form action="#" method="post">
-                <div class="edit-view">
-                    <div class="title"><input type="text" placeholder="기 안 서"></div>
-                    <div class="subtitle">아래와 같이 {기안서}를 제출합니다.</div>
+            <form method="post">
+                <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}">
 
+                <div class="edit-view">
+
+                    <!-- ===== 제목 ===== -->
+                    <div class="title">
+                        <input type="text" value="{{docdetail.docName}}" readonly>
+                    </div>
+
+                    <div class="subtitle">
+                        아래와 같이 {{docdetail.docName}}를 제출합니다.
+                    </div>
+
+                    <!-- ===== 상단 정보 ===== -->
                     <div class="top-info">
-                        <!-- 상단 결재/문서번호 영역 -->
+
+                        <!-- 문서 정보 -->
                         <table class="doc-info">
                             <tr>
                                 <th>문서번호</th>
-                                <td><input type="text" name="docNo"></td>
+                                <td>
+                                    <input type="text" value="{{docdetail.docNo}}" readonly>
+                                </td>
                             </tr>
                             <tr>
                                 <th>페이지번호</th>
                                 <td>
-                                    <input type="text" name="pageNo" class="short"> /
-                                    <input type="text" name="pageTotal" class="short"> Page
+                                    <input type="text" class="short" value="{{docdetail.pageNo}}" readonly> /
+                                    <input type="text" class="short" value="{{docdetail.pageTotal}}" readonly> Page
                                 </td>
                             </tr>
                             <tr>
                                 <th>작성자</th>
-                                <td><input type="text" name="writer"></td>
+                                <td>
+                                    <input type="text" value="{{docdetail.writer}}" readonly>
+                                </td>
                             </tr>
                             <tr>
                                 <th>작성일자</th>
-                                <td><input type="date" name="writeDate" style="width: 120px;"></td>
+                                <td>
+                                    <input type="date" value="{{docdetail.writeDate}}" readonly>
+                                </td>
                             </tr>
                         </table>
 
-                        <!-- 결재선 테이블 -->
+                        <!-- ===== 결재선 ===== -->
                         <table class="approval-line">
                             <tr>
                                 <th rowspan="3" class="approval-label">결재</th>
-                                <th>본부장</th>
-                                <th>대표이사</th>
+                                {{#approvers}}
+                                <th>{{approverName}}</th>
+                                {{/approvers}}
                             </tr>
+
                             <tr class="sign-row">
-                                <td></td>
-                                <td></td>
+                                {{#approvers}}
+                                <td>{{ApprovalStatusKor}}</td>
+                                {{/approvers}}
                             </tr>
+
                             <tr>
-                                <td>/</td>
-                                <td>/</td>
+                                {{#approvers}}
+                                <td></td>
+                                {{/approvers}}
                             </tr>
                         </table>
                     </div>
 
-                    <!-- 기안자 정보 -->
+                    <!-- ===== 기안자 정보 ===== -->
                     <table>
-                        <tr>
+                        <!-- 기안자 -->
+                        <tr class="drafter-info">
                             <th rowspan="2">기안자</th>
                             <th>사번</th>
-                            <td><input type="text" style="width:100%;"></td>
+                            <td>
+                                <input type="text" id="drafterEmpNo" name="drafter_emp_no"
+                                    value="{{docdetail.drafterEmpNo}}" readonly>
+                            </td>
                             <th>소속</th>
-                            <td><input type="text" style="width:100%;"></td>
+                            <td>
+                                <input type="text" id="drafterDept" name="drafter_dept"
+                                    value="{{docdetail.drafterDept}}" readonly>
+                            </td>
                         </tr>
-                        <tr>
+
+                        <tr class="drafter-info">
                             <th>직급</th>
-                            <td><input type="text" style="width:100%;"></td>
+                            <td>
+                                <input type="text" id="drafterPosition" name="drafter_position"
+                                    value="{{docdetail.drafterPosition}}" readonly>
+                            </td>
                             <th>성명</th>
-                            <td><input type="text" style="width:100%;"></td>
+                            <td>
+                                <input type="text" id="drafterName" name="drafter_name"
+                                    value="{{docdetail.drafterName}}" readonly>
+                            </td>
                         </tr>
-                        <tr>
+
+                        <tr class="drafter-info">
                             <th>기안일자</th>
-                            <td colspan="4"><input type="date" style="width:200px;"></td>
+                            <td colspan="4"><input type="date" id="drafterDate" name="draft_date"
+                                    value="{{docdetail.draftDate}}"></td>
                         </tr>
+
+                        <!-- ===== 제목 ===== -->
                         <tr>
                             <th>제목</th>
-                            <td colspan="4"><input type="text" style="width:100%;"></td>
+                            <td colspan="4">
+                                <input type="text" value="{{docdetail.detailTitle}}" readonly>
+                            </td>
                         </tr>
+
+                        <!-- ===== 상세 내용 ===== -->
                         <tr>
                             <th>상세내용</th>
                             <td colspan="4">
-                                <div id="editor" class="content-area"></div>
+                                <div id="editor" class="content-area">
+                                    {{{docdetail.detailContent}}}
+                                </div>
                             </td>
                         </tr>
+
+                        <!-- ===== 특기사항 ===== -->
                         <tr>
                             <th>특기사항</th>
-                            <td colspan="4"><textarea style="width:100%; height:80px;"></textarea></td>
+                            <td colspan="4">
+                                <textarea readonly>{{docdetail.detailNote}}</textarea>
+                            </td>
                         </tr>
+
+                        <!-- ===== 첨부파일 ===== -->
                         <tr>
                             <th>첨부목록</th>
-                            <td colspan="4"><textarea style="width:100%; height:80px;"></textarea></td>
+                            <td colspan="4">
+                                <ul class="file-list">
+                                    {{#files}}
+                                        <a href="/files/{{path}}/{{name}}">
+                                            {{name}} ({{size}} bytes)
+                                        </a>
+                                    {{/files}}
+
+                                    {{^files}}
+                                        첨부파일 없음
+                                    {{/files}}
+                                </ul>
+                            </td>
                         </tr>
                     </table>
+
                 </div>
-
-
             </form>
         </main>
     </div>
 
     <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'), {
-                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote']
-            })
-            .then(editor => {
-                editor.ui.view.editable.element.style.minHeight = "600px"; // 원하는 크기
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        /* ================= CSRF ================= */
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
+        /* ================= 서버 값 ================= */
+        const docType = "{{docType}}";
+        const docId = "{{docId}}";
+        const docStatus = "{{docStatus}}"
+
+        console.log(docType, docId, docStatus);
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const rejectionBox = document.querySelector(".rejection-box");
+
+            if (rejectionBox) {
+                if (docStatus === "rejected") {
+                    rejectionBox.style.display = "block";   // 반려 → 표시
+                } else {
+                    rejectionBox.style.display = "none";    // 그 외 → 숨김
+                }
+            }
+
+            /* ================= 수정 버튼 ================= */
+            const editBtn = document.getElementById("editBtn");
+
+            if (docStatus === "approved") {
+                editBtn.style.display = "none";
+            }
+
+            if (editBtn) {
+                editBtn.addEventListener("click", goEditPage);
+            }
+
+            function goEditPage() {
+                const docType = "{{docType}}";
+                const docId = "{{docId}}";
+
+                location.href = `/userdocdetailedit/${docType}/${docId}`;
+            }
+
+            /* ================= 삭제 버튼 ================= */
+            const deleteBtn = document.querySelector(".deleteBtn");
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener("click", () => {
+                    if (!confirm("정말 삭제하시겠습니까?\n 한 번 삭제하면 되돌릴 수 없습니다.")) return;
+
+                    fetch(`/deleteonedoc/${docType}/${docId}`, {
+                        method: "DELETE",
+                        headers: {
+                            [csrfHeader]: csrfToken
+                        }
+                    })
+                        .then(res => {
+                            if (!res.ok) throw new Error("delete failed");
+                            alert("삭제되었습니다.");
+                            location.href = "/userdoc";
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert("삭제 중 오류가 발생했습니다.");
+                        });
+                });
+            }
+
+            // 사용자 화면 보여주기
+            async function applyColumnStatus(docCode) {
+                const res = await fetch(`/doc/column-status?docCode=${encodeURIComponent(docCode)}`);
+                const status = await res.json();
+
+                const map = {
+                    DOC_NO: '.doc-info',
+                    PAGE_NO: '.page-info',
+                    WRITER: '#writer',
+                    DRAFTER: '.drafter-info',
+                    DETAIL_TITLE: '.title-row',
+                    DETAIL_CONTENT: '.content-row',
+                    DETAIL_NOTE: '.note-row'
+                };
+
+                // 일반 컬럼 처리
+                Object.entries(map).forEach(([key, selector]) => {
+                    document.querySelectorAll(selector).forEach(el => {
+                        el.style.display = status[key] ? '' : 'none';
+                    });
+                });
+
+                const drafterDate = document.getElementById('drafterDate');
+                // 기안자 컬럼을 사용하는 문서 + 값이 비어있을 때만
+                if (drafterDate && status.DRAFTER && !drafterDate.value) {
+                    drafterDate.value = new Date().toISOString().split('T')[0];
+                }
+
+                // FILE 별도 처리
+                document.querySelectorAll('.file-info').forEach(el => {
+                    el.style.display = status.USE_FILE ? '' : 'none';
+                });
+
+                // 결재선 별도 처리
+                document.querySelectorAll('.approval-line').forEach(el => {
+                    el.style.display = status.USE_APPROVAL ? '' : 'none';
+                });
+
+            }
+
+            // 컬럼 상태 적용
+            applyColumnStatus(docType);
+
+            /* ================= CKEditor (읽기 전용) ================= */
+            ClassicEditor
+                .create(document.querySelector("#editor"), {
+                    toolbar: []
+                })
+                .then(editor => {
+                    editor.enableReadOnlyMode("doc-view");
+                    editor.ui.view.editable.element.style.minHeight = "600px";
+                })
+                .catch(console.error);
+
+        });
     </script>
+
+
 
 </body>
 
 </html>
-
-<!-- 
-기안일자 |	문서를 **처음으로 기안(초안 작성)**한 날짜.
-작성일자 |	문서를 작성 완료한 날짜. 또는 실제로 문서에 작성된 날짜를 표기한 것.
--->

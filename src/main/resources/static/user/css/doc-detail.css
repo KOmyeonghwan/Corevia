@@ -37,6 +37,8 @@ aside {
   border-radius: 6px;
   margin-top: 10px;
   overflow: hidden;
+
+  display: none;
 }
 
 .rejection-title {
@@ -275,4 +277,10 @@ td textarea {
   textarea {
     border: none !important;
   }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
 }
+

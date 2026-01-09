@@ -34,16 +34,27 @@
 
 /* 주요 공지사항 */
 .notice-section {
+  width: 98%;
+  height: 20%; /* 높이는 적당히 조정해 주세요 */
   background: #fff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
   margin-bottom: 30px;
+
+  position: relative; 
+  overflow: hidden;  
 }
 
 .notice-section h2 {
+  margin-top: 0px;
   margin-bottom: 10px;
   color: #34495e;
+  position: sticky;    /* sticky로 상단에 고정 */
+  top: 0;              /* 상단에 고정 */
+  background: #fff;    /* 배경색을 흰색으로 설정해서 고정된 부분이 배경과 맞도록 */
+  z-index: 10;         /* h2가 스크롤 영역 위에 위치하도록 z-index 설정 */
+  padding: 10px 0;     /* 적절한 패딩 추가 */
 }
 
 .notice-section ul {
@@ -51,31 +62,73 @@
   color: #555;
   padding-left: 0;
   margin: 0;
+  overflow-y: auto;     /* 세로 스크롤이 필요하면 표시 */
+  max-height: calc(100% - 70px); /* h2의 높이를 제외한 영역에 스크롤을 설정 */
 }
+
 
 /* 빠른 메뉴 */
 .quick-menu {
   display: flex;
   gap: 20px;
   margin-bottom: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .quick-menu a {
-  flex: 1;
+  flex: 1 1 70px;
   color: #fff;
   text-align: center;
-  padding: 20px;
-  border-radius: 12px;
+  padding: 18px 20px;
+  border-radius: 16px;
   text-decoration: none;
   font-weight: 600;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.3s ease;
+  font-size: 16px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
   user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 각 버튼 색상 */
+.quick-menu a:nth-child(1) {
+  background: linear-gradient(135deg, #ff6b6b, #ff8787); /* 빨강 계열 */
+}
+.quick-menu a:nth-child(2) {
+  background: linear-gradient(135deg, #4facfe, #00f2fe); /* 파랑 계열 */
+}
+.quick-menu a:nth-child(3) {
+  background: linear-gradient(135deg, #43e97b, #38f9d7); /* 초록 계열 */
+}
+.quick-menu a:nth-child(4) {
+  background: linear-gradient(135deg, #fbc7d4, #9796f0); /* 보라/핑크 계열 */
+}
+
+/* 광택 애니메이션 */
+.quick-menu a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  transform: skewX(-25deg);
+  transition: all 0.5s ease;
+}
+
+.quick-menu a:hover::before {
+  left: 200%;
 }
 
 .quick-menu a:hover {
-  filter: brightness(90%);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
+  filter: brightness(110%);
 }
+
 
 .menu-mail {
   background: #3498db;

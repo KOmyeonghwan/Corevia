@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/user/css/common.css">
     <link rel="stylesheet" href="/user/css/main.css">
-    <script src="/user/js/main.js"></script>
-    <title>사용자 홈</title>
+    <!-- <script src="/user/js/main.js"></script> -->
+    <title>메인</title>
 </head>
 
 <body>
@@ -17,104 +19,10 @@
         <div class="logo">
             <img src="/user/images/logo.png" alt="CoreNet">
         </div>
-        <div>
-            {홍길동} 님
-        </div>
     </header>
 
     <main>
-        <nav>
-            <div class="icon-bar">
-                <div class="icon-top">
-                    <a href="main.html">
-                        <i class="fa-solid fa-house"></i>
-                        <div class="icon-name">홈</div>
-                    </a>
-                    <a href="message.html">
-                        <i class="fa-regular fa-message"></i>
-                        <div class="icon-name">메시지</div>
-                    </a>
-                    <a href="schedule.html">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <div class="icon-name">스케줄</div>
-                    </a>
-                    <a href="user-mail.html">
-                        <i class="fa-regular fa-envelope"></i>
-                        <div class="icon-name">메일</div>
-                    </a>
-                    <a href="board.html">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                        <div class="icon-name">게시판</div>
-                    </a>
-                    <a href="doc.html">
-                        <i class="fa-regular fa-file"></i>
-                        <div class="icon-name">전자결재</div>
-                    </a>
-                </div>
-                <div class="icon-bottom">
-                    <a href="#" id="chat-view-status">+</a>
-                    <a href="#">
-                        🔔
-                        <div class="notification hidden">1</div>
-                    </a>
-                    <a href="#" id="func">⚙️</a>
-                </div>
-            </div>
-            <div class="chat-user">
-                <h3 class="chat-header">부서명</h3>
-                <div class="chat-content">
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                </div>
-                <button type="submit" class="newChatroom">+</button>
-            </div>
-        </nav>
+        {{> fragments/usernav}}
 
         <div class="main-view">
             <section>
@@ -122,29 +30,48 @@
                     <h1>인트라넷</h1>
                 </div>
                 <div class="user-info">
-                    <div><strong>사용자:</strong> 홍길동</div>
-                    <div><strong>로그인 시간:</strong> 2025-09-19 09:30 AM</div>
+                    <div><strong>사용자:&nbsp;</strong>{{loginUser.userName}} 님</div>
+                    <div><strong>로그인 시간:&nbsp;</strong>{{loginUser.loginDateTime}}</div>
+                    <!-- <a href="/user-mypage">마이페이지</a> -->
                 </div>
             </section>
             <!-- 주요 공지사항 -->
             <section class="notice-section">
                 <h2>📢 주요 공지사항</h2>
                 <ul>
-                    <li>2025년 10월 31일: 전사 워크샵 안내</li>
-                    <li>2025년 11월 5일: 보안 업데이트 실시 예정</li>
-                    <li>2025년 11월 10일: 연말 휴가 계획 제출 마감</li>
+                    {{#noticeList}}
+                    <li>
+                        <strong>{{createdAtFormatted}}</strong>: {{title}} - {{content}}
+                    </li>
+                    {{/noticeList}}
+                    {{^noticeList}}
+                    <li>공지사항이 없습니다.</li>
+                    {{/noticeList}}
                 </ul>
             </section>
 
             <!-- 빠른 메뉴 -->
             <section class="quick-menu">
-                <a href="/mail" class="menu-mail">📧 메일</a>
-                <a href="/schedule" class="menu-schedule">📅 일정</a>
-                <a href="/docs" class="menu-docs">📂 문서함</a>
-            </section>
+                <a href="#" class="menu-approval">
+                  <div>결재완료</div>
+                  <div>3개</div>
+                </a>
+                <a href="#" class="menu-completed disabled">
+                  <div>임시저장</div>
+                  <div>1/3</div>
+                </a>
+                <a href="#" class="menu-returned">
+                  <div>결재반려</div>
+                  <div>1/3</div>
+                </a>
+                <a href="#" class="menu-approval">
+                  <div>결재대기</div>
+                  <div>1/3</div>
+                </a>
+              </section>
 
-            <!-- 최근 알림/업무 -->
-            <section class="notification-section">
+            <!-- 최근 알림/업무 -> 캐러셀 넣기 -->
+            <section class="notification-section"> 
                 <h2>⏰ 최근 알림 / 업무</h2>
                 <ul>
                     <li>[메일] 홍길동님이 신규 메일을 받았습니다. <small>(10분 전)</small></li>

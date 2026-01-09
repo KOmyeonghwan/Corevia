@@ -1,0 +1,152 @@
+ h2 {
+     margin-bottom: 20px;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+ }
+
+ th,
+ td {
+     border: 1px solid #ddd;
+     padding: 8px;
+     text-align: left;
+ }
+
+ th {
+     background-color: #2d3e50;
+     color: #fff;
+ }
+
+ tr:hover {
+     background-color: #f1f1f1;
+ }
+
+ .filter {
+     margin-bottom: 15px;
+ }
+
+ .filter label {
+     margin-right: 5px;
+ }
+
+ .filter select,
+ .filter input {
+     margin-right: 10px;
+     padding: 5px;
+ }
+
+ .btn-search {
+     padding: 5px 10px;
+     cursor: pointer;
+     background-color: #4CAF50;
+     border-radius: 10px 10px;
+     color: #fff;
+     border: none;
+ }
+
+ .btn {
+     padding: 5px 10px;
+     cursor: pointer;
+     background-color: #2d3e50;
+     border-radius: 10px 10px;
+     color: #fff;
+     border: none;
+ }
+
+ .btn-delete {
+     background-color: #f44336;
+     color: #fff;
+     padding: 5px 10px;
+     cursor: pointer;
+     border-radius: 10px 10px;
+     border: none;
+
+ }
+
+ .modal {
+     display: none;
+     position: fixed;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     background: #fff;
+     padding: 20px;
+     border: 1px solid #ccc;
+     z-index: 1000;
+     width: 400px;
+ }
+
+ .modal-header {
+     font-weight: bold;
+     margin-bottom: 10px;
+ }
+
+ .modal-close {
+     float: right;
+     cursor: pointer;
+     color: red;
+ }
+
+ .modal-overlay {
+     display: none;
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: rgba(0, 0, 0, 0.5);
+     z-index: 500;
+ }
+
+ .pagination {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     margin-top: 20px;
+ }
+
+ .pagination button,
+ .pagination span {
+     padding: 8px 16px;
+     height: 40px;
+     line-height: 32px;
+     border: 1px solid #ddd;
+     background: #fff;
+     cursor: pointer;
+     margin: 0 3px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 14px;
+     border-radius: 4px;
+ }
+
+ .pagination button {
+     color: #2c3e50;
+ }
+
+ .pagination .prev-btn,
+ .pagination .next-btn {
+     background-color: #2c3e50;
+     color: #fff;
+ }
+
+ .pagination span.active {
+     font-weight: bold;
+ }
+
+ .page-numbers button {
+     margin: 0 3px;
+     padding: 4px 8px;
+     border: 1px solid #ccc;
+     background: white;
+     cursor: pointer;
+ }
+
+ .page-numbers button.active {
+     background: #333;
+     color: white;
+     font-weight: bold;
+ }

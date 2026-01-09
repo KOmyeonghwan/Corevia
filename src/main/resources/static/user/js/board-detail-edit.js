@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  
     const backBtn = document.querySelector(".btn-back");
     const listBtn = document.querySelector(".btn-list");
     const editBtn = document.querySelector(".btn-edit");
@@ -6,7 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // 뒤로 가기 (히스토리)
     backBtn?.addEventListener("click", () => {
-      history.back();
+      // history.back();
+      window.location.href = "/board.html"; // 목록 페이지 경로 수정
     });
   
     // 목록 페이지로 이동

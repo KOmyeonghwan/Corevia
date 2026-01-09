@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그 조회</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adminlog.css">
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <div class="main-content">
+            <h2>로그 조회</h2>
+
+            <!-- 필터 영역 -->
+            <div class="filter">
+                <label>이벤트 타입:</label>
+                <select id="filterEventType">
+                    <option value="">전체</option>
+                    <option value="login_failure">로그인 실패</option>
+                    <!-- <option value="login_success">로그인 성공</option> -->
+                    <option value="password_change">비밀번호 변경</option>
+                    <option value="role_change">권한 변경</option>
+                    <option value="external_ip_login">외부 IP 로그인</option>
+                </select>
+
+                <label>사용자:</label>
+                <input type="text" id="filterUser" placeholder="사용자 이름">
+
+                <label>기간:</label>
+                <input type="date" id="filterFrom"> ~
+                <input type="date" id="filterTo">
+
+                <label>IP:</label>
+                <input type="text" id="filterIP" placeholder="IP 검색">
+
+                <button class="btn-search" onclick="applyFilter()">검색</button>
+            </div>
+
+            <!-- 로그 테이블 -->
+            <table id="logTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>시간</th>
+                        <th>사용자</th>
+                        <th>이벤트 타입</th>
+                        <th>IP</th>
+                        <th>페이지</th>
+                        <th>상세</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS로 동적 생성 -->
+                </tbody>
+            </table>
+
+            <!-- 상세보기 모달 -->
+            <div class="modal-overlay" id="modalOverlay"></div>
+            <div class="modal" id="detailModal">
+                <span class="modal-close" onclick="closeModal()">✖</span>
+                <div class="modal-header">로그 상세 정보</div>
+                <div><strong>설명:</strong> <span id="modalDescription"></span></div>
+                <div><strong>브라우저/OS:</strong> <span id="modalUserAgent"></span></div>
+                <div><strong>페이지 URL:</strong> <span id="modalPageURL"></span></div>
+                <div><strong>IP 주소:</strong> <span id="modalIP"></span></div>
+            </div>
+
+            <div class="pagination">
+                <!-- <button id="prev-page" class="prev-btn">이전</button> -->
+                <div id="page-numbers" class="page-numbers"></div>
+                <!-- <button id="next-page" class="next-btn">다음</button> -->
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        let currentPage = 0;
+        const pageSize = 10;
+        const maxPageButtons = 5;
+
+        function renderTable(data) {
+            const tbody = document.querySelector('#logTable tbody');
+            tbody.innerHTML = '';
+            data.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td>${log.id}</td>
+                <td>${log.createdAt}</td>
+                <td>${log.userName}</td>
+                <td>${log.eventType}</td>
+                <td>${log.ipAddress}</td>
+                <td>${log.pageUrl}</td>
+                    <td>
+                        <button class="btn" onclick='showDetail(${JSON.stringify(log)})'>보기</button>
+                        <button class="btn btn-delete" onclick='deleteLog(${log.id})'>삭제</button>
+                    </td>
+            `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteLog(id) {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+
+            const token = document.querySelector('meta[name="_csrf"]').content;
+            const header = document.querySelector('meta[name="_csrf_header"]').content;
+
+            fetch(`/admin/logs/${id}`, {
+                method: 'DELETE',
+                headers: { [header]: token }
+            })
+                .then(res => {
+                    if (res.ok) {
+                        alert('삭제 완료');
+                        applyFilter(currentPage);
+                    } else {
+                        alert('삭제 실패');
+                    }
+                });
+        }
+
+        function applyFilter(page = 0) {
+            currentPage = page;
+
+            // 필터 값 가져오기
+            const eventType = document.getElementById('filterEventType').value;
+            const userName = document.getElementById('filterUser').value;
+            const fromDate = document.getElementById('filterFrom').value;
+            const toDate = document.getElementById('filterTo').value;
+            const ip = document.getElementById('filterIP').value;
+
+            const params = new URLSearchParams();
+            params.append('page', page);
+            params.append('size', pageSize);
+
+            // 필터 값 추가
+            if (eventType) params.append('eventType', eventType);
+            if (userName) params.append('userName', userName);
+            if (fromDate) params.append('from', fromDate);
+            if (toDate) params.append('to', toDate);
+            if (ip) params.append('ip', ip);
+
+            fetch(`/admin/logs?${params}`)
+                .then(res => res.json())
+                .then(data => {
+                    renderTable(data.content);
+                    updatePagination(data);
+                });
+        }
+
+
+        function updatePagination(data) {
+            const pageNumbers = document.getElementById("page-numbers");
+            pageNumbers.innerHTML = "";
+
+            const totalPages = data.totalPages;
+            const current = data.number;
+
+            let start = Math.max(0, current - Math.floor(maxPageButtons / 2));
+            let end = Math.min(totalPages, start + maxPageButtons);
+
+            if (end - start < maxPageButtons) {
+                start = Math.max(0, end - maxPageButtons);
+            }
+
+            for (let i = start; i < end; i++) {
+                const btn = document.createElement("button");
+                btn.innerText = i + 1;
+
+                if (i === current) {
+                    btn.classList.add("active");
+                }
+
+                btn.onclick = () => applyFilter(i);
+                pageNumbers.appendChild(btn);
+            }
+
+            //document.getElementById("prev-page").disabled = data.first;
+            //document.getElementById("next-page").disabled = data.last;
+        }
+
+        //document.getElementById("prev-page").onclick = () => {
+        //    if (currentPage > 0) applyFilter(currentPage - 1);
+        //};
+
+        //document.getElementById("next-page").onclick = () => {
+        //    applyFilter(currentPage + 1);
+        //};
+
+        document.addEventListener("DOMContentLoaded", () => {
+            applyFilter(0);
+        });
+
+        function showDetail(log) {
+            document.getElementById('modalDescription').innerText = log.eventDescription || '-';
+            document.getElementById('modalUserAgent').innerText = log.userAgent || '-';
+            document.getElementById('modalPageURL').innerText = log.pageUrl || '-';
+            document.getElementById('modalIP').innerText = log.ipAddress || '-';
+
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // 모달 오버레이 클릭해도 닫히게
+        document.getElementById('modalOverlay').onclick = closeModal;
+    </script>
+
+
+</body>
+
+</html>

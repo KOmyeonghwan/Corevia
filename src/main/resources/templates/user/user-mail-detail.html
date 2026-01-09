@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="/src/main/resources/static/user/css/common.css">
-    <link rel="stylesheet" href="/src/main/resources/static/user/css/mail_detail.css">
-    <script src="/src/main/resources/static/user/js/mail_detail.js"></script>
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/mail_detail.css">
+    <script src="/user/js/mail_detail.js"></script>
 
     <title>user mail</title>
 </head>
@@ -15,138 +17,45 @@
 <body>
     <header>
         <div class="logo">
-            <img src="/src/main/resources/static/user/images/logo.png" alt="CoreNet">
+            <img src="/user/images/logo.png" alt="CoreNet">
         </div>
         <div>
-            {홍길동} 님
+            {{loginUser.userName}} 님
         </div>
     </header>
 
     <main>
-        <nav>
-            <div class="icon-bar">
-                <div class="icon-top">
-                    <a href="main.html">
-                        <i class="fa-solid fa-house"></i>
-                        <div class="icon-name">홈</div>
-                    </a>
-                    <a href="message.html">
-                        <i class="fa-regular fa-message"></i>
-                        <div class="icon-name">메시지</div>
-                    </a>
-                    <a href="schedule.html">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <div class="icon-name">스케줄</div>
-                    </a>
-                    <a href="user-mail.html">
-                        <i class="fa-regular fa-envelope"></i>
-                        <div class="icon-name">메일</div>
-                    </a>
-                    <a href="board.html">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                        <div class="icon-name">게시판</div>
-                    </a>
-                    <a href="doc.html">
-                        <i class="fa-regular fa-file"></i>
-                        <div class="icon-name">전자결재</div>
-                    </a>
-                </div>
-                <div class="icon-bottom">
-                    <a href="#" id="chat-view-status">+</a>
-                    <a href="#">
-                        🔔
-                        <div class="notification hidden">1</div>
-                    </a>
-                    <a href="#">⚙️</a>
-                </div>
-            </div>
-            <div class="chat-user">
-                <h3 class="chat-header">부서명</h3>
-                <div class="chat-content">
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                    <div class="coworker-card">
-                        <span><b>이름</b>
-                            <p>참여인원</p>
-                        </span>
-                        <p>최종 대화 내용</p>
-                    </div>
-                </div>
-                <button type="submit" class="newChatroom">+</button>
-            </div>
-        </nav>
-        </nav>
+        {{> fragments/usernav}}
+
         <div class="main-view">
             <div class="email-detail-wrapper">
                 <div class="email-header">
-                    <h1 class="email-subject">[메일 제목] 예: 프로젝트 일정 조정의 건</h1>
+                    <h1 class="email-subject">{{mail.title}}</h1>
                     <div class="email-meta">
-                        <span class="from">보낸사람: example@domain.com</span>
-                        <span class="to">받는사람: you@domain.com</span>
-                        <span class="date">2025년 9월 22일 오후 3:45</span>
+                        <span class="from">보낸사람: {{mail.senderEmail}}</span>
+                        <span class="to">받는사람: {{mail.recipientEmail}}</span>
+                        <span class="date">{{mailCreatedAt}}</span>
                     </div>
                 </div>
 
                 <div class="email-body">
-                    <p>안녕하세요,</p>
-                    <p>프로젝트 일정이 아래와 같이 변경되어 공유드립니다.</p>
-                    <ul>
-                        <li>변경 전: 10월 1일</li>
-                        <li>변경 후: 10월 5일</li>
-                    </ul>
-                    <p>변경된 일정 확인 부탁드리며, 혹시 더 논의할 사항 있으시면 말씀주세요.</p>
+                    {{#mail}}{{{description}}}{{/mail}}
+                    {{^mail}}메일 내용을 불러올 수 없습니다.{{/mail}}
                 </div>
 
                 <div class="email-actions">
                     <button class="btn-reply">답장하기</button>
-                    <button class="btn-download">첨부파일 다운로드</button>
+                    <button class="btn-delete" data-mail-id="{{mail.id}}">삭제</button>
                 </div>
 
                 <div class="email-attachments">
-                    <h2>첨부파일:</h2>
                     <ul>
-                        <li><a href="#">보고서_초안.pdf (1.2MB)</a></li>
-                        <li><a href="#">이미지_예시.png (500KB)</a></li>
+                        {{#attachments}}
+                        <li><a href="/user/mail/{{mail.id}}/attachment">{{.}}</a></li>
+                        {{/attachments}}
+                        {{^attachments}}
+                        <li>첨부파일 없음</li>
+                        {{/attachments}}
                     </ul>
                 </div>
 
@@ -156,7 +65,7 @@
                 </div>
             </div>
             <div class="backBtn">
-                <a href="user-mail.html" class="back-button">목록으로</a>
+                <a href="/usermail" class="back-button">목록으로</a>
             </div>
         </div>
 
@@ -178,13 +87,7 @@
         </div>
     </div>
 
-    <script src="/src/main/resources/static/user/js/common.js"></script>
+    <script src="/user/js/common.js"></script>
 </body>
 
 </html>
-
-<!-- ui -> 9월 24일까지 완성
- spring 생성: 25일 
- docker : 26일 
- 이후 -> 백엔드
- -->

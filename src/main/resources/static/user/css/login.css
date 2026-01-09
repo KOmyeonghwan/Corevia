@@ -10,7 +10,7 @@ main {
 
 form {
     width: 300px;
-    height: 470px;
+    height: 310px; /* 카카오 인증 사용 시 -> 470px */
     border-radius: 13px;
     background-color: white;
     padding: 20px 40px;
@@ -168,6 +168,8 @@ span a:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: relative;
+
+    overflow-y: auto;
 }
 
 #signupForm .close {
@@ -428,4 +430,13 @@ span a:hover {
 .email-at {
     font-size: 1rem;
     color: #2c3e50;
+}
+
+p{
+    margin: 0;
+}
+
+.errorMsg{
+    font-size: 10px;
+    color: red;
 }

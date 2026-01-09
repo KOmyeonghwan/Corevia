@@ -1,5 +1,4 @@
-.main-view{
-  padding: 30px;
+.main-view {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,16 +9,20 @@
 .edit-form {
   width: 90%;
   height: 80%;
-  padding: 20px;
+  padding: 40px;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  overflow-y: auto;
 }
+
 .edit-form label {
   display: block;
   margin-top: 15px;
   font-weight: bold;
 }
+
 .edit-form input,
 .edit-form textarea,
 .edit-form select {
@@ -29,23 +32,28 @@
   border-radius: 5px;
   border: 1px solid #ccc;
 }
+
 .detail-item {
   margin-bottom: 12px;
 }
+
 .form-buttons {
   margin-top: 20px;
   text-align: right;
 }
+
 .form-buttons button {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
+
 .form-buttons button[type="submit"] {
   background-color: #4CAF50;
   color: white;
 }
+
 .form-buttons button[type="button"] {
   background-color: #F44336;
   color: white;

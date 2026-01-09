@@ -4,180 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/src/main/resources/static/admin/sidebar.css">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adboardwrite.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <title>관리자 - 게시판 글쓰기 페이지</title>
-    <style>
-        h2 {
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
 
-        .form-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-
-        .form-row label {
-            font-size: 14px;
-            color: #555;
-            min-width: 60px;
-        }
-
-        .title-input,
-        .form-row select {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .editor {
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        .editor-toolbar {
-            display: flex;
-            gap: 10px;
-            padding: 8px;
-            background: #f5f5f5;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .editor-toolbar button {
-            border: none;
-            background: none;
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 4px;
-            transition: background 0.2s;
-        }
-
-        .editor-toolbar button:hover {
-            background: #e9ecef;
-        }
-
-        .editor-content {
-            min-height: 250px;
-            padding: 12px;
-            font-size: 15px;
-            line-height: 1.6;
-            outline: none;
-        }
-
-        .attachment-box {
-            margin-top: 15px;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: #f9f9f9;
-        }
-
-        .attachment-box label {
-            font-size: 14px;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .form-actions {
-            text-align: right;
-            margin-top: 20px;
-        }
-
-        .btn-cancel,
-        .btn-submit {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .btn-cancel {
-            background: #ddd;
-            margin-right: 10px;
-        }
-
-        .btn-submit {
-            background: #4a90e2;
-            color: white;
-        }
-    </style>
 </head>
 
 <body>
     <div class="wrapper">
-        <div class="sidebar">
-            <h2>관리자 메뉴</h2>
-            <ul>
-                <li><a href="admindashboard">대시보드</a></li>
-                <li><a href="adminuser">회원 관리</a></li>
-                <li><a href="addepartment">부서 관리</a></li>
-                <li><a href="adboard">게시판 관리</a></li>
-                <li><a href="adcomment">댓글/답글 관리</a></li>
-                <li><a href="adapprovallist">전자 결재 관리</a></li>
-                <li><a href="#">설정</a></li>
-            </ul>
+        {{> fragments/sidebar}}
 
-            <button style="margin-top: auto;">홈으로</button>
-        </div>
+        <form class="main-content" method="POST" action="/userboard/post" enctype="multipart/form-data"
+            onsubmit="return syncEditor()">
+            <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}">
 
-        <div class="main-content">
             <h2>게시판 글쓰기</h2>
 
             <!-- 말머리 & 프로젝트 선택 -->
             <div class="form-row">
                 <label for="category">게시판 선택</label>
-                <select id="category" required>
-                    <option value="">선택</option>
-                    <option value="#">공지사항</option>
-                    <option value="#">자유게시판</option>
-                    <option value="일반">건의사항</option>
+                <select id="category" name="boardCode" required>
+                    {{#boards}}
+                    <option value="{{boardCode}}">{{boardName}}</option>
+                    {{/boards}}
                 </select>
 
                 <!-- 제목 입력 -->
-                <input type="text" placeholder="제목을 입력하세요" class="title-input">
+                <input type="text" placeholder="제목을 입력하세요" class="title-input" name="title">
             </div>
 
             <div class="attachment-box">
                 <label for="fileUpload">첨부파일</label>
-                <input type="file" id="fileUpload" multiple>
+                <input type="file" id="fileUpload" name="boardFile"> <!-- multiple -->
             </div>
 
             <div class="editor">
                 <!-- 에디터 상단 툴바 -->
                 <div class="editor-toolbar">
-                    <button><i class="fa-solid fa-bold"></i></button>
-                    <button><i class="fa-solid fa-italic"></i></button>
-                    <button><i class="fa-solid fa-underline"></i></button>
-                    <button><i class="fa-solid fa-align-left"></i></button>
-                    <button><i class="fa-solid fa-align-center"></i></button>
-                    <button><i class="fa-solid fa-align-right"></i></button>
-                    <button><i class="fa-solid fa-list-ul"></i></button>
-                    <button><i class="fa-solid fa-list-ol"></i></button>
+                    <button disabled><i class="fa-solid fa-bold"></i></button>
+                    <button disabled><i class="fa-solid fa-italic"></i></button>
+                    <button disabled><i class="fa-solid fa-underline"></i></button>
+                    <button disabled><i class="fa-solid fa-align-left"></i></button>
+                    <button disabled><i class="fa-solid fa-align-center"></i></button>
+                    <button disabled><i class="fa-solid fa-align-right"></i></button>
+                    <button disabled><i class="fa-solid fa-list-ul"></i></button>
+                    <button disabled><i class="fa-solid fa-list-ol"></i></button>
                 </div>
 
                 <!-- 에디터 본문 (지금은 div로 디자인만) -->
-                <div class="editor-content" contenteditable="true">
+                <div id="editor-content" class="editor-content" contenteditable="true">
 
                 </div>
+
             </div>
+
+            <!-- 전송용 -->
+            <input type="hidden" name="content" id="content">
+
+            <input type="hidden" name="id" value="{{loginUser.userPk}}">
+            <input type="hidden" name="userName" value="{{loginUser.userName}}">
+            <input type="hidden" name="deptCode" value="{{loginUser.department_id}}">
+            <input type="hidden" name="positionLevel" value="{{loginUser.positionLevel}}">
 
             <!-- 버튼 -->
             <div class="form-actions">
-                <button class="btn-cancel">취소</button>
+                <button class="btn-cancel" type="submit" onclick="location.href='/adboard'">취소</button>
                 <button class="btn-submit">등록</button>
             </div>
-        </div>
+        </form>
+
     </div>
+
+    <script>
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+        
+        function syncEditor() {
+            const editor = document.getElementById('editor-content');
+            const hidden = document.getElementById('content');
+
+            if (editor.innerText.trim() === '') {
+                return false;
+            }
+
+            hidden.value = editor.innerHTML.trim();
+            return true;
+        }
+    </script>
 
 </body>
 

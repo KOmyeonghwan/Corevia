@@ -3,6 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="_csrf" content="{{_csrf.token}}">
+  <meta name="_csrf_header" content="{{_csrf.headerName}}">
+  <title>메세지 모달</title>
   <style>
     /* h1,
     h2,
@@ -26,11 +30,11 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-
-      background: white;
-      padding: 20px;
+      background: #f7f7f7;
+      padding: 10px 10px;
       border-radius: 8px;
-      width: 300px;
+      width: 400px;
+      height: 450px;
     }
 
     .newChatModal label {
@@ -38,23 +42,42 @@
       width: 97%;
     }
 
-    .newChatModal h2 {
-      margin: 10px;
+    .chatmaking-upper {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
     }
 
-    .newChatModal input,
+    .chatmaking-upper button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s;
+      font-size: 15px;
+      width: 20%;
+    }
+
+    .newChatModal input {
+      width: 70%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 15px;
+    }
+
     .newChatModal select {
-      width: 90%;
+      width: 96%;
+      height: 200px;
       padding: 8px;
       margin-top: 10px;
       margin-bottom: 20px;
       border: 1px solid #ccc;
       border-radius: 4px;
-    }
-
-    .newChatModal select {
-      width: 96%;
-      height: 100px;
     }
 
     .modal-buttons {
@@ -81,72 +104,33 @@
 </head>
 
 <body>
-
-  <!-- <div class="modal-overlay" id="modalOverlay"> -->
-    <div class="newChatModal">
-      <h2>채팅방 추가</h2>
-
-      <input type="text" id="chatRoomName" placeholder="채팅방 이름 입력" />
-
-      <label for="userSelect">참여자 선택 (Ctrl 또는 ⌘ 키로 다중 선택):</label>
-      <select id="userSelect" multiple>
-        <!-- 사용자 목록은 JS에서 추가 -->
-      </select>
-
-      <div class="modal-buttons">
-        <button class="btn-secondary" id="cancelBtn">취소</button>
-        <button class="btn-primary" id="addBtn">추가</button>
-      </div>
+  <div class="newChatModal">
+    <div class="chatmodal-title">
+      <h2>채팅방 만들기</h2>
     </div>
-  <!-- </div> -->
+
+    <div class="chatmaking-upper">
+      <input type="text" id="searchInput" placeholder="이름 검색">
+      <button id="searchBtn">검색</button>
+    </div>
+
+    <label for="userSelect">참여자 선택</label>
+    <select id="userSelect" multiple>
+      {{#users}}
+      <option value="{{id}}">
+        <!-- {{userName}} (사번: {{jobcode}}) -->
+      </option>
+      {{/users}}
+    </select>
+
+    <div class="modal-buttons">
+      <button class="btn-secondary" id="cancelBtn">취소</button>
+      <button class="btn-primary" id="addBtn">추가</button>
+    </div>
 
 
-  
-  <script>
-    const users = ['홍길동', '김철수', '이영희', '박민수', '최유리'];
+  </div>
 
-    const modalOverlay = document.getElementById('modalOverlay');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const addBtn = document.getElementById('addBtn');
-    const chatRoomNameInput = document.getElementById('chatRoomName');
-    const userSelect = document.getElementById('userSelect');
-
-    // 사용자 목록 렌더링
-    function populateUserSelect() {
-      userSelect.innerHTML = '';
-      users.forEach(user => {
-        const option = document.createElement('option');
-        option.value = user;
-        option.textContent = user;
-        userSelect.appendChild(option);
-      });
-    }
-
-
-    // 추가 버튼 클릭
-    addBtn.addEventListener('click', () => {
-      const roomName = chatRoomNameInput.value.trim();
-      const selectedUsers = Array.from(userSelect.selectedOptions).map(option => option.value);
-
-      if (roomName === '') {
-        alert('채팅방 이름을 입력해주세요.');
-        return;
-      }
-
-      if (selectedUsers.length === 0) {
-        alert('최소 한 명의 참여자를 선택해주세요.');
-        return;
-      }
-
-      // 결과 출력
-      console.log('채팅방 이름:', roomName);
-      console.log('참여자:', selectedUsers);
-
-      // 여기에 서버 전송 or 상태 업데이트 코드 삽입 가능
-
-  
-    });
-  </script>
 
 </body>
 
