@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Spring Boot 애플리케이션
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"  # 로컬의 8080 포트를 컨테이너의 8080 포트에 연결
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/mydb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+
+  # MariaDB 11.8 데이터베이스
+  db:
+    image: mariadb:11.8
+    container_name: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=mydb
+    ports:
+      - "3306:3306"  # MariaDB의 기본 포트
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
