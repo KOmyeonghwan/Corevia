@@ -35,3 +35,4 @@ services:
 networks:
   mynetwork:
     driver: bridge
+ㅎ

@@ -44,12 +44,6 @@ public class LoginController {
     @Autowired
     private FindUserInfoService findUserInfoService;
 
-    // @Autowired
-    // private ResetPwService resetPwService;
-
-    // @Autowired
-    // private EmailService emailService;
-
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     // 부서 가져오기
@@ -62,9 +56,6 @@ public class LoginController {
     // 사용자 홈
     @GetMapping("/")
     public String redirectToLogin() {
-        // List<DepartmentIdAndName> departments =
-        // loginDepartmentsNameService.getAllDepartments();
-        // model.addAttribute("departments", departments);
         return "redirect:/login";
     }
 

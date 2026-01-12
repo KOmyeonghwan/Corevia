@@ -64,6 +64,7 @@
                         <td>
                             <button class="btn btn-edit">수정</button>
                             <button class="btn btn-delete" data-user-id="{{id}}">삭제</button>
+                            <button class="btn btn-reset" data-user-id="{{id}}">비밀번호 초기화</button>
                         </td>
                     </tr>
                     {{/users}}
@@ -270,6 +271,32 @@
                     }
                 };
             }
+
+
+            document.querySelectorAll('.btn-reset').forEach(button => {
+                const userId = button.dataset.userId;
+
+                button.onclick = function () {
+                    if (!confirm('비밀번호를 123456789 로 초기화하시겠습니까?')) return;
+
+                    fetch(`/adminuser/reset-password/${userId}`, {
+                        method: 'POST',
+                        headers: {
+                            [csrfHeader]: csrfToken
+                        }
+                    })
+                        .then(res => res.text())
+                        .then(result => {
+                            if (result === 'success') {
+                                alert('비밀번호가 123456789 로 초기화되었습니다.\n로그인 후 반드시 변경해야 합니다.');
+                            } else {
+                                alert('비밀번호 초기화 실패');
+                            }
+                        });
+                };
+            });
+
+
         });
     });
 </script>

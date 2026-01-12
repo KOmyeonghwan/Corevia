@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.corenet.admin.department.repo.DepartmentRepository;
 import com.example.corenet.admin.log.serv.SecurityLogService;
+import com.example.corenet.admin.user.dto.TodayUsersDTO;
 import com.example.corenet.admin.user.repository.PositionRepository;
 import com.example.corenet.admin.user.repository.UsersRepository;
 import com.example.corenet.common.dto.LoginUserDTO;
@@ -34,6 +37,10 @@ public class UsersService {
     private final PositionRepository positionRepository;
     private final PasswordEncoder passwordEncoder;
     private final SecurityLogService securityLogService;
+
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,50}$";
+
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
 
     @Transactional
     public User registerUser(User user) {
@@ -239,12 +246,25 @@ public class UsersService {
     @Transactional
     public void changePassword(Integer userPk, String newPassword, HttpServletRequest request) {
 
+        // 1️⃣ 비밀번호 정책 검사
+        validatePassword(newPassword);
+
         User user = usersRepository.findById(userPk)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
+        // 2️⃣ 이전 비밀번호 재사용 방지 ⭐
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new IllegalArgumentException("이전 비밀번호는 사용할 수 없습니다.");
+        }
+
+        // 3️⃣ 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
 
+        // ⭐⭐⭐ 핵심: 강제 변경 상태 해제
+        user.setPasswordResetRequired(false);
+
+        // 4️⃣ 보안 로그 기록
         securityLogService.logEvent(
                 user,
                 SecurityLog.EventType.password_change,
@@ -252,6 +272,9 @@ public class UsersService {
                 request.getRemoteAddr(),
                 request.getHeader("User-Agent"),
                 request.getRequestURI());
+
+        // 5️⃣ 세션 무효화 (강제 로그아웃)
+        request.getSession().invalidate();
     }
 
     @Transactional
@@ -270,6 +293,47 @@ public class UsersService {
 
     public long countToday() {
         return usersRepository.count();
+    }
+
+    // 오늘의 사원 3명 정보 랜덤으로 받아오기
+    public List<TodayUsersDTO> getTodayUsers() {
+        return usersRepository.findRandomTodayUsersDTO()
+                .stream()
+                .map(user -> new TodayUsersDTO(
+                        user.getUserName(),
+                        user.getCompanyEmail(),
+                        user.getTodayDepartmentName()))
+                .collect(Collectors.toList());
+    }
+
+
+    
+    @Transactional
+    public void resetPasswordByAdmin(Integer userId, User adminUser, HttpServletRequest request) {
+
+        User user = usersRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 🔥 고정 비밀번호
+        String resetPassword = "123456789";
+
+        user.setPassword(passwordEncoder.encode(resetPassword));
+        user.setPasswordResetRequired(true); // 비밀번호 변경 강제
+
+        securityLogService.logEvent(
+                user,
+                SecurityLog.EventType.password_change,
+                "관리자에 의해 비밀번호 초기화 (123456789) - by " + adminUser.getUserName(),
+                request.getRemoteAddr(),
+                request.getHeader("User-Agent"),
+                request.getRequestURI());
+    }
+
+    private void validatePassword(String password) {
+        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {
+            throw new IllegalArgumentException(
+                    "비밀번호는 6~50자이며 대문자와 특수문자를 포함해야 합니다.");
+        }
     }
 
 }

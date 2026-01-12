@@ -702,19 +702,19 @@ public class DocManagerService {
         List<String> conditions = new ArrayList<>();
         List<Object> params = new ArrayList<>();
 
-        // 1️⃣ 부서 필터
+        // 부서 필터
         if (departmentId != null && departmentId != 1) {
             conditions.add("dept_code = ?");
             params.add(departmentId);
         }
 
-        // 2️⃣ 상태 필터
+        // 상태 필터
         if (status != null && !status.trim().isEmpty() && !"all".equalsIgnoreCase(status)) {
             conditions.add("LOWER(doc_status) = LOWER(?)");
             params.add(status);
         }
 
-        // 3️⃣ jobCode → doc_no LIKE
+        // jobCode → doc_no LIKE
         if (jobCode != null) {
             String docNoPattern = jobCode + "%";
             conditions.add("doc_no LIKE ?");
@@ -932,64 +932,6 @@ public class DocManagerService {
 
     public long countDocs() {
         return docManagerRepository.count();
-    }
-
-
-    public enum DocStatusEnum {
-        PENDING,
-        APPROVED,
-        REJECTED
-    }
-
-    // main화면 개수 count [작업 중]
-    public Map<String, Integer> countDocsStatusOptimized(List<String> docTypes, String jobcode, DocStatusEnum status) {
-        Map<String, Integer> resultMap = new HashMap<>();
-        resultMap.put("total", 0);
-        resultMap.put("pending", 0);
-        resultMap.put("approved", 0);
-        resultMap.put("rejected", 0);
-
-        if (docTypes.isEmpty()) return resultMap;
-
-        String likePattern = "%" + jobcode + "%";
-
-        // UNION ALL + pivot SQL 생성
-        StringBuilder sql = new StringBuilder();
-        for (int i = 0; i < docTypes.size(); i++) {
-            if (i > 0) sql.append(" UNION ALL ");
-            sql.append("SELECT ")
-               .append("COUNT(*) AS total, ")
-               .append("SUM(doc_status = 'pending') AS pending, ")
-               .append("SUM(doc_status = 'approved') AS approved, ")
-               .append("SUM(doc_status = 'rejected') AS rejected ")
-               .append("FROM doc_").append(docTypes.get(i)).append(" ")
-               .append("WHERE doc_no LIKE ?");
-        }
-
-        // 파라미터 (jobcode)
-        Object[] params = new Object[docTypes.size()];
-        Arrays.fill(params, likePattern);
-
-        // 실행
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql.toString(), params);
-
-        // 합산
-        for (Map<String, Object> row : rows) {
-            resultMap.put("total", resultMap.get("total") + ((Number) row.get("total")).intValue());
-            resultMap.put("pending", resultMap.get("pending") + ((Number) row.get("pending")).intValue());
-            resultMap.put("approved", resultMap.get("approved") + ((Number) row.get("approved")).intValue());
-            resultMap.put("rejected", resultMap.get("rejected") + ((Number) row.get("rejected")).intValue());
-        }
-
-        // 특정 상태만 필요하면 필터링
-        if (status != null) {
-            Map<String, Integer> filtered = new HashMap<>();
-            filtered.put(status.name().toLowerCase(), resultMap.get(status.name().toLowerCase()));
-            filtered.put("total", resultMap.get("total"));
-            return filtered;
-        }
-
-        return resultMap;
     }
 
 }

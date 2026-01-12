@@ -3,6 +3,7 @@ package com.example.corenet;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -80,7 +81,8 @@ public class SecurityConfig {
         private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
         private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-        public SecurityConfig(CustomAuthenticationFailureHandler customAuthenticationFailureHandler, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+        public SecurityConfig(CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
+                        CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
                 this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
                 this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
         }
@@ -140,8 +142,13 @@ public class SecurityConfig {
                                                 .usernameParameter("userId")
                                                 .passwordParameter("password")
                                                 .failureHandler(customAuthenticationFailureHandler)
-                                                .successHandler(customAuthenticationSuccessHandler)
-                                )
+                                                .successHandler(customAuthenticationSuccessHandler))
+
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login?logout")
+                                                .invalidateHttpSession(true)
+                                                .deleteCookies("JSESSIONID"))
 
                                 // ❌ Basic Auth 비활성화
                                 .httpBasic(basic -> basic.disable())
@@ -152,4 +159,16 @@ public class SecurityConfig {
 
                 return http.build();
         }
+
+        @Bean
+        public DaoAuthenticationProvider authenticationProvider(
+                        CustomUserDetailsService customUserDetailsService,
+                        PasswordEncoder passwordEncoder) {
+
+                DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+                provider.setUserDetailsService(customUserDetailsService);
+                provider.setPasswordEncoder(passwordEncoder);
+                return provider;
+        }
+
 }

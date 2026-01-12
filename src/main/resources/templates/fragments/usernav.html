@@ -180,29 +180,29 @@
                 });
 
                 // 모든 알림 삭제 버튼 클릭 시
-                document.getElementById('deleteAllNotificationsBtn').addEventListener('click', async function () {
-                    try {
-                        const res = await fetch('/notifications/deleteAll', {
-                            method: 'DELETE',
-                            headers: {
-                                [csrfHeader]: csrfToken,
-                            },
-                        });
+                // document.getElementById('deleteAllNotificationsBtn').addEventListener('click', async function () {
+                //     try {
+                //         const res = await fetch('/notifications/deleteAll', {
+                //             method: 'DELETE',
+                //             headers: {
+                //                 [csrfHeader]: csrfToken,
+                //             },
+                //         });
 
-                        if (res.ok) {
-                            // 알림 목록을 갱신하거나 화면에서 알림 삭제
-                            console.log('모든 알림이 삭제되었습니다.');
-                            dropdown.innerHTML = ''; // 드롭다운 내용 비우기
-                            const countElem = alertIcon.querySelector('.notification');
-                            countElem.textContent = '0'; // 알림 개수 초기화
-                            countElem.classList.add('hidden'); // 숨기기
-                        } else {
-                            console.error('모든 알림 삭제 실패');
-                        }
-                    } catch (error) {
-                        console.error('알림 삭제 중 오류 발생:', error);
-                    }
-                });
+                //         if (res.ok) {
+                //             // 알림 목록을 갱신하거나 화면에서 알림 삭제
+                //             console.log('모든 알림이 삭제되었습니다.');
+                //             dropdown.innerHTML = ''; // 드롭다운 내용 비우기
+                //             const countElem = alertIcon.querySelector('.notification');
+                //             countElem.textContent = '0'; // 알림 개수 초기화
+                //             countElem.classList.add('hidden'); // 숨기기
+                //         } else {
+                //             console.error('모든 알림 삭제 실패');
+                //         }
+                //     } catch (error) {
+                //         console.error('알림 삭제 중 오류 발생:', error);
+                //     }
+                // });
 
                 // 페이지 로드 시 알림 목록 불러오기
                 document.addEventListener('DOMContentLoaded', loadNotifications);

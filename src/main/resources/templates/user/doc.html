@@ -21,8 +21,16 @@
     <div class="logo">
       <img src="/user/images/logo.png" alt="CoreNet">
     </div>
-    <div>
+    <div data-position="{{loginUser.role}}">
       {{loginUser.userName}} 님
+      <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+        <button type="submit" class="adminBtn">관리자</button>
+      </form>
+      <form action="/logout" method="post" style="display:inline;">
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+        <button type="submit" class="logoutBtn">로그아웃</button>
+      </form>
+
     </div>
   </header>
 
@@ -108,20 +116,20 @@
         });
       });
 
-      // ✅ 초기 자동 선택 (여기가 핵심)
+      // 초기 자동 선택 
       const defaultDocBtn = document.querySelector('.menu-approval[data-doc-code="draft"]');
       const defaultTab = document.querySelector('.tab[data-tab="approved"]');
 
       if (defaultDocBtn && defaultTab) {
 
-        // ✅ 기존 활성화 전부 제거
+        // 기존 활성화 전부 제거
         document.querySelectorAll('.menu-approval.active')
           .forEach(btn => btn.classList.remove('active'));
 
         document.querySelectorAll('.tab.active')
           .forEach(tab => tab.classList.remove('active'));
 
-        // ✅ 기본값 활성화
+        // 기본값 활성화
         defaultTab.classList.add('active');
         defaultDocBtn.classList.add('active');
 

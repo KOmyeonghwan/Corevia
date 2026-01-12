@@ -62,4 +62,25 @@ public class UsersController {
         }
     }
 
+    
+    @PostMapping("/adminuser/reset-password/{id}")
+    @ResponseBody
+    public String resetPassword(
+            @PathVariable("id") Integer id,
+            @SessionAttribute("loginUser") LoginUserDTO loginUser,
+            HttpServletRequest request) {
+
+        try {
+            User adminUser = usersService.findById(loginUser.getUserPk().longValue())
+                    .orElseThrow(() -> new IllegalArgumentException("관리자 정보를 찾을 수 없습니다."));
+
+            usersService.resetPasswordByAdmin(id, adminUser, request);
+            return "success";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "fail";
+        }
+    }
+
 }

@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,6 +21,8 @@ import com.example.corenet.admin.doc.dto.DocDetailDTO;
 import com.example.corenet.admin.doc.dto.DocFileDTO;
 import com.example.corenet.admin.doc.dto.DocUserListDTO;
 import com.example.corenet.admin.doc.serv.DocManagerService;
+import com.example.corenet.admin.user.service.UsersService;
+import com.example.corenet.client.mypage.service.MypageService;
 import com.example.corenet.client.notification.dto.NotificationDTO;
 import com.example.corenet.client.notification.serv.NotificationService;
 import com.example.corenet.common.dto.LoginUserDTO;
@@ -31,15 +32,21 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class UserShowPageController {
 
+    private final UsersService usersService;
+
     private final BoardManagerService boardManagerService;
     private final DocManagerService docManagerService;
     private final NotificationService noticeService;
 
+    private final MypageService mypageService;
+
     UserShowPageController(BoardManagerService boardManagerService, DocManagerService docManagerService,
-            NotificationService noticeService) {
+            NotificationService noticeService, UsersService usersService, MypageService mypageService) {
         this.boardManagerService = boardManagerService;
         this.docManagerService = docManagerService;
         this.noticeService = noticeService;
+        this.usersService = usersService;
+        this.mypageService = mypageService;
     }
 
     @GetMapping("/usermain")
@@ -64,7 +71,8 @@ public class UserShowPageController {
         model.addAttribute("noticeList", noticeList);
         model.addAttribute("userPk", userPk);
 
-        System.out.println("loginUser posLevel = " + loginUser.getPositionLevel());
+        // 오늘의 사원 3명
+        model.addAttribute("todayUsers", usersService.getTodayUsers());
 
         return "user/main";
     }
@@ -369,22 +377,21 @@ public class UserShowPageController {
 
     // ===================
 
-    // 로그아웃
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
-    }
-
     @GetMapping("/user-mypage")
-    public String showmyPage(@ModelAttribute("loginUser") LoginUserDTO loginUser, Model model) {
+    public String showmyPage(@ModelAttribute("loginUser") LoginUserDTO loginUser, Model model,
+            @RequestParam(value = "forcePwChange", required = false) Boolean forcePwChange) {
         if (loginUser == null) {
             return "redirect:/login";
         }
 
-        model.addAttribute("postCount", 10);
-        model.addAttribute("commentCount", 10);
-        model.addAttribute("docCount", 10);
+        Integer boardCount = mypageService.getBoardTotal(loginUser.getDepartment_id(), loginUser.getUserPk());
+        Integer commentCount = mypageService.getCommentTotal(loginUser.getDepartment_id(), loginUser.getUserPk());
+        Integer docCount = mypageService.getDocTotal(loginUser.getJobcode());
+
+        model.addAttribute("postCount", boardCount);
+        model.addAttribute("commentCount", commentCount);
+        model.addAttribute("docCount", docCount);
+        model.addAttribute("forcePwChange", forcePwChange != null && forcePwChange);
 
         return "user/user-mypage";
     }

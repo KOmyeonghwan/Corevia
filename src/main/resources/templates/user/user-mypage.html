@@ -19,8 +19,15 @@
         <div class="logo">
             <img src="/user/images/logo.png" alt="CoreNet">
         </div>
-        <div>
+        <div data-position="{{loginUser.role}}">
             {{loginUser.userName}} 님
+            <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+                <button type="submit" class="adminBtn">관리자</button>
+            </form>
+            <form action="/logout" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <button type="submit" class="logoutBtn">로그아웃</button>
+            </form>
         </div>
     </header>
 
@@ -29,11 +36,11 @@
 
         <div class="main-view">
             <div class="my-page-title">
-                <h1>마이페이지</h1>
+                <h2>마이페이지</h2>
             </div>
             <div class="card">
                 <div class="card-face">
-
+                    <i class="fa-solid fa-circle-user"></i>
                 </div>
                 <div class="profile-info">
                     <h2 class="profile-name">{{loginUser.userName}}</h2>
@@ -63,9 +70,9 @@
             </div>
 
             <div class="privacy-change">
-                <h2 class="privacy-title">개인정보 수정</h2>
-
                 <div class="privacy-form">
+                    <h2 class="privacy-title">개인정보 수정</h2>
+
                     <div class="form-group">
                         <label>🔒 새 비밀번호</label>
                         <input type="password" id="newPassword" placeholder="새 비밀번호 입력">
@@ -80,8 +87,11 @@
                         <input type="email" id="email" value="{{loginUser.email}}" placeholder="이메일 입력">
                     </div>
 
-                    <button class="privacy-btn" onclick="changePassword()">비밀번호 변경</button>
-                    <button class="privacy-btn" onclick="changeEmail()">이메일 변경</button>
+                    <div class="privacy-btns">
+                        <button class="privacy-btn" onclick="changePassword()">비밀번호 변경</button>
+                        <button class="privacy-btn" onclick="changeEmail()">이메일 변경</button>
+                    </div>
+
                 </div>
             </div>
 
@@ -95,6 +105,12 @@
 
 
     <script>
+        function isValidPassword(password) {
+            const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,50}$/;
+            return regex.test(password);
+        }
+
+
         function changePassword() {
             const newPassword = document.getElementById("newPassword").value;
             const confirmPassword = document.getElementById("confirmPassword").value;
@@ -106,6 +122,15 @@
 
             if (newPassword !== confirmPassword) {
                 alert("비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            // ⭐ 비밀번호 정책 검사
+            if (!isValidPassword(newPassword)) {
+                alert(
+                    "비밀번호는 6~50자이며\n" +
+                    "대문자 1개 이상, 특수문자 1개 이상을 포함해야 합니다."
+                );
                 return;
             }
 

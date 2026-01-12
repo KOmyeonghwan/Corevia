@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.corenet.admin.user.dto.TodayUsersDTO;
 import com.example.corenet.entity.Department;
 import com.example.corenet.entity.Position;
 import com.example.corenet.entity.User;
@@ -79,5 +80,13 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
                 WHERE u.userId = :userId
             """)
     Optional<User> findLoginUser(@Param("userId") String userId);
+
+    // 오늘의 사원 3명
+    @Query(value = "SELECT u.user_name AS userName, u.company_email AS email, d.department_name AS departmentName " +
+            "FROM users u " +
+            "LEFT JOIN departments d ON u.department_id = d.id " +
+            "WHERE u.user_name NOT IN ('대표이사','시스템관리자','외부시스템관리자') " +
+            "ORDER BY RAND() LIMIT 3", nativeQuery = true)
+    List<TodayUsersDTO> findRandomTodayUsersDTO();
 
 }

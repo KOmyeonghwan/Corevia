@@ -11,13 +11,28 @@
     <link rel="stylesheet" href="/user/css/main.css">
     <!-- <script src="/user/js/main.js"></script> -->
     <title>메인</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <body>
-    <!-- 로그인 시 근태 관리 기능 동작해야 됨(1일 최초 로그인 시, 시간 admin으로 넘기기) -->
     <header>
         <div class="logo">
             <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div data-position="{{loginUser.role}}">
+            <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+                <button type="submit" class="adminBtn">관리자</button>
+            </form>
+            <form action="/logout" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <button type="submit" class="logoutBtn">로그아웃</button>
+            </form>
         </div>
     </header>
 
@@ -30,11 +45,12 @@
                     <h1>인트라넷</h1>
                 </div>
                 <div class="user-info">
-                    <div><strong>사용자:&nbsp;</strong>{{loginUser.userName}} 님</div>
+                    <div data-jocode="{{loginUser.jobcode}}"><strong>사용자:&nbsp;</strong>{{loginUser.userName}} 님</div>
                     <div><strong>로그인 시간:&nbsp;</strong>{{loginUser.loginDateTime}}</div>
                     <!-- <a href="/user-mypage">마이페이지</a> -->
                 </div>
             </section>
+
             <!-- 주요 공지사항 -->
             <section class="notice-section">
                 <h2>📢 주요 공지사항</h2>
@@ -52,37 +68,146 @@
 
             <!-- 빠른 메뉴 -->
             <section class="quick-menu">
-                <a href="#" class="menu-approval">
-                  <div>결재완료</div>
-                  <div>3개</div>
+                <a href="#" class="menu-approved">
+                    <div>결재완료</div>
+                    <div id="approval-count"></div>
                 </a>
-                <a href="#" class="menu-completed disabled">
-                  <div>임시저장</div>
-                  <div>1/3</div>
+                <a href="#" class="menu-draft">
+                    <div>임시저장</div>
+                    <div id="draft-count"></div>
                 </a>
-                <a href="#" class="menu-returned">
-                  <div>결재반려</div>
-                  <div>1/3</div>
+                <a href="#" class="menu-rejected">
+                    <div>결재반려</div>
+                    <div id="rejected-count"></div>
                 </a>
-                <a href="#" class="menu-approval">
-                  <div>결재대기</div>
-                  <div>1/3</div>
+                <a href="#" class="menu-pending">
+                    <div>결재대기</div>
+                    <div id="pending-count">3개</div>
                 </a>
-              </section>
-
-            <!-- 최근 알림/업무 -> 캐러셀 넣기 -->
-            <section class="notification-section"> 
-                <h2>⏰ 최근 알림 / 업무</h2>
-                <ul>
-                    <li>[메일] 홍길동님이 신규 메일을 받았습니다. <small>(10분 전)</small></li>
-                    <li>[일정] 팀 미팅 일정이 30분 후 시작됩니다. <small>(1시간 전)</small></li>
-                    <li>[업무] 결재 요청서가 승인 대기 중입니다. <small>(3시간 전)</small></li>
-                </ul>
             </section>
 
-        </div>
+            <section class="carousel-map-section">
+                <!-- 캐러셀 -->
+                <div class="carousel">
+                    <button class="nav prev">‹</button>
+                    <div class="carousel-track-container">
+                        <ul class="carousel-track">
+                            {{#todayUsers}}
+                            <li class="carousel-slide">
+                                <strong>{{userName}}</strong><br>
+                                <span>{{companyEmail}}</span><br>
+                                <small>Dept: {{todayDepartmentName}}</small>
+                            </li>
+                            {{/todayUsers}}
+                        </ul>
+                    </div>
+                    <button class="nav next">›</button>
+                </div>
 
+                <!-- 지도 -->
+                <div id="map"></div>
+            </section>
+
+
+        </div>
     </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const track = document.querySelector('.carousel-track');
+            const slides = Array.from(track.children);
+            const nextBtn = document.querySelector('.next');
+            const prevBtn = document.querySelector('.prev');
+
+            if (!nextBtn || !prevBtn) {
+                console.error("Carousel buttons not found");
+                return;
+            }
+
+            let currentIndex = 0;
+
+            function updateSlide() {
+                const slideWidth = slides[0].getBoundingClientRect().width;
+                track.style.transform = `translateX(-${slideWidth * currentIndex}px)`;
+            }
+
+            // 버튼 클릭
+            nextBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % slides.length;
+                updateSlide();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                updateSlide();
+            });
+
+            // 자동 이동
+            const AUTO_SLIDE_INTERVAL = 3000; // 3초마다 이동
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % slides.length;
+                updateSlide();
+            }, AUTO_SLIDE_INTERVAL);
+
+            // 지도 생성
+            const map = L.map('map').setView([37.5665, 126.9780], 13); // 서울 (위도, 경도)
+
+            // OpenStreetMap 타일 레이어 추가
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // 마커 추가 (서울 시청에 마커를 추가)
+            const marker = L.marker([37.5665, 126.9780]).addTo(map);
+            marker.bindPopup("<b>서울 시청</b>").openPopup();
+
+            // 전자결재 상태
+            function fetchStatusData() {
+                const jobcode = document.querySelector('[data-jocode]').getAttribute('data-jocode');
+
+                fetch(`/count-doc-status?jobcode=${jobcode}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if(data.systemAdmin){
+                            document.querySelector(".quick-menu").style.display = 'none'; 
+                        }else{
+                            document.getElementById('approval-count').textContent = `${data.approved}개`;
+
+                            // draft-count 조건 처리
+                            const draftMenu = document.querySelector('.menu-draft');
+                            if (!data.approver) {
+                                // approver가 없으면 draft-count 표시
+                                document.getElementById('draft-count').textContent = `${data.draft}개`;
+                                draftMenu.hidden = false;  // draft 메뉴 보이기
+                            } else {
+                                // approver가 있으면 draft-count 숨김
+                                draftMenu.hidden = true;  // draft 메뉴 숨기기
+                            }
+
+                            // 거절, 대기 카운트 표시
+                            document.getElementById('rejected-count').textContent = `${data.rejected}개`;  
+                            document.getElementById('pending-count').textContent = `${data.pending}개`;
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+            }
+
+            fetchStatusData();  
+
+        });
+
+    </script>
 
     <script src="/user/js/common.js"></script>
 

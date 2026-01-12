@@ -19,8 +19,17 @@
         <div class="logo">
             <img src="/user/images/logo.png" alt="CoreNet">
         </div>
-        <div>
+        <div data-position="{{loginUser.role}}">
             {{loginUser.userName}} 님
+            <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+                <button type="submit" class="adminBtn">관리자</button>
+            </form>
+            <form action="/logout" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <button type="submit" class="logoutBtn">로그아웃</button>
+            </form>
+            
+            
         </div>
     </header>
 

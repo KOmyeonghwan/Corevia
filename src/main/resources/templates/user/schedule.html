@@ -19,8 +19,16 @@
         <div class="logo">
             <img src="/user/images/logo.png" alt="CoreNet">
         </div>
-        <div>
+        <div data-position="{{loginUser.role}}">
             {{loginUser.userName}} 님
+            <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+                <button type="submit" class="adminBtn">관리자</button>
+            </form>
+            <form action="/logout" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <button type="submit" class="logoutBtn">로그아웃</button>
+            </form>
+                 
         </div>
     </header>
 
@@ -30,15 +38,14 @@
         <div class="main-view">
             <section class="calendar-container">
                 <header class="calendar-header">
-                    <button id="prevMonth">&lt;</button>
+                    <button id="prevMonth" class="prevBtn">&lt;</button>
                     <h2 id="monthYear"></h2>
-                    <button id="nextMonth">&gt;</button>
-                    <button id="toggleView"
-                        style="background-color: #4CAF50; color: #fff; border: none; border-radius: 5px; width: 10px 10px;">주간
-                        보기</button>
+                    <button id="nextMonth" class="nextBtn">&gt;</button>
+                    <button id="toggleView" class="toggleViewBtn">주간보기</button>
                 </header>
                 <div id="calendar" data-user-id="{{loginUser.userPk}}"></div>
             </section>
+            
             <!-- 일정 추가/편집 모달 -->
             <div id="scheduleModal" class="modal hidden">
                 <div class="modal-content">

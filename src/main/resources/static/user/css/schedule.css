@@ -140,3 +140,29 @@ textarea {
 .delete-btn:hover {
     background-color: #D32F2F;
 }
+
+.prevBtn{
+    background-color: #555;
+    color: white;
+    border-radius: 5px 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.nextBtn{
+    background-color: #555;
+    color: white;
+    border-radius: 5px 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.toggleViewBtn{
+    background-color: #4CAF50;
+    color: #fff; 
+    border: none; 
+    border-radius: 5px; 
+    width: 70px;
+    height: 20px;
+    cursor: pointer;
+}

@@ -9,8 +9,10 @@
  }
 
 
- .my-page-title h1 {
+ .my-page-title h2 {
      text-align: center;
+     margin: 7px 0px;
+     color: #666;
  }
 
  .card {
@@ -28,6 +30,11 @@
      display: flex;
      justify-content: center;
      align-items: center;
+ }
+
+ .card-face i {
+     font-size: 35px;
+     color: #2c3e50;
  }
 
  .profile-info {
@@ -53,11 +60,16 @@
  }
 
  .card-list {
-     height: 230px;
+     height: 100px;
+     max-height: 120px;
+     width: 70%;
+     max-width: 900px;
+     box-sizing: border-box;
      display: flex;
-     justify-content: flex-start; 
-     gap: 2px;                
-     margin: 3px 3px;
+     justify-content: center;
+     align-items: stretch;
+     gap: 7px;
+     margin: 30px auto;
  }
 
  .card-list p {
@@ -71,42 +83,32 @@
      border-radius: 15px;
      width: 100%;
      max-width: 400px;
-     height: auto;
-     margin: 10px auto;
+     height: 110px;
      padding: 20px;
      background-color: #fff;
      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
      transition: transform 0.3s ease, box-shadow 0.3s ease;
-     /* 카드 확대/축소 및 그림자 전환 */
      box-sizing: border-box;
-     /* 패딩과 테두리 포함 크기 설정 */
  }
 
  /* 카드 hover 효과 */
  .card-show:hover {
      transform: translateY(-5px);
-     /* 카드가 살짝 떠오르는 효과 */
      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-     /* 그림자 강도 증가 */
  }
 
  /* 제목 스타일 */
  .card-show h2 {
-     font-size: 1.5rem;
-     /* 제목 폰트 크기 */
+     font-size: 1.3rem;
      color: #333;
-     /* 제목 색상 */
      font-weight: 600;
-     /* 중간 굵기 */
      margin-bottom: 15px;
-     /* 제목과 본문 사이 여백 */
      text-align: center;
-     /* 제목 가운데 정렬 */
  }
 
  /* 본문 내용 스타일 */
  .card-show p {
-     font-size: 1rem;
+     font-size: 1.7rem;
      color: #555;
      line-height: 1.6;
      text-align: center;
@@ -117,10 +119,16 @@
  @media (max-width: 768px) {
      .card-show {
          width: 90%;
-         /* 화면 크기에 맞춰 폭을 90%로 설정 */
          margin: 15px auto;
-         /* 중앙 정렬 및 여백 조정 */
      }
+
+    .card-show h2 {
+        font-size: 1.0rem; /* 작은 화면에서 제목 크기 줄이기 */
+    }
+
+    .card-show p {
+        font-size: 1.3rem; /* 작은 화면에서 본문 크기 줄이기 */
+    }
  }
 
 
@@ -128,18 +136,21 @@
      border: 1px solid #f7f7f7;
      padding: 5px;
 
-     height: 100%;
+     height: 57%;
      border-radius: 20px 20px;
-     width: 80%;
-     margin: 0 auto;
+     width: 67%;
+     margin: 40px auto;
      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+     display: flex;
+     justify-content: center;
+     align-items: center;
  }
 
 
  /* 제목 */
  .privacy-title {
      text-align: center;
-     /* margin-bottom: 10px; */
+     margin: 10px auto;
      font-size: 22px;
      font-weight: bold;
  }
@@ -148,7 +159,11 @@
  .privacy-form {
      display: flex;
      flex-direction: column;
+     padding: 0 30px;
      gap: 10px;
+     width: 100%; /* 부모 너비에 맞추기 */
+     max-width: 800px; /* 최대 너비 설정 */
+     margin: 0 auto; /* 수평 중앙 정렬 */
  }
 
  /* 한 줄 */
@@ -178,21 +193,49 @@
      outline: none;
  }
 
- /* 버튼 */
- .privacy-btn {
-     margin-top: 20px;
-     padding: 14px;
-     background-color: #4f46e5;
-     color: #fff;
-     border: none;
-     border-radius: 10px;
-     font-size: 16px;
-     font-weight: bold;
-     cursor: pointer;
-     transition: background-color 0.3s, transform 0.2s;
- }
+  /* 버튼 */
+  .privacy-btns {
+    display: flex;
+    gap: 15px;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+}
 
- .privacy-btn:hover {
-     background-color: #4338ca;
-     transform: translateY(-2px);
- }
+.privacy-btn {
+    padding: 12px 20px;
+    background-color: #2c3e50;;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.privacy-btn:hover {
+    background-color: #4338ca;
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.privacy-btn:active {
+    background-color: #3b37a4;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .privacy-btn {
+        padding: 10px 18px;
+        font-size: 14px;
+    }
+
+    .privacy-change {
+        height: 57%;
+    }
+}

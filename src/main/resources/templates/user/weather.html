@@ -19,8 +19,15 @@
         <div class="logo">
             <img src="/user/images/logo.png" alt="CoreNet">
         </div>
-        <div>
+        <div data-position="{{loginUser.role}}">
             {{loginUser.userName}} 님
+            <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+                <button type="submit" class="adminBtn">관리자</button>
+            </form>
+            <form action="/logout" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <button type="submit" class="logoutBtn">로그아웃</button>
+            </form>            
         </div>
     </header>
 
@@ -29,17 +36,17 @@
 
         <!-- <div class="weather-controls"> -->
 
-            <div class="weather-box" id="weatherBox">
-                <div class="city-choice">
-                    <label for="citySelect">도시 선택:</label>
-                </div>
-                <div class="city-option">
-                    <select id="citySelect">
-                        <option value="">-- 도시 선택 --</option>
-                    </select>
-                </div>
-                <p class="weather-loading">📡 현재 위치의 날씨를 불러오는 중...</p>
+        <div class="weather-box" id="weatherBox">
+            <div class="city-choice">
+                <label for="citySelect">도시 선택:</label>
             </div>
+            <div class="city-option">
+                <select id="citySelect">
+                    <option value="">-- 도시 선택 --</option>
+                </select>
+            </div>
+            <p class="weather-loading">📡 현재 위치의 날씨를 불러오는 중...</p>
+        </div>
         <!-- </div> -->
 
 

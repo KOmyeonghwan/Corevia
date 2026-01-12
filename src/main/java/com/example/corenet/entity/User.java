@@ -71,4 +71,7 @@ public class User {
     @Transient
     private boolean admin;
 
+    @Column(nullable = false)
+    private boolean passwordResetRequired = false;
+
 }

@@ -105,6 +105,11 @@ public class CustomAuthenticationSuccessHandler
                 // ✅ 5. 세션 저장
                 request.getSession().setAttribute("loginUser", loginUserDTO);
 
+                if (user.isPasswordResetRequired()) {
+                        response.sendRedirect("/user-mypage?forcePwChange=true");
+                        return;
+                }
+                
                 // ✅ 6. 관리자 판단
                 // ✅ 관리자 조건: posLevel 0~3, 10,11
                 Integer positionLevel = loginUserDTO.getPositionLevel();

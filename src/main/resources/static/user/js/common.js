@@ -366,4 +366,20 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("로그인 정보 가져오기 실패", err);
             alert("로그인 정보가 없어 채팅 기능을 사용할 수 없습니다.");
         });
+
+
+
+        // 관리자 페이지
+        const positionLevel = document.querySelector('[data-position]')
+        ? parseInt(document.querySelector('[data-position]').getAttribute('data-position'), 10) || null
+        : null;
+        const isAdminBtn = document.querySelector('.isAdmin');
+    
+        if (isAdminBtn && (positionLevel >= 2)) {
+            isAdminBtn.closest('form').style.display = 'none';
+            isAdminBtn.addEventListener('submit', function (event) {
+                event.preventDefault();  
+            });
+        }
+    
 });

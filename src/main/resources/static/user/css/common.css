@@ -164,7 +164,7 @@ nav {
     justify-content: center;
     align-items: center;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
-    z-index: 20; 
+    z-index: 20;
 }
 
 .notification.hidden {
@@ -381,3 +381,36 @@ nav {
     box-shadow: 0 0 1px 1px #2c3e50;
     outline: none;
 }
+
+
+/* 로그아웃 & 관리자 */
+.logoutBtn {
+    margin-left: 2px;
+    border: none;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logoutBtn:hover {
+    background-color: #c0392b;
+    color: white;
+}
+
+.adminBtn {
+    margin-left: 2px;
+    border: none;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #c0392b;
+    color: white;
+}
+
+/* .adminBtn:hover {
+    background-color: #c0392b;
+    color: white;
+} */
+
