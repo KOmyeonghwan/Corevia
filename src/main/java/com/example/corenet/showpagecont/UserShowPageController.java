@@ -141,6 +141,9 @@ public class UserShowPageController {
         // 알림 --> fragments에서 사용
         Integer userPk = (loginUser != null && loginUser.getUserPk() != null) ? loginUser.getUserPk() : null;
         model.addAttribute("userPk", userPk);
+        
+        model.addAttribute("boardCode", boardCode);
+        model.addAttribute("boardId", id);
 
         return "user/board-detail";
     }
@@ -258,10 +261,6 @@ public class UserShowPageController {
         if (loginUser == null) {
             return "redirect:/login";
         }
-
-        // System.out.println("docType = " + docType);
-        // System.out.println("status = " + status);
-        // System.out.println("docId = " + docId);
 
         // 알림용
         Integer userPk = loginUser.getUserPk();
