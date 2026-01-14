@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.corenet.admin.log.repo.SecurityLogRepository;
 import com.example.corenet.common.dto.SecurityLogDTO;
@@ -28,6 +29,7 @@ public class SecurityLogService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Page<SecurityLogDTO> filterLogs(
             SecurityLog.EventType eventType,
             String userName,
