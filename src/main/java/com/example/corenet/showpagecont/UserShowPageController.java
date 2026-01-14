@@ -26,6 +26,7 @@ import com.example.corenet.client.mypage.service.MypageService;
 import com.example.corenet.client.notification.dto.NotificationDTO;
 import com.example.corenet.client.notification.serv.NotificationService;
 import com.example.corenet.common.dto.LoginUserDTO;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -362,9 +363,18 @@ public class UserShowPageController {
 
     // 채탕 모달
     @GetMapping("/chat-modal")
-    public String showChatModal(@ModelAttribute("loginUser") LoginUserDTO loginUser) {
-        // User user = (User) session.getAttribute("loginUser"); -> 채팅 목록 가져오는 거를 세션으로
-        // 가져오는 방식으로 시도하기
+    public String showChatModal(
+        @ModelAttribute("loginUser") LoginUserDTO loginUser, 
+        @RequestParam("roomId") Integer roomId,
+        HttpSession session,
+        Model model
+    ) {
+        
+        // 모델에 roomId 전달 (뷰에서 모달을 렌더링할 때 사용)
+        model.addAttribute("roomId", roomId);
+        model.addAttribute("loginUserName", loginUser.getUserName());
+        model.addAttribute("loginUserId", loginUser.getUserPk());
+        
         return "user/includes/chat_modal";
     }
 

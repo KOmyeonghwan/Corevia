@@ -1,38 +1,45 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  # Spring Boot 애플리케이션
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: spring-boot-app
+    container_name: corenet-app
     ports:
-      - "8080:8080"  # 로컬의 8080 포트를 컨테이너의 8080 포트에 연결
+      - "127.0.0.1:8080:8080"   # 🔥 외부 직접 접근 차단 (Nginx만 접근)
+    env_file:
+      - .env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/mydb
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_JPA_SHOW_SQL=true
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING.JPA.HIBERNATE.DDL-AUTO=UPDATE
     depends_on:
       - db
+    volumes:
+      - uploads:/uploads
     networks:
-      - mynetwork
+      - corenet-net
 
-  # MariaDB 11.8 데이터베이스
   db:
     image: mariadb:11.8
-    container_name: mariadb
+    container_name: corenet-mariadb
+    env_file:
+      - .env
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=mydb
-    ports:
-      - "3306:3306"  # MariaDB의 기본 포트
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      TZ: Asia/Seoul
+    volumes:
+      - db-data:/var/lib/mysql
     networks:
-      - mynetwork
+      - corenet-net
+
+volumes:
+  db-data:
+  uploads:
 
 networks:
-  mynetwork:
+  corenet-net:
     driver: bridge
-ㅎ

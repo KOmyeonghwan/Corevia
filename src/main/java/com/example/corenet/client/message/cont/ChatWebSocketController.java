@@ -1,6 +1,7 @@
 package com.example.corenet.client.message.cont;
 
 
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -17,10 +18,10 @@ public class ChatWebSocketController {
 
     private final ChatService chatService;
 
-    /** 메시지 받기 */
-    @MessageMapping("/chat")
+    /** 수신자 메시지 받기 */
+    @MessageMapping("/chat/{roomId}")
     @SendTo("/room/{roomId}") // /room/public 구독자에게 브로드캐스트
-    public WebSocketChatMessage sendMessage(WebSocketChatMessage message) {
+    public WebSocketChatMessage sendMessage(@DestinationVariable("roomId") Integer roomId, WebSocketChatMessage message) {
         // DB 저장
         ChatMessage saved = chatService.sendMessage(
                 message.getRoomId(),
@@ -30,6 +31,8 @@ public class ChatWebSocketController {
 
         // 서버에서 다시 브로드캐스트용 DTO 반환
         message.setMessage(saved.getMessage());
+
+        System.out.println("Received message for room: " + roomId);
         return message;
     }
 }

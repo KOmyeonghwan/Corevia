@@ -64,6 +64,18 @@ public class NotificationController {
         }
     }
 
+    // 로그인 사용자, 보낸 사용자로 삭제
+    @DeleteMapping("/{userId}/{senderId}")
+    public ResponseEntity<?> deleteNotification(@PathVariable("userId") Long userId, @PathVariable("senderId") Long senderId) {
+        try {
+            notificationService.deleteByUserIdAndSenderId(userId, senderId);
+            return ResponseEntity.ok("삭제 완료");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("삭제 실패: " + e.getMessage());
+        }
+    }
+
     // 모든 알림 삭제
     @DeleteMapping("/deleteAll")
     public ResponseEntity<?> deleteAllNotifications() {

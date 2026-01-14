@@ -335,8 +335,8 @@
                 applyColumnStatus(docCode);
             });
 
-            // 문서 저장
-            async function saveDoc() {
+            // 문서 저장[제출하기 -> pending / 임시저장 -> draft]
+            async function saveDoc(status) {
                 if (!docEditorInstance) {
                     alert("에디터가 아직 준비되지 않았습니다.");
                     return;
@@ -361,72 +361,7 @@
                     DETAIL_CONTENT: plainText,
                     DETAIL_NOTE: document.getElementById("detailNote")?.value || "",
 
-                    DOC_STATUS: "pending",
-
-                    jobCode: document.getElementById("jobCode")?.value,
-                    dept_code: document.getElementById("deptCode")?.value,
-                    doc_type: docCode
-                };
-
-                // FormData 생성
-                const formData = new FormData();
-                formData.append("docData", new Blob([JSON.stringify(docData)], { type: "application/json" }));
-
-                const fileInput = document.getElementById("attachFile");
-                if (fileInput && fileInput.files.length > 0) {
-                    for (let i = 0; i < fileInput.files.length; i++) {
-                        formData.append("attachFile", fileInput.files[i]);
-                    }
-                }
-
-                try {
-                    const res = await fetch(`/doc/save?docCode=${docCode}`, {
-                        method: "POST",
-                        headers: { [csrfHeader]: csrfToken },
-                        body: formData
-                    });
-
-                    if (!res.ok) {
-                        const msg = await res.text();
-                        alert("저장 실패: " + msg);
-                        return;
-                    }
-
-                    alert(await res.text());
-                    location.href = "/userdoc";
-
-                } catch (err) {
-                    console.error(err);
-                    alert("서버 오류가 발생했습니다.");
-                }
-            }
-
-            // 임시저장 -> DRAFT(결재자 결재상태, 문서 상태)
-            async function draftDoc() {
-                if (!docEditorInstance) {
-                    alert("에디터가 아직 준비되지 않았습니다.");
-                    return;
-                }
-
-                const docCode = docSelect.value;
-                const htmlData = docEditorInstance.getData();
-                const plainText = htmlData.replace(/<[^>]+>/g, "");
-
-                // draft
-                const docData = {
-                    DOC_NO: docNoInput.value,
-                    PAGE_NO: Number(document.querySelector("input[name='page_no']")?.value) || 1,
-                    PAGE_TOTAL: Number(document.querySelector("input[name='page_total']")?.value) || 1,
-                    WRITER: document.getElementById("writer")?.value || "",
-                    WRITE_DATE: writeDateInput.value,
-                    DRAFTER_EMP_NO: document.getElementById("drafterEmpNo")?.value || "",
-                    DRAFTER_DEPT: document.getElementById("drafterDept")?.value || "",
-                    DRAFTER_POSITION: document.getElementById("drafterPosition")?.value || "",
-                    DRAFTER_NAME: document.getElementById("drafterName")?.value || "",
-                    DRAFT_DATE: document.getElementById("drafterDate")?.value || writeDateInput.value,
-                    DETAIL_TITLE: document.getElementById("detailTitle")?.value || "",
-                    DETAIL_CONTENT: plainText,
-                    DETAIL_NOTE: document.getElementById("detailNote")?.value || "",
+                    DOC_STATUS: status,
 
                     jobCode: document.getElementById("jobCode")?.value,
                     dept_code: document.getElementById("deptCode")?.value,
@@ -476,8 +411,8 @@
                 location.href = "/userdoc";
             }
 
-            saveBtn?.addEventListener("click", saveDoc);
-            draftBtn?.addEventListener("click", draftDoc);
+            saveBtn?.addEventListener("click", () => saveDoc("pending"));  // 제출하기 (pending 상태)
+            draftBtn?.addEventListener("click", () => saveDoc("draft"));  // 임시저장 (draft 상태)
             deleteBtn?.addEventListener("click", deleteDoc);
 
             if (docSelect.value) {

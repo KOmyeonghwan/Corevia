@@ -51,6 +51,11 @@
                 let dropdown = document.querySelector('.dropdown');
                 let hideTimeout;
 
+                // if (!dropdown) {
+                //     console.log("dropdown 없음");
+                //     return;
+                // };
+
                 // 드롭다운 위치 조정 + z-index
                 if (dropdown) {
                     document.body.appendChild(dropdown);
@@ -84,14 +89,14 @@
                         dropdown.innerHTML = ''; // 기존 알림 목록 초기화
 
                         data.forEach(noti => {
-                            if (noti.type !== 'mail' && noti.type !== 'message') return;
+                            // if (noti.type !== 'mail' && noti.type !== 'message') return;
                             const div = document.createElement('div');
                             div.classList.add('noti-item');
                             div.dataset.id = noti.id;
                             div.style.cursor = noti.referenceId ? 'pointer' : 'default'; // referenceId 없으면 클릭 표시 X
 
                             // referenceId 기반 URL 설정
-                            if (noti.referenceId) {
+                            if (noti.type === 'system' && noti.referenceId) {
                                 div.dataset.url = `/userboarddetail/notice/${noti.referenceId}`;
                             }
                             if (noti.type === 'mail') {
@@ -150,6 +155,8 @@
                     const url = item.dataset.url;
                     if (!url) return;
 
+                    console.log(notiId, url);
+
                     try {
                         const res = await fetch(`/notifications/${notiId}`, {
                             method: 'DELETE',
@@ -179,6 +186,12 @@
                     }
                 });
 
+                // 페이지 로드 시 알림 목록 불러오기
+                document.addEventListener('DOMContentLoaded', loadNotifications);
+
+
+                // ===========================
+
                 // 모든 알림 삭제 버튼 클릭 시
                 // document.getElementById('deleteAllNotificationsBtn').addEventListener('click', async function () {
                 //     try {
@@ -204,8 +217,7 @@
                 //     }
                 // });
 
-                // 페이지 로드 시 알림 목록 불러오기
-                document.addEventListener('DOMContentLoaded', loadNotifications);
+
             </script>
 
 
@@ -216,6 +228,7 @@
 
     <div class="chat-user">
         <h3 class="chat-header">부서명</h3>
+
         <div class="chat-content">
             <div class="coworker-card">
                 <span><b>이름</b>
@@ -224,6 +237,10 @@
                 <p>최종 대화 내용</p>
             </div>
         </div>
+
         <button type="submit" class="newChatroom">+</button>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 </nav>

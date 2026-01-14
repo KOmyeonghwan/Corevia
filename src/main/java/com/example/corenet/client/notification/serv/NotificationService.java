@@ -51,6 +51,11 @@ public class NotificationService {
         notificationRepository.deleteById(id);
     }
 
+    // 로그인 사용자, 보낸 사용자로 삭제
+    public void deleteByUserIdAndSenderId(Long userId,Long senderId){
+        notificationRepository.deleteByUserIdAndSenderId(userId, senderId);
+    }
+
     // 모두 삭제
     public void deleteAll() {
         notificationRepository.deleteAll();

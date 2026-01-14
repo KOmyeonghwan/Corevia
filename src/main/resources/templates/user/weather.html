@@ -27,7 +27,7 @@
             <form action="/logout" method="post" style="display:inline;">
                 <input type="hidden" name="_csrf" value="{{_csrf.token}}">
                 <button type="submit" class="logoutBtn">로그아웃</button>
-            </form>            
+            </form>
         </div>
     </header>
 
@@ -36,23 +36,25 @@
 
         <!-- <div class="weather-controls"> -->
 
-        <div class="weather-box" id="weatherBox">
-            <div class="city-choice">
-                <label for="citySelect">도시 선택:</label>
+        <div class="main-view">
+            <div class="weather-box" id="weatherBox">
+                <div class="city-choice">
+                    <label for="citySelect">도시 선택:</label>
+                </div>
+                <div class="city-option">
+                    <select id="citySelect">
+                        <option value="">-- 도시 선택 --</option>
+                    </select>
+                </div>
+                <p class="weather-loading">📡 현재 위치의 날씨를 불러오는 중...</p>
             </div>
-            <div class="city-option">
-                <select id="citySelect">
-                    <option value="">-- 도시 선택 --</option>
-                </select>
-            </div>
-            <p class="weather-loading">📡 현재 위치의 날씨를 불러오는 중...</p>
         </div>
         <!-- </div> -->
 
 
     </main>
 
-    <!-- <script src="/user/js/common.js"></script> -->
+    <script src="/user/js/common.js"></script>
 </body>
 
 </html>

@@ -456,6 +456,13 @@ public class DocManagerService {
 
         Long docId = key.longValue();
 
+        // ======== doc_approver 데이터 넣기 영역 ============
+
+        String statusCheck = ((String) docData.get("doc_status")).toUpperCase();
+        if (statusCheck == null) {
+            System.out.println("Status not found.");
+        } 
+
         // use_approval 체크
         String approvalSql = "SELECT use_approval FROM doc_manager WHERE doc_code = ?";
         Boolean useApproval = jdbcTemplate.queryForObject(approvalSql, Boolean.class, docCode);
@@ -498,7 +505,7 @@ public class DocManagerService {
                     manager.get("Jobcode"),
                     manager.get("user_name"),
                     manager.get("position_id"),
-                    "PENDING",
+                    statusCheck,
                     docCode);
 
             // CEO → DRAFT
@@ -507,7 +514,7 @@ public class DocManagerService {
                     ceo.get("Jobcode"),
                     ceo.get("user_name"),
                     ceo.get("position_id"),
-                    "PENDING",
+                    statusCheck,
                     docCode);
         }
 

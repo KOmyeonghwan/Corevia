@@ -120,22 +120,22 @@ public class LoginController {
         String companyEmail = jobcode + "@corenet.com";
 
         // [[jobcode로 폴더 생성]] -> 직급 변경시 승인 도장 저장이 필요하다면, authorizedSeal 폴더 생성 필요
-        if (jobcode != null) {
-            String basePath = "src/main/java/com/example/corenet/db/" + jobcode;
-            File jobcodeFolder = new File(basePath);
+        // if (jobcode != null) {
+        //     String basePath = "src/main/java/com/example/corenet/db/" + jobcode;
+        //     File jobcodeFolder = new File(basePath);
 
-            if (!jobcodeFolder.exists()) {
-                jobcodeFolder.mkdirs();
-            }
+        //     if (!jobcodeFolder.exists()) {
+        //         jobcodeFolder.mkdirs();
+        //     }
 
-            String[] subFolders = { "email", "doc" };
-            for (String sub : subFolders) {
-                File subFolder = new File(basePath + "/" + sub);
-                if (!subFolder.exists()) {
-                    subFolder.mkdirs();
-                }
-            }
-        }
+        //     String[] subFolders = { "email", "doc" };
+        //     for (String sub : subFolders) {
+        //         File subFolder = new File(basePath + "/" + sub);
+        //         if (!subFolder.exists()) {
+        //             subFolder.mkdirs();
+        //         }
+        //     }
+        // }
 
         User user = User.builder()
                 .userId(userId)
