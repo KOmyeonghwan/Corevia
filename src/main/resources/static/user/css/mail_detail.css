@@ -1,9 +1,19 @@
+.main-view{
+  padding: 10px 10px;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .email-detail-wrapper {
-  width: 100%;
-  /* padding: 10px 0; */
+  width: 95%;
+  padding: 10px 10px 10px 10px;
+  /* margin: 10px 10px 10px 10px; */
   background-color: #fff;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   font-family: sans-serif;
+  flex: 1; 
 }
 
 .email-header {
@@ -23,6 +33,10 @@
   color: #666;
   margin-top: 5px;
   text-align: end;
+}
+
+.date{
+  padding-right: 8px;
 }
 
 .email-body {
@@ -95,6 +109,16 @@
   text-align: center;
 }
 
+.footer {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto; 
+  position: fixed;
+  bottom: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .back-button {
   display: inline-block;
@@ -123,9 +147,6 @@
 }
 
 
-
-/* 모달 */
-/* 기본 숨김 상태 */
 /* 모달 숨김용 클래스 */
 .hidden {
   display: none !important;

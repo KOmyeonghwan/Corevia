@@ -82,7 +82,7 @@ public class LoginController {
 
     // 회원가입
     @PostMapping("/register")
-    @ResponseBody // 중요! JSON 반환
+    @ResponseBody 
     public Map<String, Object> registerUser(
             @RequestParam("userId") String userId,
             @RequestParam("email") String email,
@@ -97,15 +97,15 @@ public class LoginController {
         try {
             String fullEmail = email + "@" + emailDomain;
 
-            if (loginService.isEmailTaken(fullEmail)) {
-                result.put("success", false);
-                result.put("message", "이미 사용 중인 이메일입니다.");
-                return result;
-            }
-
             if (loginService.isUserIdTaken(userId)) {
                 result.put("success", false);
                 result.put("message", "이미 사용 중인 아이디입니다.");
+                return result;
+            }
+
+            if (loginService.isEmailTaken(fullEmail)) {
+                result.put("success", false);
+                result.put("message", "이미 사용 중인 이메일입니다.");
                 return result;
             }
 
@@ -140,7 +140,7 @@ public class LoginController {
         } catch (Exception e) {
             e.printStackTrace();
             result.put("success", false);
-            result.put("message", "서버 오류가 발생했습니다.");
+            result.put("message", e.getMessage());
             return result;
         }
     }

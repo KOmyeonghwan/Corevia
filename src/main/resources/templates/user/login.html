@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/user/css/common.css">
     <link rel="stylesheet" href="/user/css/login.css">
     <script src="/user/js/login.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -58,7 +59,7 @@
 
     <!-- 회원 가입 모달 -->
     <div id="signup-modal" class="signup-modal modal">
-        <form id="signupForm" action="/register" method="post">
+        <form id="signupForm">
             <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}">
 
             <span class="close">&times;</span>
@@ -194,6 +195,7 @@
                         modal.style.display = "none";
                     }
                 });
+                
             });
         </script>
         {{/resultMessage}}

@@ -26,7 +26,6 @@ import com.example.corenet.client.mypage.service.MypageService;
 import com.example.corenet.client.notification.dto.NotificationDTO;
 import com.example.corenet.client.notification.serv.NotificationService;
 import com.example.corenet.common.dto.LoginUserDTO;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -228,6 +227,9 @@ public class UserShowPageController {
                 status.toLowerCase());
 
         int totalPages = (int) Math.ceil((double) totalDocs / pageSize);
+
+        // System.out.println("totalDocs > : " + totalDocs);
+        // System.out.println("totalPages > : " + totalPages);
 
         Map<String, Object> response = new HashMap<>();
         response.put("doclist", doclist);

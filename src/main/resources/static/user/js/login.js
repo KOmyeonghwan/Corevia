@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+  
   // 모달 요소들
   const signupModal = document.getElementById("signup-modal");
   const findIdModal = document.getElementById("find-id-modal");
@@ -12,14 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 닫기 버튼 (모달 내 .close 전부 수집)
   const closeBtns = document.querySelectorAll(".modal .close");
-
-  // 회원가입 폼
-  const signupForm = document.getElementById("signupForm");
-
-  if (!signupModal || !signupForm || !openSignupBtn) {
-    console.error("회원가입 관련 요소가 없습니다.");
-    return;
-  }
 
   // 모달 열기
   openSignupBtn.addEventListener("click", (e) => {
@@ -46,7 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // 회원가입 폼
+  const signupForm = document.getElementById("signupForm");
 
+  if (!signupModal || !signupForm || !openSignupBtn) {
+    console.error("회원가입 관련 요소가 없습니다.");
+    return;
+  }
 
   //[[------실시간 유효성 검사------]]
   const dangerPattern = /[<>'";()_+=-]/;
@@ -155,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
         this.errMsg.textContent = "";
         return true;
       },
-    }
+    },
   };
 
   // --- 실시간 이벤트 등록 ---
@@ -190,38 +191,49 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!valid) isValid = false;
     }
 
-
     if (isValid) {
+      const csrfToken = document
+        .querySelector('meta[name="_csrf"]')
+        .getAttribute("content");
+      const csrfHeader = document
+        .querySelector('meta[name="_csrf_header"]')
+        .getAttribute("content");
 
-      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-      
       // 유효성 검사 통과 후 AJAX 요청 보내기
-      const formData = new FormData(signupForm); 
-      
-      fetch('/register', {
-        method: 'POST',
+      const formData = new FormData(signupForm);
+
+      fetch("/register", {
+        method: "POST",
         body: formData,
         headers: {
-          [csrfHeader]: csrfToken  
+          [csrfHeader]: csrfToken
         }
       })
-      .then(response => response.json())  
-      .then(data => {
-        if (data.success) {
-          window.location.href = '/login';  // 성공 시 로그인 페이지로 리디렉션
-        } else {
-          alert('회원가입 실패: ' + data.message);
+      .then(res => {
+        if (!res.ok) {
+          return res.text().then(t => {
+            throw new Error(t);
+          });
         }
+        return res.json();
       })
-      .catch(error => {
-        console.error('폼 제출 오류:', error);
-        alert('서버 오류가 발생했습니다.');
-      });
+        .then((data) => {
+          if (data.success) {
+            location.href = "/login"; // 성공 시 로그인 페이지로 리디렉션
+            alert("회원가입 성공!")
+          } else {
+            alert("회원가입 실패: " + data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("오류:", error);
+          alert("서버 오류가 발생했습니다.");
+        });
     } else {
       alert("입력값을 다시 확인해주세요.");
     }
   });
+
 
 
 });
