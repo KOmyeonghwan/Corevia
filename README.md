@@ -5,19 +5,19 @@
 - 서비스 URL : http://13.124.195.150/login
 
 
-## 서비스 대상
+## 2. 서비스 대상
 - 전사 직원 → 일반 사용자, 공지 확인, 문서 열람/협업<br>
 - 부서/팀 → 부서별 자료 관리, 팀 협업, 일정 관리<br>
 - 관리자 → 사용자 권한 관리, 승인, 보고서 확인<br>
 
 
-## 2. 기획배경
+## 3. 기획배경
 - Corevia 인트라넷은 사내 인트라넷은 외부에서는 접근할 수 없고, 실제 조직 구성원만 접속할 수 있도록 설계되어야 합니다.
 - 이는 민감한 업무 자료, 전자결재, 내부 정책 등 중요한 정보가 외부로 유출되는 것을 방지하고, 조직 내부의 신뢰성을 확보하기 위함입니다.
 - 또한 사내 인트라넷은 분산된 정보와 문서, 협업 도구를 단일 플랫폼에서 통합하여 업무 효율성을 높이고, 필요한 자료와 소통을 빠르게 관리할 수 있도록 돕습니다.
 - 결과적으로, 보안을 기반으로 안전하게 운영되는 사내 인트라넷은 업무 생산성을 높이는 동시에 조직 구성원 간 협업과 소통을 원활하게 만드는 핵심 입니다.
 
-## 3. 기술스택
+## 4. 기술스택
 - ## Language
    # <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white"/> 
 - ## Framework
@@ -38,11 +38,11 @@
    # <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"/> <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white"/> <img src="https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> 
 
 
-## 4. ERD
+## 5. ERD
 <img width="7644" height="5826" alt="corevia_last_db" src="https://github.com/user-attachments/assets/642d149a-35b7-4049-9a74-96e224bf63a2" />
 
 
-## 5. 프로젝트 폴더 구조
+## 6. 프로젝트 폴더 구조
 ```
 📁 프로젝트 루트
 ├─ ⚙️ .env
@@ -85,9 +85,9 @@
 ```
 
 
-## 6. 시연 영상 
+## 7. 시연 영상 
 
-## 7. 팀구성 
+## 8. 팀구성 
 | 팀명 | 팀장 | 팀원 |
 | - | - | - |
 | 9k9k | 고명환 | 김현희 |  
