@@ -1,0 +1,62 @@
+ h2 {
+     margin-bottom: 20px;
+ }
+
+ .filter {
+     margin-bottom: 20px;
+ }
+
+ .filter label {
+     margin-right: 5px;
+ }
+
+ .filter input,
+ .filter select {
+     margin-right: 10px;
+     padding: 5px;
+ }
+
+ .cards {
+     display: flex;
+     gap: 15px;
+     margin-bottom: 20px;
+     flex-wrap: wrap;
+ }
+
+ .card {
+     background: #f4f4f4;
+     padding: 15px;
+     border-radius: 5px;
+     flex: 1;
+     text-align: center;
+     min-width: 150px;
+ }
+
+ canvas {
+     background: #fff;
+     border: 1px solid #ddd;
+     padding: 10px;
+     margin-bottom: 20px;
+     border-radius: 5px;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-top: 10px;
+ }
+
+ th,
+ td {
+     border: 1px solid #ddd;
+     padding: 8px;
+     text-align: left;
+ }
+
+ th {
+     background-color: #f4f4f4;
+ }
+
+ tr:hover {
+     background-color: #f1f1f1;
+ }

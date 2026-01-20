@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/user/css/doc-detail-edit.css">
+
+    <!-- <script src="/user/js/doc-detail-edit.js"></script> -->
+
+    <title>[반려]전자결재 수정</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+</head>
+
+<body>
+    <div class="doc-view">
+
+        <!-- 문서 선택 -->
+        <aside>
+            <input type="text" id="docSelect" value="{{docdetail.docName}}" data-doctype="{{docType}}" readonly>
+
+            <div class="btn-zip">
+                <div class="actionBtn">
+                    <button type="button" class="submitBtn btn" id="updateBtn">제출하기</button>
+                    <button type="button" class="deleteBtn btn" id="deleteBtn">삭제하기</button>
+                    <button type="button" class="draftBtn btn" id="draftBtn">임시저장</button>
+                    <button type="button" class="backBtn btn" id="backBtn"
+                        onclick="location.href='/userdoc'">취소하기</button>
+
+                </div>
+            </div>
+        </aside>
+
+        <!-- 문서 작성 -->
+        <main>
+            <form id="docForm">
+                <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}">
+
+                <div class="edit-view">
+
+                    <!-- 문서명 -->
+                    <div class="title">
+                        <input type="text" id="getDocName" value="{{docdetail.docName}}" readonly>
+                    </div>
+
+                    <div class="subtitle">
+                        아래와 같이 <span class="doc-title">{{docdetail.docName}}</span>를 제출합니다.
+                    </div>
+
+                    <div class="top-info">
+                        <table class="doc-info">
+                            <tr>
+                                <th>문서번호</th>
+                                <td>
+                                    <input type="text" id="docNo" name="doc_no" value="{{docdetail.docNo}}" readonly>
+                                </td>
+                            </tr>
+                            <tr class="page-info">
+                                <th>페이지번호</th>
+                                <td>
+                                    <input type="text" class="short" name="page_no" value="{{docdetail.pageNo}}"
+                                        readonly> /
+                                    <input type="text" class="short" name="page_total" value="{{docdetail.pageTotal}}"
+                                        readonly> Page
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>작성자</th>
+                                <td>
+                                    <input type="text" id="writer" name="writer" value="{{docdetail.writer}}" readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>작성일자</th>
+                                <td>
+                                    <input type="date" id="writeDate" name="write_date" value="{{docdetail.writeDate}}"
+                                        readonly>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- 결재선 -->
+                        <table class="approval-line">
+                            <tr>
+                                <th rowspan="3" class="approval-label">결재</th>
+                                {{#approvers}}
+                                <th>{{approverName}}</th>
+                                {{/approvers}}
+                            </tr>
+
+                            <tr class="sign-row">
+                                {{#approvers}}
+                                <td>{{ApprovalStatusKor}}</td>
+                                {{/approvers}}
+                            </tr>
+
+                            <tr>
+                                {{#approvers}}
+                                <td></td>
+                                {{/approvers}}
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <table>
+                        <!-- 기안자 -->
+                        <tr class="drafter-info">
+                            <th rowspan="2">기안자</th>
+                            <th>사번</th>
+                            <td>
+                                <input type="text" id="drafterEmpNo" name="drafter_emp_no"
+                                    value="{{docdetail.drafterEmpNo}}" readonly>
+                            </td>
+                            <th>소속</th>
+                            <td>
+                                <input type="text" id="drafterDept" name="drafter_dept"
+                                    value="{{docdetail.drafterDept}}" readonly>
+                            </td>
+                        </tr>
+
+                        <tr class="drafter-info">
+                            <th>직급</th>
+                            <td>
+                                <input type="text" id="drafterPosition" name="drafter_position"
+                                    value="{{docdetail.drafterPosition}}" readonly>
+                            </td>
+                            <th>성명</th>
+                            <td>
+                                <input type="text" id="drafterName" name="drafter_name"
+                                    value="{{docdetail.drafterName}}" readonly>
+                            </td>
+                        </tr>
+
+                        <tr class="drafter-info">
+                            <th>기안일자</th>
+                            <td colspan="4"><input type="date" id="drafterDate" name="draft_date"
+                                    value="{{docdetail.draftDate}}"></td>
+                        </tr>
+
+                        <!-- 문서별 상세 -->
+                        <tbody class="doc-detail-info">
+
+                            <tr class="title-row">
+                                <th>제목</th>
+                                <td colspan="4">
+                                    <input type="text" id="detailTitle" name="detail_title" class="detail_title"
+                                        value="{{docdetail.detailTitle}}">
+                                </td>
+                            </tr>
+
+                            <tr class="content-row">
+                                <th>상세내용</th>
+                                <td colspan="4">
+                                    <textarea id="docEditor" class="content-area"
+                                        data-name="detail_content">{{{docdetail.detailContent}}}</textarea>
+                                </td>
+                            </tr>
+
+                            <tr class="note-row">
+                                <th>특기사항</th>
+                                <td colspan="4">
+                                    <textarea id="detailNote" name="detail_note"
+                                        class="detail-note">{{docdetail.detailNote}}</textarea>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                        <!-- 첨부파일 -->
+                        <tr class="file-info">
+                            <th>첨부목록</th>
+                            <td colspan="4">
+                                <input type="file" id="attachFile" name="attach_file">
+                                <div id="filePreview" class="file-preview">
+                                    {{#files}}
+                                    <a href="/files/{{path}}/{{name}}">
+                                        {{name}} ({{size}} bytes)
+                                    </a>
+                                    {{/files}}
+
+                                    {{^files}}
+                                    첨부파일 없음
+                                    {{/files}}
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </form>
+        </main>
+
+    </div>
+
+    <!-- 로그인 사용자 직무코드 -->
+    <input type="hidden" id="jobCode" name="jobCode" value="{{loginUser.jobcode}}">
+    <input type="hidden" id="deptCode" name="dept_code" value="{{loginUser.department_id}}">
+    <input type="hidden" id="docId" value="{{docdetail.docId}}">
+
+
+    <script>
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            let docEditorInstance;
+
+            ClassicEditor
+                .create(document.querySelector('#docEditor'))
+                .then(editor => {
+                    docEditorInstance = editor;
+                    editor.ui.view.editable.element.style.minHeight = '600px';
+                })
+                .catch(console.error);
+
+            const docSelect = document.getElementById('docSelect');
+            const docNoInput = document.getElementById('docNo');
+            const docNameInput = document.getElementById('getDocName');
+            const docTitleSpan = document.querySelector('.doc-title');
+            const writeDateInput = document.getElementById('writeDate');
+
+            const updateBtn = document.getElementById("updateBtn");
+            const draftBtn = document.getElementById("draftBtn");
+            const deleteBtn = document.getElementById("deleteBtn");
+
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const day = today.getDate().toString().padStart(2, '0');
+
+            writeDateInput.value = `${year}-${month}-${day}`;
+
+            const docId = document.getElementById('docId').value;
+
+
+            // 첨부파일 미리보기 처리
+            const fileInput = document.getElementById("attachFile");
+            const filePreview = document.getElementById("filePreview");
+
+            fileInput.addEventListener("change", () => {
+                filePreview.innerHTML = ""; // 기존 미리보기 초기화
+
+                const files = fileInput.files;
+                if (!files || files.length === 0) return;
+
+                // 파일별 미리보기 처리
+                Array.from(files).forEach(file => {
+                    const fileType = file.type;
+                    const fileReader = new FileReader();
+
+                    if (fileType.startsWith("image/")) {
+                        // 이미지 파일이면 미리보기
+                        fileReader.onload = e => {
+                            const img = document.createElement("img");
+                            img.src = e.target.result;
+                            filePreview.appendChild(img);
+                        };
+                        fileReader.readAsDataURL(file);
+                    } else if (fileType === "application/pdf") {
+                        // PDF 파일이면 링크로 표시
+                        const link = document.createElement("a");
+                        link.textContent = file.name;
+                        link.href = URL.createObjectURL(file);
+                        link.target = "_blank";
+                        filePreview.appendChild(link);
+                    } else {
+                        // 그 외 파일이면 그냥 이름 표시
+                        const div = document.createElement("div");
+                        div.textContent = file.name;
+                        filePreview.appendChild(div);
+                    }
+                });
+            });
+
+
+
+            // 사용자 화면 보여주기
+            async function applyColumnStatus(docCode) {
+                const res = await fetch(`/doc/column-status?docCode=${encodeURIComponent(docCode)}`);
+                const status = await res.json();
+
+                const map = {
+                    DOC_NO: '.doc-info',
+                    PAGE_NO: '.page-info',
+                    WRITER: '#writer',
+                    DRAFTER: '.drafter-info',
+                    DETAIL_TITLE: '.title-row',
+                    DETAIL_CONTENT: '.content-row',
+                    DETAIL_NOTE: '.note-row'
+                };
+
+                // 일반 컬럼 처리
+                Object.entries(map).forEach(([key, selector]) => {
+                    document.querySelectorAll(selector).forEach(el => {
+                        el.style.display = status[key] ? '' : 'none';
+                    });
+                });
+
+                const drafterDate = document.getElementById('drafterDate');
+                // 기안자 컬럼을 사용하는 문서 + 값이 비어있을 때만
+                if (drafterDate && status.DRAFTER && !drafterDate.value) {
+                    drafterDate.value = new Date().toISOString().split('T')[0];
+                }
+
+                // FILE 별도 처리
+                document.querySelectorAll('.file-info').forEach(el => {
+                    el.style.display = status.USE_FILE ? '' : 'none';
+                });
+
+                // 결재선 별도 처리
+                document.querySelectorAll('.approval-line').forEach(el => {
+                    el.style.display = status.USE_APPROVAL ? '' : 'none';
+                });
+
+            }
+
+            // 문서 고정값 가져오기
+            const docCode = docSelect.dataset.doctype; // data-doctype 속성 사용
+            const docName = docSelect.value;
+
+            console.log("docCode > " + docCode + " docName > " + docName);
+
+            // 화면에 반영
+            docNameInput.value = docName;
+            docTitleSpan.innerText = docName;
+
+            // 컬럼 상태 적용
+            applyColumnStatus(docCode);
+
+
+            // ========문서 업데이트===========
+            async function updateDoc(status = 'pending') {
+                if (!docEditorInstance) {
+                    alert("에디터가 아직 준비되지 않았습니다.");
+                    return;
+                }
+
+                const docCode = docSelect.dataset.doctype;
+                console.log("docCode > " + docCode);
+
+                const docId = document.getElementById("docId")?.value;
+                if (!docId) {
+                    alert("docId를 찾을 수 없습니다.");
+                    return;
+                }
+
+                const htmlData = docEditorInstance.getData();
+
+                const plainText = new DOMParser()
+                    .parseFromString(htmlData, "text/html")
+                    .body
+                    .textContent
+                    .trim();
+
+
+                const docData = {
+                    DOC_NO: docNoInput.value,
+                    PAGE_NO: Number(document.querySelector("input[name='page_no']")?.value) || 1,
+                    PAGE_TOTAL: Number(document.querySelector("input[name='page_total']")?.value) || 1,
+                    WRITER: document.getElementById("writer")?.value || "",
+                    WRITE_DATE: writeDateInput.value,
+                    DRAFTER_EMP_NO: document.getElementById("drafterEmpNo")?.value || "",
+                    DRAFTER_DEPT: document.getElementById("drafterDept")?.value || "",
+                    DRAFTER_POSITION: document.getElementById("drafterPosition")?.value || "",
+                    DRAFTER_NAME: document.getElementById("drafterName")?.value || "",
+                    DRAFT_DATE: document.getElementById("drafterDate")?.value || writeDateInput.value,
+                    DETAIL_TITLE: document.getElementById("detailTitle")?.value || "",
+                    DETAIL_CONTENT: plainText,
+                    DETAIL_NOTE: document.getElementById("detailNote")?.value || "",
+                    DOC_STATUS: status, // default : pending
+
+                    jobCode: document.getElementById("jobCode")?.value,
+                    dept_code: document.getElementById("deptCode")?.value,
+                    doc_type: docCode
+                };
+
+                const formData = new FormData();
+
+                formData.append(
+                    "docData",
+                    new Blob([JSON.stringify(docData)], { type: "application/json" })
+                );
+
+                // 파일
+                const fileInput = document.getElementById("attachFile");
+                if (fileInput?.files?.length) {
+                    Array.from(fileInput.files).forEach(file => {
+                        formData.append("attachFile", file);
+                    });
+                }
+
+
+                try {
+                    const res = await fetch(
+                        `/doc/update?docCode=${encodeURIComponent(docCode)}&docId=${encodeURIComponent(docId)}`,
+                        {
+                            method: "POST",
+                            headers: {
+                                [csrfHeader]: csrfToken
+                            },
+                            body: formData
+                        }
+                    );
+
+                    if (!res.ok) {
+                        const msg = await res.text();
+                        alert("업데이트 실패: " + msg);
+                        return;
+                    }
+
+                    alert(await res.text());
+                    location.href = "/userdoc";
+
+                } catch (err) {
+                    console.error(err);
+                    alert("서버 오류가 발생했습니다.");
+                }
+            }
+
+            if (draftBtn) {
+                draftBtn.addEventListener("click", () => {
+                    updateDoc('draft'); // 'draft' 상태로 업데이트
+                });
+            }
+
+            if (updateBtn) {
+                updateBtn.addEventListener("click", () => {
+                    updateDoc('pending'); // 'pending' 상태로 업데이트
+                });
+            }
+
+            /* ================= 삭제 버튼 ================= */
+            if (deleteBtn) {
+                deleteBtn.addEventListener("click", () => {
+                    if (!confirm("원본 문서가 삭제됩니다. 한 번 삭제하면 되돌릴 수 없습니다.\n 삭제하시겠습니까?")) return;
+
+                    fetch(`/deleteonedoc/${docType}/${docId}`, {
+                        method: "DELETE",
+                        headers: {
+                            [csrfHeader]: csrfToken
+                        }
+                    })
+                        .then(res => {
+                            if (!res.ok) throw new Error("delete failed");
+                            alert("삭제되었습니다.");
+                            location.href = "/userdoc";
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert("삭제 중 오류가 발생했습니다.");
+                        });
+                });
+            }
+
+            if (docSelect.value) {
+                docSelect.dispatchEvent(new Event('change'));
+            }
+
+        });
+    </script>
+
+
+</body>
+
+</html>
+
+<!-- 
+기안일자 |	문서를 **처음으로 기안(초안 작성)**한 날짜.
+작성일자 |	문서를 작성 완료한 날짜. 또는 실제로 문서에 작성된 날짜를 표기한 것.
+-->

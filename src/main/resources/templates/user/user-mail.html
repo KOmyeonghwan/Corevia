@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/mail.css">
+
+    <script src="/user/js/mail.js"></script>
+
+    <title>user mail</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div data-position="{{loginUser.positionLevel}}">
+            {{loginUser.userName}} 님
+            <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+                <button type="submit" class="adminBtn">관리자</button>
+            </form>
+            <form action="/logout" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <button type="submit" class="logoutBtn">로그아웃</button>
+            </form>            
+        </div>
+    </header>
+
+    <main>
+        {{> fragments/usernav}}
+
+        <div class="main-view">
+            <section class="mail-page">
+                <div class="mail-header">
+                    <button class="send-mail-room" type="button">보낸 메일함</button>
+                    <button class="get-mail-room" type="button">받은 메일함</button>
+
+                    <!-- 모달 창 -->
+                    <div id="composeModal" class="compose-modal hidden">
+                        <div class="modal-content">
+                            <h2>메일 쓰기</h2>
+
+                            <form id="mailForm" enctype="multipart/form-data">
+                                <!-- <input type="hidden" name="_csrf" value="{{_csrf.token}}"> -->
+
+                                <input type="text" name="recipientEmail" placeholder="받는 사람 email" required />
+                                <input type="text" name="title" placeholder="제목" required />
+                                <textarea name="description" placeholder="내용을 입력하세요..." required></textarea>
+                                <input type="file" name="attachment">
+
+                                <div class="modal-actions">
+                                    <button type="button" id="send-mail">보내기</button>
+                                    <button type="button" id="close-compose">닫기</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <div class="mail-list">
+                    {{#mailList}}
+                    <a class="mail-item" href="/user/mail/detail/{{id}}">
+                        <div class="mail-from">{{senderName}}</div>
+                        <div class="mail-subject">{{title}}</div>
+                        <div class="mail-status {{status}}">{{status}}</div>
+                        <div class="mail-time">{{createdAt}}</div>
+                    </a>
+                    {{/mailList}}
+
+                    {{^mailList}}
+                    <div class="empty">
+                        {{#boxType}}보낸 메일이 없습니다.{{/boxType}}
+                        {{^boxType}}받은 메일이 없습니다.{{/boxType}}
+                    </div>
+                    {{/mailList}}
+
+
+
+
+                </div>
+            </section>
+        </div>
+
+        <div class="mail-write">
+            <button id="open-compose">메일 쓰기</button>
+        </div>
+
+        <footer>
+            <p>프로젝트명: corevia | 주소: https://github.com/KOmyeonghwan | 팀명: 9k9k / 팀원: 고명환(기획자), 김현희</p>
+        </footer>
+
+    </main>
+
+    <!-- 모달 창 -->
+
+
+    <script src="/user/js/common.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adapprovallist.css">
+    <title>관리자 - 전자결재 문서함 리스트</title>
+
+</head>
+
+<body>
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <div class="main-content">
+            <div class="contents-upper">
+                <div class="contents-sub">
+                    <h2>문서함 관리</h2>
+                </div>
+                <div class="search-box">
+                    <select name="#" id="#">
+                        <option value="#">검색</option>
+                        <option value="#">이름</option>
+                    </select>
+                    <input type="text">
+                    <button>검색</button>
+                </div>
+            </div>
+
+            <div class="board-button">
+                <div class="board-button-left">
+                    <button class="tab-btn active" value="all" style="color: #FFA500;">진행 중</button>
+                    <button class="tab-btn" value="pending" style="color: #2b98eb;">승인 대기</button>
+                    <button class="tab-btn" value="approved" style="color: #9dde0a;">결재 완료</button>
+                    <button class="tab-btn" value="rejected" style="color: #f44336;">반려 문서</button>
+                    <button class="tab-btn" value="discarded" style="color: #f9f9f9;">폐기 문서</button>
+                </div>
+
+                <div class="board-button-right">
+                    <button id="delete-doc-btn" class="delete-doc-btn" style="background-color: #f44336;">
+                        문서 서식 삭제
+                    </button>
+                    <button class="add-doc-template" style="background-color: #f44336;">문서 서식 추가</button>
+                    <button id="permanent-delete-btn" style="display: none;">폐기문서 영구삭제</button>
+                    <!-- <button>엑셀 다운로드</button> -->
+                </div>
+            </div>
+
+            <!-- 문서 서식 버튼 -->
+            <div class="doc-botton">
+                {{#docs}}
+                <button class="doc-btn" data-doc-code="{{docCode}}">{{docName}}</button>
+                {{/docs}}
+            </div>
+
+            <div id="doc-table" class="tab-content active">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" class="select-all"></th>
+                            <th>문서번호</th>
+                            <th>docCode</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                            <th>상태</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="docTableBody">
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination" id="pagination">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // 문서 status
+            const tabs = document.querySelectorAll(".tab-btn");
+
+            // 폐기문서 영구삭제 버튼
+            const permanentDeleteBtn = document.getElementById('permanent-delete-btn');
+
+            // 문서 서식
+            let docButtons = document.querySelectorAll(".doc-btn");
+
+            const docTableBody = document.getElementById("docTableBody");
+
+            const selectAllCheckbox = document.querySelector(".select-all");
+
+            let selectedDocCode = docButtons[0]?.dataset.docCode || docButtons[0]?.innerText || "";
+            let selectedStatus = document.querySelector(".tab-btn.active")?.value || "draft";
+
+            function loadDocs(status, docCode, page = 1) {
+                console.log("Requesting Docs with status:", status, "and docCode:", docCode);
+
+                fetch(`/adapprovallist/ajax?status=${status}&docCode=${docCode}&page=${page}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log("Received data:", data);
+                        docTableBody.innerHTML = "";
+                        if (!data.docs.length) {
+                            docTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center">데이터가 없습니다.</td></tr>';
+                            updatePagination(data.currentPage, data.totalPages, status, docCode);
+                            return;
+                        }
+                        data.docs.forEach(doc => {
+                            const tr = document.createElement("tr");
+                            tr.innerHTML = `
+                                        <td><input type="checkbox"></td>
+                                        <td>${doc.docId}</td>
+                                        <td>${docCode}</td>
+                                        <td>${doc.detailTitle}</td>
+                                        <td>${doc.writer}</td>
+                                        <td>${doc.writeDate}</td>
+                                        <td style="color:${doc.statusColor}">${doc.docStatus}</td>
+                                        <td>
+                                            <button onclick="window.location.href='/adpprovaldetail?docId=${doc.docId}&docCode=${selectedDocCode}'" class="btn-detail">
+                                                상세보기
+                                            </button>
+                                        </td>
+                                    `;
+                            docTableBody.appendChild(tr);
+                        });
+                        updatePagination(data.currentPage, data.totalPages, status, docCode);
+                    });
+            }
+
+            function updatePagination(currentPage, totalPages, status, docCode) {
+                const pagination = document.getElementById("pagination");
+                pagination.innerHTML = "";
+
+                // 이전 페이지 버튼
+                if (currentPage > 1) {
+                    const prevBtn = document.createElement("button");
+                    prevBtn.textContent = "이전";
+                    prevBtn.onclick = () => {
+                        loadDocs(status, docCode, currentPage - 1);
+                    };
+                    pagination.appendChild(prevBtn);
+                }
+
+                // 페이지 번호 버튼
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageBtn = document.createElement("button");
+                    pageBtn.textContent = i;
+                    if (i === currentPage) pageBtn.style.fontWeight = "bold";
+                    pageBtn.onclick = () => {
+                        loadDocs(status, docCode, i);
+                    };
+                    pagination.appendChild(pageBtn);
+                }
+
+                // 다음 페이지 버튼
+                if (currentPage < totalPages) {
+                    const nextBtn = document.createElement("button");
+                    nextBtn.textContent = "다음";
+                    nextBtn.onclick = () => {
+                        loadDocs(status, docCode, currentPage + 1);
+                    };
+                    pagination.appendChild(nextBtn);
+                }
+            }
+
+            // 탭 버튼 클릭 처리
+            tabs.forEach(tab => {
+                tab.addEventListener("click", () => {
+                    tabs.forEach(t => t.classList.remove("active"));
+                    tab.classList.add("active");
+                    selectedStatus = tab.value;
+
+                    // '폐기문서'가 선택된 경우 영구삭제 버튼을 보이게 함
+                    if (selectedStatus === 'discarded') {
+                        permanentDeleteBtn.style.display = 'inline-block';
+                    } else {
+                        permanentDeleteBtn.style.display = 'none';
+                    }
+
+                    loadDocs(selectedStatus, selectedDocCode, 1);
+                });
+            });
+
+            // 문서 버튼 클릭 처리
+            docButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    docButtons.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    selectedDocCode = btn.dataset.docCode;
+                    loadDocs(selectedStatus, selectedDocCode, 1);
+                });
+            });
+
+            loadDocs(selectedStatus, selectedDocCode, 1);
+
+            // 삭제 버튼 클릭
+            const deleteBtn = document.getElementById("delete-doc-btn");
+            deleteBtn.addEventListener("click", async () => {
+                if (!selectedDocCode) {
+                    alert("삭제할 문서를 먼저 선택하세요.");
+                    return;
+                }
+
+                if (!confirm(`정말 ${selectedDocCode} 서식을 삭제하시겠습니까?\n한 번 삭제하면 되돌릴 수 없습니다.`)) return;
+
+                try {
+                    const res = await fetch(`/doc/delete/${selectedDocCode}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            [csrfHeader]: csrfToken
+                        }
+                    });
+
+                    const result = await res.json();
+
+                    if (result.success) {
+                        alert(result.message);
+                        const btnToRemove = document.querySelector(`.doc-btn[data-doc-code="${selectedDocCode}"]`);
+                        if (btnToRemove) btnToRemove.remove();
+                        selectedDocCode = null;
+                        docTableBody.innerHTML = ""; // 테이블 초기화
+                    } else {
+                        alert(result.message);
+                    }
+
+                } catch (err) {
+                    console.error(err);
+                    alert("서버 통신 중 오류가 발생했습니다.");
+                }
+            });
+
+            // 이동 버튼 클릭
+            const editBtn = document.querySelector(".add-doc-template");
+
+            editBtn.addEventListener("click", () => {
+                window.location.href = "/addocedit";
+            });
+
+            // 폐기문서 영구 삭제
+            permanentDeleteBtn.addEventListener("click", function () {
+                // 문서 선택 여부 확인
+                if (!selectedDocCode) {
+                    alert("삭제할 문서를 먼저 선택하세요.");
+                    return;
+                }
+
+                // 폐기된 문서 영구 삭제 확인
+                if (confirm(`정말로 ${selectedDocCode}의 폐기된 문서들을 영구 삭제하시겠습니까?\n 이 작업은 되돌릴 수 없습니다.`)) {
+                    // 선택된 문서의 유형 (docType) 가져오기
+                    const selectedDocType = selectedDocCode; // 예시로 selectedDocCode를 docType으로 사용, 실제 문서 유형 값으로 교체
+
+                    // 요청할 URL
+                    const url = `/deletePermanentDocuments?docType=${encodeURIComponent(selectedDocType)}`;
+
+                    // AJAX 요청 보내기
+                    fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert("폐기문서가 영구 삭제되었습니다.");
+                                location.reload(); // 페이지 새로고침하여 변경된 내용을 반영
+                            } else {
+                                alert("문서 삭제에 실패했습니다. 다시 시도해주세요.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("영구 삭제 중 오류 발생:", error);
+                            alert("오류가 발생했습니다. 나중에 다시 시도해주세요.");
+                        });
+                }
+            });
+
+
+        });
+
+
+        // 목록 페이지에서 상태 저장
+        function saveStateToLocalStorage(status, docCode, page) {
+            localStorage.setItem('docStatus', status); // 예: "승인 대기"
+            localStorage.setItem('docCode', docCode);   // 예: "Draft"
+            localStorage.setItem('page', page);         // 예: 1 (페이지 번호)
+        }
+    </script>
+
+
+
+
+</body>
+
+
+</html>

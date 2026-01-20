@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adboard.css">
+
+    <title>관리자 게시판 관리</title>
+
+</head>
+
+<body>
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <div class="main-content">
+            <div class="contents-upper">
+                <div class="contents-sub">
+                    <h2>게시판 관리</h2>
+                </div>
+                <div class="search-box">
+                    <select name="searchType" id="searchType">
+                        <option value="" selected disabled>검색</option>
+                        <option value="name">이름</option>
+                        <option value="title">제목</option>
+                    </select>
+                    <input type="text" id="searchKeyword" placeholder="검색어 입력">
+                    <button type="button" id="searchBtn">검색</button>
+                </div>
+            </div>
+
+            <div class="board-header">
+                <!-- 게시판 버튼 -->
+                <div class="board-button">
+                    {{#boards}}
+                    <button class="board-btn" data-code="{{boardCode}}">
+                        {{boardName}}
+                    </button>
+                    {{/boards}}
+                </div>
+
+                <div class="right-button">
+                    <button id="deleteBoardBtn">게시판 삭제</button>
+                </div>
+
+            </div>
+
+
+            <!-- 게시글 영역 -->
+            <div id="boardContent"></div>
+
+
+            <div class="add-depart">
+                <button type="button" id="createBoardBtn" class="btn-add">게시판 추가</button>
+                <button class="btn-write" onclick="location.href='/adboardwrite'">글쓰기</button>
+            </div>
+
+            <div class="popup-overlay" id="popupOverlay">
+                <div class="popup-content">
+                    <h3 id="popupTitle"></h3>
+
+                    <form method="POST" id="boardForm">
+                        <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}">
+
+                        <input type="text" name="boardCode" placeholder="게시판 코드(ex: free)" required>
+                        <input type="text" name="boardName" placeholder="게시판 이름(한글 단어)" required>
+
+                        <div>
+                            <button type="submit" class="confirm-btn" id="popupConfirmBtn"></button>
+                            <button type="button" class="cancel-btn" id="cancelBtn">취소</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</body>
+
+
+<script>
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+    /* ================= 상태값 ================= */
+    const boardButtons = document.querySelectorAll('.board-btn');
+    const boardContent = document.getElementById('boardContent');
+    const pagination = document.getElementById('pagination');
+
+    const searchBtn = document.getElementById('searchBtn');
+    const searchKeywordInput = document.getElementById('searchKeyword');
+    const searchTypeSelect = document.getElementById('searchType');
+
+    let currentBoardCode = null;
+    let currentPage = 1;
+    const pageSize = 10;
+
+    /* ================= 게시글 로드 ================= */
+    async function loadBoard(boardCode, keyword = '', searchType = '', page = 1) {
+        let url = `/adboard/board/${boardCode}?page=${page}&size=${pageSize}`;
+
+        if (keyword.trim() !== '') {
+            url += `&keyWord=${encodeURIComponent(keyword.trim())}`;
+        }
+        if (searchType.trim() !== '') {
+            url += `&searchType=${encodeURIComponent(searchType.trim())}`;
+        }
+
+        const response = await fetch(url);
+        const html = await response.text();
+        boardContent.innerHTML = html;
+    }
+
+    /* ================= 페이지 버튼 클릭(컨트롤러 활용) ================= */
+    boardContent.addEventListener('click', function (e) {
+        const pageBtn = e.target.closest('.page-btn');
+        if (!pageBtn) return;
+
+        const page = Number(pageBtn.dataset.page);
+        if (!page || page === currentPage) return;
+
+        currentPage = page;
+
+        loadBoard(
+            currentBoardCode,
+            searchKeywordInput.value,
+            searchTypeSelect.value,
+            currentPage
+        );
+    });
+
+
+
+    /* ================= 삭제 ================= */
+    boardContent.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-delete');
+        if (!btn) return;
+
+        if (!confirm('정말 삭제하시겠습니까?')) return;
+
+        //const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        //const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        fetch(`/post/${btn.dataset.id}?boardCode=${currentBoardCode}`, {
+            method: 'DELETE',
+            headers: {
+                [csrfHeader]: csrfToken,
+                'Content-Type': 'application/json'
+            }
+        }).then(() => {
+            loadBoard(
+                currentBoardCode,
+                searchKeywordInput.value,
+                searchTypeSelect.value,
+                currentPage
+            );
+        });
+    });
+
+    /* ================= 게시판 버튼 ================= */
+    boardButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentBoardCode = btn.dataset.code;
+
+            boardButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            searchKeywordInput.value = '';
+            searchTypeSelect.value = '';
+
+            loadBoard(currentBoardCode, '', '', currentPage);
+        });
+    });
+
+    /* ================= 검색 ================= */
+    searchBtn.addEventListener('click', () => {
+        if (!currentBoardCode) return alert('게시판을 선택하세요.');
+
+        currentPage = 1;
+        loadBoard(
+            currentBoardCode,
+            searchKeywordInput.value,
+            searchTypeSelect.value,
+            currentPage
+        );
+    });
+
+    searchKeywordInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            currentPage = 1;
+            searchBtn.click();
+        }
+    });
+
+    /* ================= 기본 게시판 ================= */
+    window.addEventListener('DOMContentLoaded', () => {
+        const defaultBoard = 'notice';
+        const defaultButton = [...boardButtons].find(b => b.dataset.code === defaultBoard);
+
+        if (defaultButton) {
+            defaultButton.classList.add('active');
+            currentBoardCode = defaultBoard;
+            loadBoard(defaultBoard, '', '', currentPage);
+        }
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const createBoardBtn = document.getElementById("createBoardBtn");
+        const deleteBoardBtn = document.getElementById("deleteBoardBtn");
+
+        const popupOverlay = document.getElementById("popupOverlay");
+        const popupTitle = document.getElementById("popupTitle");
+        const boardForm = document.getElementById("boardForm");
+        const confirmBtn = document.getElementById("popupConfirmBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+
+        const boardCodeInput = boardForm.querySelector('input[name="boardCode"]');
+        const boardNameInput = boardForm.querySelector('input[name="boardName"]');
+
+        /* 게시판 생성 */
+        createBoardBtn.addEventListener("click", () => {
+            popupTitle.innerText = "새 게시판 만들기";
+            boardForm.action = "/adboard/createboardandcomment";
+            confirmBtn.innerText = "만들기";
+
+            boardCodeInput.readOnly = false;
+            boardNameInput.readOnly = false;
+
+            boardCodeInput.value = "";
+            boardNameInput.value = "";
+
+            popupOverlay.style.display = "flex";
+        });
+
+        /* 게시판 삭제 */
+        deleteBoardBtn.addEventListener("click", () => {
+            if (!currentBoardCode) {
+                alert("삭제할 게시판을 선택하세요.");
+                return;
+            }
+
+            popupTitle.innerText = "게시판 삭제";
+            boardForm.action = "/adboard/deleteboardandcomment";
+            confirmBtn.innerText = "삭제";
+
+            boardCodeInput.value = currentBoardCode;
+            boardNameInput.value =
+                document.querySelector(".board-btn.active")?.innerText || "";
+
+            // 수정 불가 처리
+            boardCodeInput.readOnly = true;
+            boardNameInput.readOnly = true;
+
+            popupOverlay.style.display = "flex";
+        });
+
+        boardForm.addEventListener("submit", (e) => {
+            if (confirmBtn.innerText === "삭제") {
+                const ok = confirm("정말 게시판을 삭제하시겠습니까?\n게시글과 댓글이 모두 삭제됩니다. 이 작업은 되돌릴 수 없습니다.");
+                if (!ok) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        /* 취소 */
+        cancelBtn.addEventListener("click", () => {
+            popupOverlay.style.display = "none";
+        });
+
+    });
+</script>
+
+
+</html>

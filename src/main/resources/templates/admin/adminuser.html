@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <!-- <link rel="stylesheet" href="/admin/sidebar.css"> -->
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adminuser.css">
+    <title>관리자 인사 관리</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <div class="main-content">
+            <div class="contents-upper">
+                <div class="contents-sub">
+                    <h2>인사관리</h2>
+                </div>
+                <form method="GET" action="/adminuser" class="search-box">
+                    <select name="searchType" id="searchType">
+                        <option value="">검색</option>
+                        <option value="userName">이름</option>
+                        <option value="department">부서</option>
+                    </select>
+                    <input type="text" name="keyword" id="keyword" />
+                    <button type="submit">검색</button>
+                </form>
+
+            </div>
+
+            <table class="board-table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>이름</th>
+                        <th>아이디</th>
+                        <th>사번</th>
+                        <th>부서</th>
+                        <th>직책</th>
+                        <th>이메일</th>
+                        <th>연락처</th>
+                        <!-- <th>권한</th> -->
+                        <th>관리</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {{#users}}
+                    <tr data-user-id="{{id}}">
+                        <td>{{id}}</td>
+                        <td>{{userName}}</td>
+                        <td>{{userId}}</td>
+                        <td>{{jobcode}}</td>
+                        <td class="department">{{department.departmentName}}</td>
+                        <td class="position" data-position-id="{{position.id}}">{{position.positionTitle}}</td>
+                        <td>{{email}}</td>
+                        <td>{{phone}}</td>
+                        <!-- <td class="role">{{#isAdmin}}ADMIN{{/isAdmin}}{{^isAdmin}}USER{{/isAdmin}}</td> -->
+                        <td>
+                            <button class="btn btn-edit">수정</button>
+                            <button class="btn btn-delete" data-user-id="{{id}}">삭제</button>
+                            <button class="btn btn-reset" data-user-id="{{id}}">비밀번호 초기화</button>
+                        </td>
+                    </tr>
+                    {{/users}}
+                </tbody>
+            </table>
+
+            <div id="departmentData" data-departments="
+        {{#departments}}
+        {{id}}|{{departmentName}},
+        {{/departments}}
+     ">
+            </div>
+
+            <div class="pagination">
+
+                {{#hasPrevious}}
+                <a href="?page={{prevPage}}&searchType={{searchType}}&keyword={{keyword}}">
+                    <button class="prev-btn">이전</button>
+                </a>
+                {{/hasPrevious}}
+
+                {{#pages}}
+                <a href="?page={{number}}&searchType={{searchType}}&keyword={{keyword}}">
+                    <span class="{{#isCurrent}}active{{/isCurrent}}">
+                        {{number}}
+                    </span>
+                </a>
+                {{/pages}}
+
+                {{#hasNext}}
+                <a href="?page={{nextPage}}&searchType={{searchType}}&keyword={{keyword}}">
+                    <button class="next-btn">다음</button>
+                </a>
+                {{/hasNext}}
+
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const deptDataEl = document.getElementById('departmentData');
+        const deptRaw = deptDataEl.dataset.departments;
+
+        const departments = deptRaw
+            .split(',')
+            .filter(v => v.trim() !== '')
+            .map(item => {
+                const [id, name] = item.split('|');
+                return {
+                    id: id.trim(),
+                    name: name.trim()
+                };
+            });
+
+
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        function editUserRow(userId, row, button) {
+            // 부서 select
+            const departmentCell = row.querySelector('.department');
+            const currentDepartment = departmentCell.textContent.trim();
+            //departmentCell.innerHTML = `
+            //<select id="dept-${userId}">
+            //   <option value="101" ${currentDepartment === '개발' ? 'selected' : ''}>개발</option>
+            //   <option value="102" ${currentDepartment === '인사' ? 'selected' : ''}>인사</option>
+            //  <option value="103" ${currentDepartment === '마케팅' ? 'selected' : ''}>마케팅</option>
+            //   <option value="104" ${currentDepartment === '기획' ? 'selected' : ''}>기획</option>
+            //</select>`;
+
+            let deptHtml = `<select id="dept-${userId}">`;
+            departments.forEach(dept => {
+                deptHtml += `
+            <option value="${dept.id}"
+                ${dept.name === currentDepartment ? 'selected' : ''}>
+                ${dept.name}
+            </option>`;
+            });
+            deptHtml += `</select>`;
+
+            departmentCell.innerHTML = deptHtml;
+
+            // 직책 select
+            const positionCell = row.querySelector('.position');
+            const currentPosition = positionCell.textContent.trim();
+            positionCell.innerHTML = `
+            <select id="pos-${userId}">
+                <option value="2" ${currentPosition === '부장' ? 'selected' : ''}>부장</option>
+                <option value="3" ${currentPosition === '과장' ? 'selected' : ''}>과장</option>
+                <option value="4" ${currentPosition === '대리' ? 'selected' : ''}>대리</option>
+                <option value="5" ${currentPosition === '사원' ? 'selected' : ''}>사원</option>
+            </select>`;
+
+            // 권한 select
+            // const roleCell = row.querySelector('.role');
+            // const currentRole = roleCell.textContent.trim();
+            // roleCell.innerHTML = `
+            // <select id="role-${userId}">
+            //     <option value="0" ${currentRole === 'ADMIN' ? 'selected' : ''}>ADMIN</option>
+            //     <option value="2" ${currentRole === 'USER' ? 'selected' : ''}>USER</option>
+            // </select>`;
+
+            // 버튼 변경
+            button.textContent = '저장';
+            button.classList.remove('btn-edit');
+            button.classList.add('btn-save');
+
+            // 저장 클릭 이벤트
+            button.onclick = function () {
+                saveUserChanges(userId, row, button);
+            };
+        }
+
+        function saveUserChanges(userId, row, button) {
+            const deptValue = document.querySelector(`#dept-${userId}`).value;
+            const posValue = document.querySelector(`#pos-${userId}`).value;
+            // const roleValue = document.querySelector(`#role-${userId}`).value;
+
+            const formData = new URLSearchParams();
+            formData.append('department_id', deptValue);
+            formData.append('position_id', posValue);
+            // formData.append('role', roleValue);
+
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+            fetch(`/adminuser/update/${userId}`, {
+                method: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                }, body: formData
+            })
+                .then(response => response.text())
+                .then(result => {
+                    if (result === 'success') {
+                        alert('저장 성공!');
+                        row.querySelector('.department').textContent = document.querySelector(`#dept-${userId}`).selectedOptions[0].text;
+                        row.querySelector('.position').textContent = document.querySelector(`#pos-${userId}`).selectedOptions[0].text;
+                        // row.querySelector('.role').textContent = roleValue === '0' ? 'ADMIN' : 'USER';
+
+                        button.textContent = '수정';
+                        button.classList.remove('btn-save');
+                        button.classList.add('btn-edit');
+
+                        button.onclick = function () {
+                            editUserRow(userId, row, button);
+                        };
+                    } else {
+                        alert('저장 실패!');
+                    }
+                })
+                .catch(error => console.error('에러 발생:', error));
+        }
+
+        // 버튼 초기 상태 설정 (대표 계정은 회색 처리)
+        document.querySelectorAll('.btn-edit, .btn-delete').forEach(button => {
+            const row = button.closest('tr');
+            const positionId = parseInt(row.querySelector('.position').dataset.positionId);
+            const userId = parseInt(row.dataset.userId);
+
+            let blockPositionId = [1, 6, 7]
+
+            if (blockPositionId.includes(positionId)) { // 대표 계정
+                button.disabled = true;
+                button.style.cursor = 'not-allowed';
+                button.style.backgroundColor = '#ccc';
+                button.style.color = '#666';
+                button.title = '대표 계정은 수정/삭제할 수 없습니다.';
+                return;
+            }
+
+            if (button.classList.contains('btn-edit')) {
+                button.onclick = function () {
+                    editUserRow(userId, row, button);
+                };
+            }
+
+            // 삭제 버튼 클릭 이벤트는 비활성화 (대표 계정만)
+            if (button.classList.contains('btn-delete')) {
+                button.onclick = function () {
+                    if (confirm('정말 삭제하시겠습니까?')) {
+                        fetch(`/adminuser/delete/${userId}`, {
+                            method: 'POST', headers: {
+                                [csrfHeader]: csrfToken
+                            }
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+                                if (data === 'success') location.reload();
+                                else alert('삭제 실패');
+                            })
+                            .catch(console.error);
+                    }
+                };
+            }
+
+
+            document.querySelectorAll('.btn-reset').forEach(button => {
+                const userId = button.dataset.userId;
+
+                button.onclick = function () {
+                    if (!confirm('비밀번호를 123456789 로 초기화하시겠습니까?')) return;
+
+                    fetch(`/adminuser/reset-password/${userId}`, {
+                        method: 'POST',
+                        headers: {
+                            [csrfHeader]: csrfToken
+                        }
+                    })
+                        .then(res => res.text())
+                        .then(result => {
+                            if (result === 'success') {
+                                alert('비밀번호가 123456789 로 초기화되었습니다.\n로그인 후 반드시 변경해야 합니다.');
+                            } else {
+                                alert('비밀번호 초기화 실패');
+                            }
+                        });
+                };
+            });
+
+
+        });
+    });
+</script>
+
+
+</html>

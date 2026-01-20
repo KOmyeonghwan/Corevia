@@ -1,0 +1,251 @@
+.main-view{
+  padding: 10px 10px;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.email-detail-wrapper {
+  width: 95%;
+  padding: 10px 10px 10px 10px;
+  /* margin: 10px 10px 10px 10px; */
+  background-color: #fff;
+  /* border: 1px solid #ddd; */
+  font-family: sans-serif;
+  flex: 1; 
+}
+
+.email-header {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.email-subject {
+  font-size: 1.5rem;
+  margin: 0;
+  text-align: center;
+}
+
+.email-meta {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 5px;
+  text-align: end;
+}
+
+.date{
+  padding-right: 8px;
+}
+
+.email-body {
+  line-height: 1.6;
+  color: #333;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.email-actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.email-actions .btn-reply {
+  margin-right: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.email-actions .btn-delete {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.btn-reply {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-download {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.email-attachments {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.email-attachments h2 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+}
+
+.email-attachments ul {
+  list-style: none;
+  padding: 0;
+}
+
+.email-attachments li+li {
+  margin-top: 8px;
+}
+
+.footer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 0;
+
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.email-footer {
+  width: 90%;
+  max-width: 1000px;
+
+  margin-top: 12px;
+  padding-top: 10px;
+
+  font-size: 0.85rem;
+  color: #666;
+  text-align: center;
+
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  letter-spacing: 0.3px;
+}
+
+
+
+.back-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2c3e50;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+  background-color: #1a252f;
+}
+
+.back-button:active {
+  background-color: #0f141a;
+}
+
+.backBtn {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+
+/* 모달 숨김용 클래스 */
+.hidden {
+  display: none !important;
+}
+
+/* 모달 전체 배경 (오버레이) */
+.compose-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 내부 박스 */
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+/* 입력 필드 스타일 */
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* 텍스트 영역 높이 고정 */
+.modal-content textarea {
+  height: 120px;
+  resize: none;
+}
+
+/* 버튼 영역 */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* 버튼 공통 스타일 */
+.modal-actions button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* 보내기 버튼 */
+#send-mail {
+  background-color: #3498db;
+  color: white;
+}
+
+#send-mail:hover {
+  background-color: #2980b9;
+}
+
+/* 닫기 버튼 */
+#close-compose {
+  background-color: #bdc3c7;
+}
+
+#close-compose:hover {
+  background-color: #a4b0be;
+}

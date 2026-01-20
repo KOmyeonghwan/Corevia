@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/admindeparment.css">
+    <title>관리자 부서관리</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <div class="main-content">
+            <div class="contents-upper">
+                <div class="contents-sub">
+                    <h2>부서 관리</h2>
+                </div>
+            </div>
+
+            <table class="board-table">
+                <thead>
+                    <tr>
+                        <th>부서ID</th>
+                        <th>부서코드</th>
+                        <th>부서명</th>
+                        <th>부서장</th>
+                        <th>인원수</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#departments}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{deptCode}}</td>
+                        <td>{{departmentName}}</td>
+                        <td>{{managerName}}</td>
+                        <td>{{memberCount}}명</td>
+                        <td>
+                            <button class="btn-edit">수정</button>
+                            <button class="btn-delete" data-deptid="{{id}}">삭제</button>
+                        </td>
+                    </tr>
+                    {{/departments}}
+                </tbody>
+            </table>
+
+            <div class="add-depart">
+                <button class="btn-add" onclick="openAddModal()">부서 추가</button>
+            </div>
+        </div>
+
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddModal()">&times;</span>
+                <h3>부서 추가</h3>
+                <form id="addDepartmentForm">
+                    <label for="deptCode">부서 코드:</label>
+                    <input type="number" id="deptCode" name="deptCode" required placeholder="예: 101">
+                    <label for="deptName">부서명:</label>
+                    <input type="text" id="deptName" name="deptName" required placeholder="예: 해외부">
+                    <div class="add-btn">
+                        <button type="submit" class="btn-add">추가</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeEditModal()">&times;</span>
+                <h3>부서 수정</h3>
+                <form id="editDepartmentForm">
+                    <input type="hidden" id="editDeptId">
+
+                    <label for="editDeptCode">부서 코드:</label>
+                    <input type="number" id="editDeptCode" required>
+                    <br>
+                    <label for="editDeptName">부서명:</label>
+                    <input type="text" id="editDeptName" required>
+                    <div class="edit-btn">
+                        <button type="submit" class="btn-edit">수정</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+<script>
+    // 모달 열기/닫기
+    function openAddModal() {
+        document.getElementById('addModal').style.display = 'block';
+    }
+    function closeAddModal() {
+        document.getElementById('addModal').style.display = 'none';
+    }
+
+
+
+    document.getElementById('addDepartmentForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const deptCode = document.getElementById('deptCode').value;
+        const deptName = document.getElementById('deptName').value;
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        fetch('/admin/departments/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({ deptCode: parseInt(deptCode), departmentName: deptName })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.departmentName + " 부서가 추가되었습니다!");
+                closeAddModal();
+
+                const tbody = document.querySelector('.board-table tbody');
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+            <td>${data.id}</td>
+            <td>${data.deptCode}</td>
+            <td>${data.departmentName}</td>
+            <td>-</td>
+            <td>0명</td>
+            <td>
+                <button class="btn-edit">수정</button>
+                <button class="btn-delete" data-deptid="${data.id}">삭제</button>
+            </td>`;
+                tbody.appendChild(tr);
+            })
+            .catch(err => alert("부서 추가 실패: " + err));
+    });
+
+    document.querySelector('.board-table tbody').addEventListener('click', function (e) {
+        if (e.target.classList.contains('btn-delete')) {
+            const tr = e.target.closest('tr');
+            const deptId = e.target.dataset.deptid; // 버튼에 data-deptid 추가 필요
+            const deptName = tr.querySelector('td:nth-child(2)').textContent;
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+
+            if (confirm(deptName + " 부서를 정말 삭제하시겠습니까?")) {
+                fetch('/admin/departments/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken },
+                    body: JSON.stringify({ id: parseInt(deptId) })
+                })
+                    .then(response => response.text())
+                    .then(msg => {
+                        alert(msg);
+                        tr.remove(); // 테이블에서 행 제거
+                    })
+                    .catch(err => alert("삭제 실패: " + err));
+            }
+        }
+    });
+
+    function openEditModal(deptId, deptCode, deptName) {
+        document.getElementById('editDeptId').value = deptId;
+        document.getElementById('editDeptName').value = deptName;
+        document.getElementById('editDeptCode').value = deptCode;
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+
+    document.querySelector('.board-table tbody').addEventListener('click', function (e) {
+        // 수정 버튼 클릭
+        if (e.target.classList.contains('btn-edit')) {
+            const tr = e.target.closest('tr');
+            const deptId = tr.querySelector('td:nth-child(1)').textContent;
+            const deptCode = tr.querySelector('td:nth-child(2)').textContent; // ← deptCode 가져오기
+            const deptName = tr.querySelector('td:nth-child(3)').textContent;
+            openEditModal(deptId, deptCode, deptName); // 3개 인자 전달
+        }
+    });
+
+
+    document.getElementById('editDepartmentForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const deptId = document.getElementById('editDeptId').value;
+        const deptCode = document.getElementById('editDeptCode').value;
+        const deptName = document.getElementById('editDeptName').value;
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        fetch('/admin/departments/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken },
+            body: JSON.stringify({ id: parseInt(deptId), deptCode: parseInt(deptCode), departmentName: deptName })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.departmentName + " 부서가 수정되었습니다!");
+                closeEditModal();
+
+                const rows = document.querySelectorAll('.board-table tbody tr');
+                rows.forEach(row => {
+                    if (row.querySelector('td:nth-child(1)').textContent == deptId) {
+                        row.querySelector('td:nth-child(2)').textContent = data.deptCode;
+                        row.querySelector('td:nth-child(3)').textContent = data.departmentName;
+                    }
+                });
+            })
+            .catch(err => alert("수정 실패: " + err));
+    });
+
+
+</script>
+
+</html>

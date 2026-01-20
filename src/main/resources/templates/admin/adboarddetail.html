@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <title>관리자 게시판 상세보기</title>
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adboarddetail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <div class="main-content">
+            <h1>게시글 상세보기</h1>
+
+
+            <div class="detail-box">
+
+                <div class="detail-item"><strong>게시판:</strong> {{post.boardCode}}</div>
+                <div class="detail-item"><strong>제목:</strong> {{post.title}}</div>
+                <div class="detail-item"><strong>작성자:</strong> {{post.userName}}</div>
+                <div class="detail-item"><strong>작성일:</strong> {{post.createAtFormatted}}</div>
+
+                <div class="detail-content">{{{post.content}}}</div>
+
+                {{#post.fileName}}
+                <div class="attachments">
+                    <strong><i class="fa-solid fa-paperclip"></i> 첨부파일:
+                        {{#post.fileUrl}}
+                        <a href="/user/board/{{boardCode}}/{{post.id}}/attachment" download="{{post.fileName}}">
+                            {{post.fileName}}
+                        </a>
+                        {{/post.fileUrl}}
+                    </strong>
+                </div>
+                {{/post.fileName}}
+
+                {{^post.fileName}}
+                <div class="attachments">
+                    <strong>첨부파일이 없습니다.</strong>
+                </div>
+                {{/post.fileName}}
+
+
+            </div>
+
+
+            <div class="button-group">
+                <div class="left-btns">
+                    <a href="/adboard">
+                        <button type="button"><i class="fa-solid fa-list"></i> 목록</button>
+                    </a>
+                </div>
+
+                <div class="right-btns">
+                    <button type="button" onclick="location.href='/adboardedit/{{post.boardCode}}/{{post.id}}'">
+                        <i class="fa-solid fa-pen"></i> 수정</button>
+
+                    <!-- 삭제 버튼 -->
+                    <button class="delete-btn" data-id="{{post.id}}" data-board="{{post.boardCode}}" type="button">
+                        <i class="fa-solid fa-trash"></i> 삭제
+                    </button>
+
+                    <script>
+                        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+                        document.addEventListener("DOMContentLoaded", () => {
+                            document.querySelectorAll('.delete-btn').forEach(btn => {
+                                btn.addEventListener('click', async () => {
+                                    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+                                    const postId = btn.dataset.id;
+                                    const boardCode = btn.dataset.board;
+
+                                    const res = await fetch(`/post/${postId}?boardCode=${boardCode}`, {
+                                        method: 'DELETE',
+                                        headers: { [csrfHeader]: csrfToken }
+                                    });
+
+                                    if (res.ok) {
+                                        alert('삭제 성공');
+                                        // 행 제거 후 목록 이동
+                                        setTimeout(() => window.location.href = '/adboard', 100);
+                                    } else {
+                                        alert('삭제 실패');
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="nav-posts">
+
+                {{#prevPostId}}
+                <div>
+                    <i class="fa-solid fa-chevron-up"></i>
+                    <a href="/adboarddetail/{{post.boardCode}}/{{prevPostId}}">
+                        <h3>이전 게시글</h3>
+                    </a>
+                </div>
+                {{/prevPostId}}
+
+                {{^prevPostId}}
+                <div class="disabled">
+                    <i class="fa-solid fa-chevron-up"></i>
+                    <span>이전 게시글 없음</span>
+                </div>
+                {{/prevPostId}}
+
+                {{#nextPostId}}
+                <div>
+                    <i class="fa-solid fa-chevron-down"></i>
+                    <a href="/adboarddetail/{{post.boardCode}}/{{nextPostId}}">
+                        <h3>다음 게시글</h3>
+                    </a>
+                </div>
+                {{/nextPostId}}
+
+                {{^nextPostId}}
+                <div class="disabled">
+                    <i class="fa-solid fa-chevron-down"></i>
+                    <span>다음 게시글 없음</span>
+                </div>
+                {{/nextPostId}}
+
+            </div>
+
+
+        </div>
+    </div>
+</body>
+
+</html>

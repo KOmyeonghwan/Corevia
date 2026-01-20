@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adboardedit.css">
+    <title>관리자 게시판 수정 페이지</title>
+
+</head>
+
+<body>
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <div class="main-content">
+            <h2>게시글 수정</h2>
+
+            <form class="edit-form" method="post" action="/boarddetailedit" enctype="multipart/form-data">
+                <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}">
+
+                <div class="detail-item">
+                    <label for="title">제목</label>
+                    <input type="text" id="title" name="title" value="{{post.title}}">
+                </div>
+                <div class="detail-item">
+                    <label for="author">작성자</label>
+                    <input type="text" value="{{post.userName}}" disabled>
+                </div>
+                <div class="detail-item">
+                    <label for="category">카테고리</label>
+                    <input type="text" name="boardCode" value="{{post.boardCode}}" readonly>
+
+                    <!-- <select id="category" name="category">
+                        {{#boards}}
+                        <option value="{{boardCode}}">{{boardName}}</option>
+                        {{/boards}}
+                    </select> -->
+                </div>
+                <div class="detail-item">
+                    <label for="content">내용</label>
+                    <textarea id="commentContent" name="content" rows="5">{{post.content}}</textarea>
+                </div>
+                <div class="detail-item">
+                    <label for="file">첨부파일</label>
+
+                    <!-- 기존 첨부파일 링크 -->
+                    <ul>
+                        {{#post.fileUrl}}
+                        <li>
+                            <a href="{{post.fileUrl}}" target="_blank">
+                                {{post.fileName}}
+                            </a>
+                        </li>
+                        {{/post.fileUrl}}
+                    </ul>
+
+                    <!-- 새 파일 업로드 input -->
+                    <input type="file" name="boardFile" id="file">
+
+
+                    <!-- 기존 파일 정보 hidden으로 보존, 값 없으면 빈 문자열 처리 -->
+                    <input type="hidden" name="existingFileUrl"
+                        value="{{#post.fileUrl}}{{post.fileUrl}}{{/post.fileUrl}}">
+                    <input type="hidden" name="existingFileName"
+                        value="{{#post.fileName}}{{post.fileName}}{{/post.fileName}}">
+                </div>
+
+                <input type="hidden" name="postId" value="{{post.id}}">
+                <input type="hidden" name="positionLevel" value="{{loginUser.positionLevel}}">
+
+                <div class="form-buttons">
+                    <button type="submit">저장</button>
+                    <button type="button"
+                        onclick="location.href='/adboarddetail/{{post.boardCode}}/{{post.id}}'">취소</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

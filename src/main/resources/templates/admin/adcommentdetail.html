@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adcommentdetail.css">
+    <title>관리자 댓글 상세보기</title>
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <div class="main-content">
+            <!-- 상단 제목 -->
+            <div class="contents-upper">
+                <h2>댓글 상세보기</h2>
+                <div class="action-buttons">
+                    <button class="btn" id="btn-list">목록</button>
+                    <button class="btn btn-edit" id="editBtn" data-board-code="{{boardCode}}" data-id="{{postId}}">
+                        수정
+                    </button>
+                </div>
+            </div>
+
+            {{#commentGroups}}
+            <!-- 원댓글 카드 -->
+            <div class="detail-box">
+                <div class="detail-item">
+                    <h3>원 댓글</h3>
+                </div>
+                <div class="detail-item">
+                    <p><strong>작성일:</strong> {{root.createAtFormatted}}</p>
+                </div>
+                <div class="detail-item">
+                    <p><strong>작성자:</strong> {{root.userName}}</p>
+                </div>
+                <div class="detail-item">
+                    <p><strong>댓글 ID:</strong> {{root.id}}</p>
+                </div>
+                <div class="detail-item">
+                    <strong>내용:</strong>
+                    <span class="root-content">{{root.content}}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>상태:</strong>
+                    <span class="root-status">{{root.statusName}}</span>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn btn-hide" data-id="{{root.id}}" data-board-code="{{boardCode}}">
+                        숨김
+                    </button>
+
+                    <button class="btn btn-delete" data-id="{{root.id}}" data-board-code="{{boardCode}}">삭제</button>
+                </div>
+            </div>
+
+            <!-- 대댓글 / 대대댓글 리스트 -->
+            <div class="reply-list">
+                <table class="board-table">
+                    <thead>
+                        <tr>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                            <th>내용</th>
+                            <th>구분</th>
+                            <th>상태</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#replies}}
+                        <tr class="reply-row {{#isNested}}nested{{/isNested}}">
+                            <td>{{userName}}</td>
+                            <td>{{createAtFormatted}}</td>
+                            <td class="content" onclick="openModal('{{content}}')">
+                                {{content}}
+                            </td>
+                            <td>{{depthName}}</td>
+                            <td class="reply-status">{{statusName}}</td>
+                            <td>
+                                <button class="btn btn-hide" data-id="{{id}}" data-board-code="{{boardCode}}">
+                                    숨김
+                                </button>
+                                <button class="btn btn-delete" data-id="{{id}}" data-board-code="{{boardCode}}">
+                                    삭제
+                                </button>
+                            </td>
+                        </tr>
+                        {{/replies}}
+
+                        {{^replies}}
+                        <tr>
+                            <td colspan="6" style="text-align: center;">대댓글이 없습니다.</td>
+                        </tr>
+                        {{/replies}}
+                    </tbody>
+                </table>
+            </div>
+            {{/commentGroups}}
+
+
+
+            <!-- <div class="nav-posts">
+
+                {{#prevPage}}
+                <div>
+                    <i class="fa-solid fa-chevron-up"></i>
+                    {{#prevCommentId}}
+                    <a href="/adcommentdetail/{{boardCode}}/{{prevCommentId}}">
+                        <h3>이전 댓글</h3>
+                    </a>
+                    {{/prevCommentId}}
+                </div>
+                {{/prevPage}}
+
+                {{^prevPage}}
+                <div class="disabled">
+                    <i class="fa-solid fa-chevron-up"></i>
+                    <span>이전 댓글 없음</span>
+                </div>
+                {{/prevPage}}
+
+                {{#nextPage}}
+                <div>
+                    <i class="fa-solid fa-chevron-down"></i>
+                    {{#nextCommentId}}
+                    <a href="/adcommentdetail/{{boardCode}}/{{nextCommentId}}">
+                        <h3>다음 댓글</h3>
+                    </a>
+                    {{/nextCommentId}}
+                </div>
+                {{/nextPage}}
+
+                {{^nextPage}}
+                <div class="disabled">
+                    <i class="fa-solid fa-chevron-down"></i>
+                    <span>다음 댓글 없음</span>
+                </div>
+                {{/nextPage}}
+
+            </div> -->
+
+
+        </div>
+
+    </div>
+
+    <!-- 모달 -->
+    <div id="replyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>대댓글 내용</h3>
+            <p id="modalText"></p>
+        </div>
+    </div>
+</body>
+
+<script>
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // 목록 버튼 클릭
+        const listBtn = document.getElementById("btn-list");
+        if (listBtn) {
+            listBtn.addEventListener("click", function () {
+                window.location.href = '/adcomment';
+            });
+        }
+
+        // 수정 버튼 클릭
+        const editBtn = document.getElementById("editBtn"); // id와 일치
+        if (editBtn) {
+            editBtn.addEventListener("click", function () {
+                const boardCode = editBtn.getAttribute("data-board-code");
+                const postId = editBtn.getAttribute("data-id");
+                window.location.href = `/adcommentedit/${boardCode}/${postId}`;
+            });
+        }
+
+        // 모달 열기
+        const modal = document.getElementById("replyModal");
+        window.openModal = function (text) {
+            const modalText = document.getElementById("modalText");
+            if (modalText) modalText.innerText = text;
+            if (modal) modal.style.display = "block";
+        }
+
+        // 모달 닫기
+        window.closeModal = function () {
+            if (modal) modal.style.display = "none";
+        }
+
+        // 모달 바깥 클릭 시 닫기
+        window.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+
+        // 수정 버튼(수정 버튼을 누르면 -> "content: 비공개 처리된 댓글입니다."로 변경 )
+        document.querySelectorAll(".btn-hide").forEach(btn => {
+
+            // 원댓글
+            const detailBox = btn.closest(".detail-box");
+            const statusSpan = detailBox ? detailBox.querySelector(".root-status") : null;
+
+            // 대댓글
+            const replyRow = btn.closest("tr");
+            const replyStatusSpan = replyRow ? replyRow.querySelector(".reply-status") : null;
+
+            // 버튼 초기 상태 설정
+            if ((statusSpan && statusSpan.innerText === "숨김") || (replyStatusSpan && replyStatusSpan.innerText === "숨김")) {
+                btn.innerText = "숨김됨";
+                btn.disabled = true;
+            } else {
+                btn.innerText = "숨김";
+            }
+
+            btn.addEventListener("click", () => {
+                const { id, boardCode } = btn.dataset;
+                if (!confirm("숨김 처리하시겠습니까?")) return;
+
+                fetch(`/comment/hide/${boardCode}/${id}`,
+                    {
+                        method: "POST",
+                        headers: { [csrfHeader]: csrfToken }
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error();
+
+                        btn.innerText = "숨김됨";
+                        btn.disabled = true;
+
+                        // 원댓글이면 상태 갱신
+                        if (statusSpan) statusSpan.innerText = "숨김";
+
+                        // 대댓글이면 상태 갱신
+                        if (replyStatusSpan) replyStatusSpan.innerText = "숨김";
+                    })
+                    .catch(() => alert("숨김 처리 실패"));
+            });
+        });
+
+
+
+        // 삭제 버튼
+        document.querySelectorAll(".btn-delete").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const commentId = btn.dataset.id;
+                const boardCode = btn.dataset.boardCode;
+
+                if (!commentId || !boardCode) {
+                    return alert("삭제할 댓글 정보가 없습니다.");
+                }
+
+                if (!confirm("정말로 이 댓글을 삭제하시겠습니까?")) return;
+
+                fetch(`/comment/delete/${encodeURIComponent(boardCode)}/${commentId}`, {
+                    method: "DELETE",
+                    headers: { [csrfHeader]: csrfToken }
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            alert("삭제되었습니다.");
+                            // 삭제 후 해당 행 제거
+                            const row = btn.closest("tr");
+                            if (row) row.remove();
+                        } else {
+                            return res.text().then(text => { throw new Error(text); });
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("삭제 중 오류가 발생했습니다.");
+                    });
+            });
+        });
+
+    });
+
+</script>
+
+
+
+</html>

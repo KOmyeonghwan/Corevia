@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/schedule.css">
+    <script src="/user/js/schedule.js"></script>
+    <script src="/user/js/common.js"></script>
+    <title>schedule</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div data-position="{{loginUser.positionLevel}}">
+            {{loginUser.userName}} 님
+            <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+                <button type="submit" class="adminBtn">관리자</button>
+            </form>
+            <form action="/logout" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <button type="submit" class="logoutBtn">로그아웃</button>
+            </form>
+        </div>
+    </header>
+
+    <main>
+        {{> fragments/usernav}}
+
+        <div class="main-view">
+            <section class="calendar-container">
+                <header class="calendar-header">
+                    <button id="prevMonth" class="prevBtn">&lt;</button>
+                    <h2 id="monthYear"></h2>
+                    <button id="nextMonth" class="nextBtn">&gt;</button>
+                    <button id="toggleView" class="toggleViewBtn">주간보기</button>
+                </header>
+                <div id="calendar" data-user-id="{{loginUser.userPk}}"></div>
+            </section>
+            
+            <!-- 일정 추가/편집 모달 -->
+            <div id="scheduleModal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalTitle">일정 추가</h3>
+                        <span id="closeModal" class="close-btn">&times;</span>
+                    </div>
+                    <form id="scheduleForm">
+                        <div class="form-group">
+                            <label for="scheduleDate">날짜</label>
+                            <input type="date" id="scheduleDate" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleTime">시간</label>
+                            <input type="time" id="scheduleTime" />
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleTitle">제목</label>
+                            <input type="text" id="scheduleTitle" placeholder="일정 제목" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleDesc">설명</label>
+                            <textarea id="scheduleDesc" placeholder="상세 설명"></textarea>
+                        </div>
+                        <!-- <label>
+                            <input type="checkbox" />
+                            공적인 일정
+                        </label> -->
+                        <div class="modal-actions">
+                            <button type="submit" class="save-btn">저장</button>
+                            <button type="button" class="delete-btn" id="deleteSchedule">삭제</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>프로젝트명: corevia | 주소: https://github.com/KOmyeonghwan | 팀명: 9k9k / 팀원: 고명환(기획자), 김현희</p>
+        </footer>
+
+    </main>
+
+    <!-- <script src="/user/js/schedule.js"></script> -->
+
+
+</body>
+
+</html>

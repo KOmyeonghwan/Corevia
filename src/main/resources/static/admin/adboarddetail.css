@@ -1,0 +1,114 @@
+.main-content h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+}
+
+.detail-box {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background: #fafafa;
+    margin-bottom: 20px;
+}
+
+.detail-item {
+    margin-bottom: 12px;
+}
+
+.detail-item strong {
+    display: inline-block;
+    width: 80px;
+    color: #555;
+}
+
+.detail-content {
+    margin-top: 20px;
+    padding: 15px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    background: #fff;
+    white-space: pre-line;
+    line-height: 1.6;
+}
+
+.attachments {
+    margin-top: 15px;
+}
+
+.attachments a {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 12px;
+    color: #2d3e50;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.attachments a:hover {
+    color: #3498db;
+}
+
+.attachments i {
+    margin-right: 6px;
+    color: #555;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.button-group button {
+    background-color: #2d3e50;
+    color: white;
+    padding: 8px 16px;
+    margin-left: 8px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-group button:hover {
+    background-color: #3498db;
+}
+
+.delete-btn {
+    background-color: #e74c3c !important;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b !important;
+}
+
+.nav-posts {
+    margin-top: 25px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-posts div {
+    margin-bottom: 10px;
+}
+
+.nav-posts a {
+    color: #2d3e50;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.nav-posts a:hover {
+    color: #3498db;
+}
+
+.nav-posts i {
+    margin-right: 6px;
+    color: #666;
+}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adcommentedit.css">
+    <title>관리자 - 댓글 수정 페이지</title>
+
+</head>
+
+<body>
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <div class="main-content">
+            <h2 class="page-title">댓글 수정</h2>
+
+            {{#commentGroups}}
+            <!-- 댓글 그룹 시작 -->
+            <div class="comment-group">
+
+                <!-- 원댓글 수정 -->
+                <div class="comment-edit-card" data-comment-id="{{root.id}}" data-comment-status="{{root.status}}">
+                    <div class="detail-item">
+                        <h3>원댓글</h3>
+                    </div>
+                    <div class="detail-item">
+                        <p><strong>댓글 ID:</strong> {{root.id}}</p>
+                    </div>
+                    <div class="detail-item">
+                        <p><strong>작성자:</strong> {{root.userName}}</p>
+                    </div>
+                    <div class="detail-item">
+                        <p><strong>작성일:</strong> {{root.createAtFormatted}}</p>
+                    </div>
+
+                    <label for="commentContent"><strong>내용</strong></label>
+                    <textarea id="commentContent_{{root.id}}" rows="5">{{root.content}}</textarea>
+
+                    <div class="comment-edit-card-lower">
+                        <div class="form-status">
+                            <label for="commentStatus"><strong>상태</strong></label>
+                            <select id="commentStatus_{{root.id}}">
+                                <option value="normal">정상</option>
+                                <option value="hidden">숨김</option>
+                            </select>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-save" data-root-id="{{root.id}}"
+                                data-board-code="{{boardCode}}" data-post-id="{{postId}}">
+                                저장
+                            </button>
+                            <button type="button" class="btn btn-cancel" data-board-code="{{boardCode}}"
+                                data-comment-id="{{root.id}}">
+                                취소
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 대댓글 수정 -->
+                <div class="reply-edit-card">
+                    <h3 class="section-title">대댓글</h3>
+                    <table class="reply-table">
+                        <thead>
+                            <tr>
+                                <th>댓글 ID</th>
+                                <th>작성자</th>
+                                <th>작성일</th>
+                                <th>내용</th>
+                                <th>구분</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#replies}}
+                            <tr class="{{#isNested}}nested{{/isNested}}">
+                                <td>{{id}}</td>
+                                <td>{{userName}}</td>
+                                <td>{{createAtFormatted}}</td>
+                                <td><textarea id="replyContent_{{id}}" rows="2">{{content}}</textarea></td>
+                                <td>{{depthName}}</td>
+                                <td>
+                                    <select id="replyStatus_{{id}}" data-status="{{status}}">
+                                        <option value="normal">정상</option>
+                                        <option value="hidden">숨김</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            {{/replies}}
+                            {{^replies}}
+                            <tr>
+                                <td colspan="6" style="text-align: center;">대댓글이 없습니다.</td>
+                            </tr>
+                            {{/replies}}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            {{/commentGroups}}
+
+        </div>
+    </div>
+
+    <script>
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // 댓글 상태 초기화 (원댓글 + 대댓글)
+            document.querySelectorAll(".comment-group").forEach(group => {
+                // 원댓글
+                const rootCard = group.querySelector(".comment-edit-card");
+                if (rootCard) {
+                    const commentId = rootCard.dataset.commentId;
+                    const status = rootCard.dataset.commentStatus;
+                    const select = document.getElementById(`commentStatus_${commentId}`);
+                    if (select) select.value = status;
+                }
+
+                // 대댓글
+                group.querySelectorAll(`[id^="replyStatus_"]`).forEach(select => {
+                    const status = select.dataset.status; // 서버에서 내려온 상태
+                    if (status) select.value = status;
+                });
+            });
+
+            // 취소 버튼
+            document.querySelectorAll(".btn-cancel").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const boardCode = this.dataset.boardCode;
+                    const commentId = this.dataset.commentId;
+                    if (!boardCode || !commentId) {
+                        alert("이동할 정보가 없습니다.");
+                        return;
+                    }
+                    location.href = `/adcommentdetail/${boardCode}/${commentId}?page=1`;;
+                });
+            });
+
+            // 저장 버튼
+            document.querySelectorAll(".btn-save").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const rootId = this.dataset.rootId;
+                    const boardCode = this.dataset.boardCode;
+                    if (!rootId || !boardCode) {
+                        alert("댓글 ID 또는 게시판 코드가 없습니다.");
+                        return;
+                    }
+
+                    const data = [];
+                    const group = this.closest(".comment-group");
+
+                    // 원댓글
+                    const rootContent = document.getElementById(`commentContent_${rootId}`).value;
+                    const rootStatus = document.getElementById(`commentStatus_${rootId}`).value;
+                    data.push({ commentId: rootId, content: rootContent, status: rootStatus });
+
+                    // 대댓글
+                    if (group) {
+                        group.querySelectorAll(`[id^="replyContent_"]`).forEach(t => {
+                            const id = t.id.split("_")[1];
+                            const content = t.value;
+                            const statusSelect = group.querySelector(`#replyStatus_${id}`);
+                            const status = statusSelect ? statusSelect.value : "normal";
+                            data.push({ commentId: id, content, status });
+                        });
+                    }
+
+                    console.log("전송 데이터:", data);
+
+                    // 서버 전송
+                    fetch(`/comment/update/${boardCode}`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json', 
+                            [csrfHeader]: csrfToken
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(res => {
+                            if (!res.ok) throw new Error("저장 실패");
+                            alert("댓글 저장 완료");
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert("서버 오류 발생");
+                        });
+                });
+            });
+
+        });
+    </script>
+
+
+</body>
+
+</html>

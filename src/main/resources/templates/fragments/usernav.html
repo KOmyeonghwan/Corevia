@@ -1,0 +1,246 @@
+<nav>
+    <div class="icon-bar">
+        <div class="icon-top">
+            <a href="/usermain">
+                <i class="fa-solid fa-house"></i>
+                <div class="icon-name">홈</div>
+            </a>
+            <a href="/userweather">
+                <i class="fa-solid fa-cloud"></i>
+                <div class="icon-name">날씨</div>
+            </a>
+            <a href="/userschedule">
+                <i class="fa-solid fa-calendar-days"></i>
+                <div class="icon-name">스케줄</div>
+            </a>
+            <a href="/usermail">
+                <i class="fa-regular fa-envelope"></i>
+                <div class="icon-name">메일</div>
+            </a>
+            <a href="/userboard">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <div class="icon-name">게시판</div>
+            </a>
+            <a href="/userdoc">
+                <i class="fa-regular fa-file"></i>
+                <div class="icon-name">전자결재</div>
+            </a>
+        </div>
+
+        <div class="icon-bottom">
+            <a href="#" id="chat-view-status">+</a>
+
+            <div id="alert-count" class="alert-wrapper">
+                🔔
+                <span class="notification hidden">0</span>
+                <div class="dropdown"></div>
+            </div>
+
+            <!-- <button id="deleteAllNotificationsBtn">모든 알림 삭제</button> -->
+
+            <input type="hidden" id="userId" name="userId" value="{{loginUser.userPk}}">
+
+
+            <script>
+                // CSRF 토큰과 헤더 가져오기
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+                const userId = document.getElementById('userId').value;
+                const alertIcon = document.getElementById('alert-count');
+                let dropdown = document.querySelector('.dropdown');
+                let hideTimeout;
+
+                // if (!dropdown) {
+                //     console.log("dropdown 없음");
+                //     return;
+                // };
+
+                // 드롭다운 위치 조정 + z-index
+                if (dropdown) {
+                    document.body.appendChild(dropdown);
+                    dropdown.style.position = 'absolute';
+                    dropdown.style.display = 'none';
+                    dropdown.style.zIndex = 9999; // 다른 요소 위로
+                }
+
+                // 알림 가져오기
+                async function loadNotifications() {
+                    try {
+                        const res = await fetch(`/notifications?userId=${userId}`, {
+                            headers: { [csrfHeader]: csrfToken }
+                        });
+                        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+                        const data = await res.json();
+                        const countElem = alertIcon.querySelector('.notification');
+                        const unreadCount = data.filter(n => !n.read && n.read !== undefined ? n.read : !n.isRead).length;
+
+                        // 알림 개수 업데이트
+                        countElem.textContent = unreadCount || '0'; // 0으로 초기화
+
+                        // 알림이 1개 이상 있으면 hidden 클래스 제거하고 표시
+                        if (unreadCount > 0) {
+                            countElem.classList.remove('hidden');
+                        } else {
+                            countElem.classList.add('hidden');
+                        }
+
+                        dropdown.innerHTML = ''; // 기존 알림 목록 초기화
+
+                        data.forEach(noti => {
+                            // if (noti.type !== 'mail' && noti.type !== 'message') return;
+                            const div = document.createElement('div');
+                            div.classList.add('noti-item');
+                            div.dataset.id = noti.id;
+                            div.style.cursor = noti.referenceId ? 'pointer' : 'default'; // referenceId 없으면 클릭 표시 X
+
+                            // referenceId 기반 URL 설정
+                            if (noti.type === 'system' && noti.referenceId) {
+                                div.dataset.url = `/userboarddetail/notice/${noti.referenceId}`;
+                            }
+                            if (noti.type === 'mail') {
+                                div.dataset.url = `/user/mail/detail/${noti.referenceId}`;
+                            }
+
+                            let timeStr = '';
+                            if (noti.createdAt) {
+                                const d = new Date(noti.createdAt);
+                                timeStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                            }
+
+                            div.innerHTML = `
+                                <span class="msg" style="pointer-events:none;">${noti.title || noti.content}</span>
+                                <span class="time" style="pointer-events:none;">${timeStr}</span>
+                            `;
+
+                            if (noti.read || noti.isRead) div.classList.add('read');
+
+                            dropdown.appendChild(div);
+                        });
+
+                    } catch (err) {
+                        console.error('알림 로드 실패:', err);
+                    }
+                }
+
+                // 드롭다운 표시/숨김 (지연)
+                alertIcon.addEventListener('mouseenter', () => {
+                    clearTimeout(hideTimeout);
+                    const rect = alertIcon.getBoundingClientRect();
+                    dropdown.style.top = `${rect.top}px`;
+                    dropdown.style.left = `${rect.right + 5}px`;
+                    dropdown.style.display = 'block';
+                });
+
+                alertIcon.addEventListener('mouseleave', e => {
+                    if (!dropdown.contains(e.relatedTarget)) {
+                        hideTimeout = setTimeout(() => dropdown.style.display = 'none', 300);
+                    }
+                });
+
+                dropdown.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+                dropdown.addEventListener('mouseleave', e => {
+                    if (!alertIcon.contains(e.relatedTarget)) {
+                        hideTimeout = setTimeout(() => dropdown.style.display = 'none', 300);
+                    }
+                });
+
+                // 클릭 시 삭제 + 링크 이동
+                dropdown.addEventListener('click', async e => {
+                    const item = e.target.closest('.noti-item');
+                    if (!item) return;
+
+                    const notiId = item.dataset.id;
+                    const url = item.dataset.url;
+                    if (!url) return;
+
+                    console.log(notiId, url);
+
+                    try {
+                        const res = await fetch(`/notifications/${notiId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                [csrfHeader]: csrfToken
+                            }
+                        });
+
+                        if (res.ok) {
+                            // 화면에서 즉시 제거
+                            item.remove();
+
+                            const countElem = alertIcon.querySelector('.notification');
+                            const newCount = Math.max(0, parseInt(countElem.textContent) - 1);
+                            countElem.textContent = newCount;
+                            if (newCount === 0) countElem.classList.add('hidden');
+                        } else {
+                            console.error('삭제 실패:', res.status);
+                        }
+
+                        // 삭제 후 이동
+                        window.location.href = url;
+
+                    } catch (err) {
+                        console.error('알림 삭제 에러:', err);
+                        window.location.href = url;
+                    }
+                });
+
+                // 페이지 로드 시 알림 목록 불러오기
+                document.addEventListener('DOMContentLoaded', loadNotifications);
+
+
+                // ===========================
+
+                // 모든 알림 삭제 버튼 클릭 시
+                // document.getElementById('deleteAllNotificationsBtn').addEventListener('click', async function () {
+                //     try {
+                //         const res = await fetch('/notifications/deleteAll', {
+                //             method: 'DELETE',
+                //             headers: {
+                //                 [csrfHeader]: csrfToken,
+                //             },
+                //         });
+
+                //         if (res.ok) {
+                //             // 알림 목록을 갱신하거나 화면에서 알림 삭제
+                //             console.log('모든 알림이 삭제되었습니다.');
+                //             dropdown.innerHTML = ''; // 드롭다운 내용 비우기
+                //             const countElem = alertIcon.querySelector('.notification');
+                //             countElem.textContent = '0'; // 알림 개수 초기화
+                //             countElem.classList.add('hidden'); // 숨기기
+                //         } else {
+                //             console.error('모든 알림 삭제 실패');
+                //         }
+                //     } catch (error) {
+                //         console.error('알림 삭제 중 오류 발생:', error);
+                //     }
+                // });
+
+
+            </script>
+
+
+            <a href="/user-mypage"><i class="fa-solid fa-circle-user"></i></a>
+        </div>
+    </div>
+
+
+    <div class="chat-user">
+        <h3 class="chat-header">부서명</h3>
+
+        <div class="chat-content">
+            <div class="coworker-card">
+                <span><b>이름</b>
+                    <p>참여인원</p>
+                </span>
+                <p>최종 대화 내용</p>
+            </div>
+        </div>
+
+        <button type="submit" class="newChatroom">+</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</nav>

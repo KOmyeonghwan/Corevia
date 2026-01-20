@@ -1,0 +1,351 @@
+.main-view {
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #2c3e50;
+  box-sizing: border-box;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* 상단 헤더 영역 */
+.main-view>section:first-of-type {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* 제목 스타일 */
+.main-view>section:first-of-type h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* 사용자 정보 영역 */
+.main-view>section:first-of-type .user-info {
+  text-align: right;
+  font-size: 0.9rem;
+  background-color: lightgray;
+  color: #2c3e50;
+  /* 명시적 색상 설정 */
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+/* 주요 공지사항 */
+.notice-section {
+  width: 100%;
+  max-height: min(300px, 40vh);
+  background: #fff;
+  gap: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+
+  display: flex;
+  flex-direction: column;
+  
+  margin-bottom: 27px;
+
+  padding: 10px 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+  box-sizing: border-box; 
+}
+
+
+.notice-section h2 {
+  margin: 0 0 10px;
+  color: #34495e;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 10;
+  padding: 10px 0;
+}
+
+.notice-section ul {
+  list-style: disc inside;
+  color: #555;
+  margin: 0;
+  padding-left: 0;
+
+  overflow-y: auto;
+  max-height: 100px;
+}
+
+
+/* 빠른 메뉴 */
+.quick-menu {
+  display: flex;
+  gap: 20px;
+  margin: 0px 3px 27px 3px;
+
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.quick-menu a {
+  flex: 1 1 70px;
+  color: #fff;
+  text-align: center;
+  padding: 18px 20px;
+  border-radius: 16px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 각 버튼 색상 */
+.quick-menu a:nth-child(1) {
+  background: linear-gradient(135deg, #ff6b6b, #ff8787);
+  /* 빨강 계열 */
+}
+
+.quick-menu a:nth-child(2) {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  /* 파랑 계열 */
+}
+
+.quick-menu a:nth-child(3) {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  /* 초록 계열 */
+}
+
+.quick-menu a:nth-child(4) {
+  background: linear-gradient(135deg, #fbc7d4, #9796f0);
+  /* 보라/핑크 계열 */
+}
+
+/* 광택 애니메이션 */
+.quick-menu a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  transform: skewX(-25deg);
+  transition: all 0.5s ease;
+}
+
+.quick-menu a:hover::before {
+  left: 200%;
+}
+
+.quick-menu a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
+  filter: brightness(110%);
+}
+
+
+.menu-mail {
+  background: #3498db;
+  box-shadow: 0 3px 6px rgba(52, 152, 219, 0.4);
+}
+
+.menu-schedule {
+  background: #2ecc71;
+  box-shadow: 0 3px 6px rgba(46, 204, 113, 0.4);
+}
+
+.menu-docs {
+  background: #e67e22;
+  box-shadow: 0 3px 6px rgba(230, 126, 34, 0.4);
+}
+
+/* 최근 알림/업무 */
+.notification-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+}
+
+.notification-section h2 {
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+.notification-section ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  color: #555;
+}
+
+.notification-section ul li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+}
+
+.notification-section ul li:last-child {
+  border-bottom: none;
+}
+
+.notification-section ul li small {
+  color: #999;
+  margin-left: 6px;
+  font-size: 0.85rem;
+}
+
+
+/* 한 줄에 캐러셀과 지도 배치 */
+.carousel-map-section {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: stretch;
+  width: 100%;   
+  box-sizing: border-box;
+}
+
+
+/* 캐러셀 */
+.carousel {
+  flex: 1 1 630px;
+  max-width: 6300px;
+  height: 250px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  background: #fefefe;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* 슬라이드 컨테이너 */
+.carousel-track-container {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  overflow: hidden;
+  width: 100%;
+  padding: 0 20px; 
+}
+
+/* 슬라이드 */
+.carousel-track {
+  display: flex;
+  transition: transform 0.4s ease-in-out;
+  padding: 0 20px; 
+}
+
+/* 슬라이드 */
+.carousel-slide {
+  min-width: 470px;
+  height: 160px;
+  background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+  display: flex;
+  flex-direction: column;    
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #2c3e50;
+  user-select: none;
+  border-radius: 10px;
+  margin: 0 10px;              
+  padding: 15px;                 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;            
+}
+
+.carousel-slide:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 슬라이드 텍스트 스타일 */
+.carousel-slide strong {
+  font-size: 1.6rem;      
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #1a1a1a;
+}
+
+.carousel-slide span {
+  font-size: 1rem;          
+  color: #444;
+  margin-bottom: 5px;
+  word-break: break-all;      
+}
+
+.carousel-slide small {
+  font-size: 0.85rem; 
+  color: #666;
+  background: rgba(255,255,255,0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* 캐러셀 버튼 (상단에 위치) */
+.nav {
+  position: absolute;
+  top: 50%;                      
+  transform: translateY(-50%);  
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.nav:hover {
+  background: #4a90e2;
+  color: white;
+}
+
+.prev {
+  left: 10px;  
+  z-index: 1000;
+}
+
+.next {
+  right: 10px;  
+  z-index: 1000;
+}
+
+
+
+#map {
+  flex: 1 1 630px;
+  max-width: 900px;
+  min-height: 250px;
+  height: 250px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  z-index: 1000;
+}
+
+@media (max-width: 900px) {
+  .carousel-map-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .carousel,
+  #map {
+    max-width: 90%;
+    flex: 1 1 auto;
+  }
+}

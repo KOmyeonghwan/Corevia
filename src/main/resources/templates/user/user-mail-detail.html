@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/user/css/common.css">
+    <link rel="stylesheet" href="/user/css/mail_detail.css">
+    <script src="/user/js/mail_detail.js"></script>
+
+    <title>user mail</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="/user/images/logo.png" alt="CoreNet">
+        </div>
+        <div data-position="{{loginUser.positionLevel}}">
+            {{loginUser.userName}} 님
+            <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+                <button type="submit" class="adminBtn">관리자</button>
+            </form>
+            <form action="/logout" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <button type="submit" class="logoutBtn">로그아웃</button>
+            </form>
+
+        </div>
+    </header>
+
+    <main>
+        {{> fragments/usernav}}
+
+        <div class="main-view">
+            <div class="email-detail-wrapper">
+                <div class="email-header">
+                    <h1 class="email-subject">{{mail.title}}</h1>
+                    <div class="email-meta">
+                        <span class="from">보낸사람: {{mail.senderEmail}}</span>
+                        <span class="to">받는사람: {{mail.recipientEmail}}</span>
+                        <span class="date">{{mailCreatedAt}}</span>
+                    </div>
+                </div>
+
+                <div class="email-body">
+                    {{#mail}}{{{description}}}{{/mail}}
+                    {{^mail}}메일 내용을 불러올 수 없습니다.{{/mail}}
+                </div>
+
+                <div class="email-actions">
+                    <!-- <button class="btn-reply">답장하기</button> -->
+                    <button class="btn-delete" data-mail-id="{{mail.id}}">삭제</button>
+                </div>
+
+                <div class="email-attachments">
+                    <ul>
+                        {{#attachments}}
+                        <li><a href="/user/mail/{{mail.id}}/attachment">{{.}}</a></li>
+                        {{/attachments}}
+                        {{^attachments}}
+                        <li>첨부파일 없음</li>
+                        {{/attachments}}
+                    </ul>
+                </div>
+
+                <div class="footer">
+                    <div class="backBtn">
+                        <a href="/usermail" class="back-button">목록으로</a>
+                    </div>
+
+                    <div class="email-footer">
+                        <p>프로젝트명: corevia | 주소: https://github.com/KOmyeonghwan | 팀명: 9k9k / 팀원: 고명환(기획자), 김현희</p>
+                        <p>이메일 알림 설정 변경 또는 수신 거부하려면 <a href="#">이곳</a>을 클릭하세요.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 모달 창 -->
+    <div id="composeModal" class="btn-reply hidden">
+        <div class="modal-content">
+            <h2>메일 쓰기</h2>
+            <input type="text" placeholder="받는 사람" />
+            <input type="text" placeholder="제목" />
+            <textarea placeholder="내용을 입력하세요..."></textarea>
+            <input type="file">
+
+            <div class="modal-actions">
+                <button id="send-mail">보내기</button>
+                <button id="close-compose">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/user/js/common.js"></script>
+</body>
+
+</html>

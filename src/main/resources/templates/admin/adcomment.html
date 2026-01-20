@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <link rel="stylesheet" href="/admin/sidebar.css">
+    <link rel="stylesheet" href="/admin/adcomment.css">
+    <title>관리자 댓글 관리 페이지</title>
+
+</head>
+
+<body>
+    <div class="wrapper">
+        {{> fragments/sidebar}}
+
+        <!-- 메인 -->
+        <div class="main-content">
+            <div class="contents-upper">
+                <h2>댓글/답글 관리</h2>
+                <div class="search-box">
+                    <select id="searchType">
+                        <option value="#" disabled selected>검색</option>
+                        <option value="comment-author">작성자</option>
+                        <option value="comment-content">내용</option>
+                    </select>
+                    <input type="text" id="searchKeyword" placeholder="검색어 입력">
+                    <button id="searchBtn">검색</button>
+                </div>
+            </div>
+
+            <!-- 게시판 버튼 -->
+            <div class="board-button">
+                {{#boards}}
+                <button class="board-btn" data-code="{{boardCode}}">
+                    {{boardName}}
+                </button>
+                {{/boards}}
+                {{^boards}}
+                    <div>게시판이 없습니다.</div>
+                {{/boards}}
+            </div>
+
+            <!-- 댓글 테이블 -->
+            <table class="board-table">
+                <thead>
+                    <tr>
+                        <th>선택</th>
+                        <th>게시판</th>
+                        <th>원글 내용</th>
+                        <th>댓글 내용</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>구분</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {{#comments}}
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>{{boardCode}}</td>
+                        <td>{{boardContentView}}</td> 
+                        <td class="comment-content">{{commentContent}}</td>
+                        <td>{{commentUserName}}</td>
+                        <td>{{commentCreateAt}}</td>
+                        <td>{{depthName}}</td>
+                        <td>
+                            <button class="btn-search btn-view" data-board-code="{{boardCode}}"
+                                data-post-id="{{postId}}" data-comment-id="{{commentId}}">
+                                보기
+                            </button>
+
+                            <button class="btn-delete" data-id="{{commentId}}" data-board-code="{{boardCode}}">
+                                삭제
+                            </button>
+
+                        </td>
+                    </tr>
+                    {{/comments}}
+
+                    {{^comments}}
+                    <tr>
+                        <td colspan="8">댓글이 없습니다.</td>
+                    </tr>
+                    {{/comments}}
+                </tbody>
+            </table>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <!-- <button id="prev-page" class="prev-btn">이전</button> -->
+                {{#pages}}
+                <span class="{{#active}}active{{/active}}" data-page="{{page}}">{{page}}</span>
+                {{/pages}}
+                {{^pages}}
+                {{/pages}}
+                <!-- <button id="next-page" class="next-btn">다음</button> -->
+            </div>
+
+            <script>
+                const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+                document.addEventListener("DOMContentLoaded", () => {
+                    const boardButtons = document.querySelectorAll(".board-btn");
+                    const searchInput = document.getElementById("searchKeyword");
+                    const searchType = document.getElementById("searchType");
+                    const searchButton = document.getElementById("searchBtn");
+                    const paginationSpans = document.querySelectorAll(".pagination span");
+                    //const prevBtn = document.getElementById("prev-page");
+                    //const nextBtn = document.getElementById("next-page");
+
+                    // 기본 게시판 (notice) 활성화
+                    const defaultBoard = document.querySelector('.board-btn[data-code="notice"]');
+                    if (defaultBoard) defaultBoard.classList.add("active");
+
+                    // 현재 활성 게시판 가져오기 (없으면 defaultBoard)
+                    function getActiveBoard() {
+                        return document.querySelector(".board-btn.active") || defaultBoard;
+                    }
+
+                    // 게시판 이동 / 검색 함수
+                    function goToBoard(boardCode, page = 1) {
+                        const keyWord = searchInput.value.trim();
+                        const type = searchType.value;
+                        let url = `/adcomment?boardCode=${encodeURIComponent(boardCode)}&page=${page}`;
+                        if (keyWord !== "") {
+                            url += `&keyWord=${encodeURIComponent(keyWord)}&keyWordString=${encodeURIComponent(type)}`;
+                        }
+                        location.href = url;
+                    }
+
+                    // 게시판 버튼 클릭
+                    boardButtons.forEach(btn => {
+                        btn.addEventListener("click", () => {
+                            boardButtons.forEach(b => b.classList.remove("active"));
+                            btn.classList.add("active");
+                            // 페이지 초기화
+                            goToBoard(btn.dataset.code, 1);
+                        });
+                    });
+
+                    // 검색 버튼 클릭
+                    searchButton.addEventListener("click", () => {
+                        const activeBoard = getActiveBoard();
+                        if (!activeBoard) return alert("게시판을 선택하세요.");
+                        // 검색 시 페이지 1로 초기화
+                        goToBoard(activeBoard.dataset.code, 1);
+                    });
+
+                    // 검색창 엔터 입력
+                    searchInput.addEventListener("keydown", (e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            searchButton.click();
+                        }
+                    });
+
+                    // 페이지 번호 클릭
+                    paginationSpans.forEach(span => {
+                        span.addEventListener("click", () => {
+                            const activeBoard = getActiveBoard();
+                            const page = parseInt(span.dataset.page);
+                            goToBoard(activeBoard.dataset.code, page);
+                        });
+                    });
+
+                    // 이전/다음 버튼
+                    //prevBtn.addEventListener("click", () => {
+                    //    const activeBoard = getActiveBoard();
+                    //    const currentPageEl = document.querySelector(".pagination .active");
+                    //    if (!currentPageEl) return;
+                    //    const currentPage = parseInt(currentPageEl.dataset.page);
+                    //    if (currentPage <= 1) return;
+                    //    goToBoard(activeBoard.dataset.code, currentPage - 1);
+                    //});
+
+                    //nextBtn.addEventListener("click", () => {
+                    //    const activeBoard = getActiveBoard();
+                    //    const currentPageEl = document.querySelector(".pagination .active");
+                    //    const lastPageEl = document.querySelector(".pagination span:last-child");
+                    //    if (!currentPageEl || !lastPageEl) return;
+                    //    const currentPage = parseInt(currentPageEl.dataset.page);
+                    //    const lastPage = parseInt(lastPageEl.dataset.page);
+                    //   if (currentPage >= lastPage) return;
+                    //    goToBoard(activeBoard.dataset.code, currentPage + 1);
+                    //});
+
+                    document.addEventListener("click", (e) => {
+                        const viewBtn = e.target.closest(".btn-view");
+                        if (!viewBtn) return;
+
+                        const boardCode = viewBtn.dataset.boardCode;
+                        const postId = viewBtn.dataset.postId;
+                        const commentId = viewBtn.dataset.commentId;
+
+                        console.log("postId > " + postId + " commentId > " + commentId);
+
+                        if (!boardCode || !postId) {
+                            alert("이동할 정보가 없습니다.");
+                            return;
+                        }
+
+                        location.href = `/adcommentdetail/${boardCode}/${commentId}?page=1`;
+                    });
+
+                });
+
+                // 삭제 버튼
+                document.querySelectorAll(".btn-delete").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const commentId = btn.dataset.id;
+                        const boardCode = btn.dataset.boardCode;
+
+                        if (!commentId || !boardCode) {
+                            return alert("삭제할 댓글 정보가 없습니다.");
+                        }
+
+                        if (!confirm("정말로 이 댓글을 삭제하시겠습니까?")) return;
+
+
+                        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+                        fetch(`/comment/delete/${encodeURIComponent(boardCode)}/${commentId}`, {
+                            method: "DELETE", 
+                            headers: {
+                                [csrfHeader]: csrfToken
+                            }
+                        })
+                            .then(res => {
+                                if (res.ok) {
+                                    alert("삭제되었습니다.");
+                                    // 삭제 후 해당 행 제거
+                                    const row = btn.closest("tr");
+                                    if (row) row.remove();
+                                } else {
+                                    return res.text().then(text => { throw new Error(text); });
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                alert("삭제 중 오류가 발생했습니다.");
+                            });
+                    });
+                });
+
+            </script>
+
+
+        </div>
+
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="_csrf" content="{{_csrf.token}}">
+  <meta name="_csrf_header" content="{{_csrf.headerName}}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/user/css/common.css">
+  <link rel="stylesheet" href="/user/css/doc.css">
+
+  <script src="/user/js/doc.js"></script>
+
+  <title>전자결재 </title>
+</head>
+
+<body>
+  <!-- document approval(CKeditor5) -->
+  <header>
+    <div class="logo">
+      <img src="/user/images/logo.png" alt="CoreNet">
+    </div>
+    <div data-position="{{loginUser.positionLevel}}">
+      {{loginUser.userName}} 님
+      <form action="/adminuser" method="get" class="isAdmin" style="display:inline;">
+        <button type="submit" class="adminBtn">관리자</button>
+      </form>
+      <form action="/logout" method="post" style="display:inline;">
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+        <button type="submit" class="logoutBtn">로그아웃</button>
+      </form>
+
+    </div>
+  </header>
+
+  <main>
+    {{> fragments/usernav}}
+
+    <div class="main-view">
+      <section class="quick-menu">
+        {{#docs}}
+        <button data-doc-code="{{docCode}}" class="menu-approval">{{docName}}</button>
+        {{/docs}}
+      </section>
+
+      <section>
+        <div class="tabs">
+          <div class="tab active" data-tab="approved">결재완료</div>
+          <div class="tab" data-tab="draft">임시저장</div>
+          <div class="tab" data-tab="rejected">결재반려</div>
+          <div class="tab" data-tab="pending">결재대기</div>
+        </div>
+
+        <button id="open-compose" onclick="location.href='/userdocedit'">문서 쓰기</button>
+
+        <div class="board-view">
+          <div id="content-1" class="tab-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>문서번호</th>
+                  <th>제목</th>
+                  <th>작성자</th>
+                  <th>작성일</th>
+                </tr>
+              </thead>
+              <tbody id="docTableBody">
+
+              </tbody>
+            </table>
+
+            <div id="pagination" class="pagination"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p>프로젝트명: corevia | 주소: https://github.com/KOmyeonghwan | 팀명: 9k9k / 팀원: 고명환(기획자), 김현희</p>
+    </footer>
+
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      let currentPage = 1;
+      const pageSize = 10;
+      let currentStatus = 'APPROVED';
+      let currentDocType = null;
+
+      const statusMap = {
+        approved: 'APPROVED',
+        draft: 'DRAFT',
+        rejected: 'REJECTED',
+        pending: 'PENDING'
+      };
+
+      // 문서 버튼
+      document.querySelectorAll('.menu-approval').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentDocType = btn.dataset.docCode;
+          currentPage = 1;
+          // console.log('📄 docType =', currentDocType);
+          loadDocs();
+        });
+      });
+
+      // 탭 클릭
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          currentStatus = statusMap[tab.dataset.tab];
+          currentPage = 1;
+
+          // console.log('🟩 status =', currentStatus);
+          loadDocs();
+        });
+      });
+
+      // 초기 자동 선택 
+      const defaultDocBtn = document.querySelector('.menu-approval[data-doc-code="draft"]');
+      const defaultTab = document.querySelector('.tab[data-tab="approved"]');
+
+      if (defaultDocBtn && defaultTab) {
+
+        // 기존 활성화 전부 제거
+        document.querySelectorAll('.menu-approval.active')
+          .forEach(btn => btn.classList.remove('active'));
+
+        document.querySelectorAll('.tab.active')
+          .forEach(tab => tab.classList.remove('active'));
+
+        // 기본값 활성화
+        defaultTab.classList.add('active');
+        defaultDocBtn.classList.add('active');
+
+        // docType 설정 + 목록 로딩
+        currentDocType = defaultDocBtn.dataset.docCode;
+        currentStatus = statusMap[defaultTab.dataset.tab];
+        currentPage = 1;
+
+        loadDocs();
+      }
+
+      function loadDocs() {
+        if (!currentDocType) return;
+
+        fetch(`/userdoc/ajax?docType=${currentDocType}&page=${currentPage}&pageSize=${pageSize}&status=${currentStatus}`)
+          .then(res => res.json())
+          .then(data => {
+            renderTable(data.doclist);
+            updatePagination(data.currentPage, data.totalPages);
+          })
+          .catch(console.error);
+      }
+
+      function renderTable(doclist) {
+        const tbody = document.getElementById("docTableBody");
+        tbody.innerHTML = "";
+
+        if (!doclist || doclist.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4">데이터가 없습니다.</td></tr>`;
+          return;
+        }
+
+        console.log("currentStatus =", currentStatus);
+
+
+        doclist.forEach(doc => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>
+              <a href="/userdocdetail/${doc.docId}?docType=${currentDocType}&status=${currentStatus}">
+                ${doc.docNo}
+              </a>
+            </td>
+            <td>
+              <a href="/userdocdetail/${doc.docId}?docType=${currentDocType}&status=${currentStatus}">
+                ${doc.detailTitle}
+              </a>
+            </td>
+            <td>${doc.writer}</td>
+            <td>${doc.writeDate}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // 페이지네이션
+      function updatePagination(current, total) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        for (let i = 1; i <= total; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          if (i === current) btn.classList.add("active");
+          btn.onclick = () => {
+            currentPage = i;
+            loadDocs();
+          };
+          pagination.appendChild(btn);
+        }
+      }
+
+      
+    });
+  </script>
+
+
+  <script src="/user/js/common.js"></script>
+</body>
+
+</html>

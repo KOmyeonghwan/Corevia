@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="{{_csrf.token}}">
+    <meta name="_csrf_header" content="{{_csrf.headerName}}">
+    <style>
+        .main-chat-view {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e5e8eb;
+        }
+
+        .chat-room {
+            width: 360px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f6f7;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* 상단 헤더 고정 */
+        .chatroom-header {
+            height: 50px;
+            width: 340px;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chatroom-header h2 {
+            font-size: 1.4rem;
+            margin: 0;
+        }
+
+        #backChatMotal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* 메시지 목록 (스크롤 가능 영역) */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px;
+            background-color: #f9f9f9;
+        }
+
+        /* 메시지 박스 */
+        .message {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            word-break: break-word;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background-color: #eaf2f8;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background-color: #d1f2eb;
+        }
+
+        .sender-name {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #2c3e50;
+        }
+
+        .time {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 6px;
+            align-self: flex-end;
+        }
+
+        /* 입력창 고정 */
+        .chat-input {
+            display: flex;
+            padding: 12px 16px;
+            border-top: 1px solid #ccc;
+            background-color: #fff;
+            flex-shrink: 0;
+        }
+
+        .chat-input input[type="text"] {
+            flex: 1;
+            padding: 10px 14px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .chat-input button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="main-chat-view">
+        <section class="chat-room">
+            <header class="chatroom-header">
+                <h2>채팅방</h2>
+                <button id="backChatMotal">X</button>
+            </header>
+
+            <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-relevant="additions"
+                tabindex="0">
+
+            </div>
+
+            <form class="chat-input" id="chat-form">
+                <input type="text" id="chat-input-text" placeholder="메시지를 입력하세요." data-roomid="{{roomId}}" data-username="{{loginUserName}}" data-id="{{loginUserId}}"/>
+                <button type="submit">전송</button>
+            </form>
+        </section>
+    </div>
+
+</body>
+
+</html>

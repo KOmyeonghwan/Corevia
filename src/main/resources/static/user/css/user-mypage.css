@@ -1,0 +1,241 @@
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+
+ .main-view {
+     background-color: #f7f7f7;
+ }
+
+
+ .my-page-title h2 {
+     text-align: center;
+     margin: 7px 0px;
+     color: #666;
+ }
+
+ .card {
+     display: flex;
+     height: 50px;
+     justify-content: center;
+     align-items: center;
+ }
+
+ .card-face {
+     border: 1px solid black;
+     border-radius: 40px 40px;
+     width: 40px;
+     height: 40px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+ }
+
+ .card-face i {
+     font-size: 35px;
+     color: #2c3e50;
+ }
+
+ .profile-info {
+     display: flex;
+     flex-direction: column;
+     margin-left: 12px;
+ }
+
+ .profile-name {
+     font-size: 20px;
+     font-weight: bold;
+     margin-bottom: 4px;
+ }
+
+ .profile-meta {
+     font-size: 13px;
+     color: #666;
+ }
+
+ .profile-meta .divider {
+     margin: 0 6px;
+     color: #aaa;
+ }
+
+ .card-list {
+     height: 100px;
+     max-height: 120px;
+     width: 70%;
+     max-width: 900px;
+     box-sizing: border-box;
+     display: flex;
+     justify-content: center;
+     align-items: stretch;
+     gap: 7px;
+     margin: 30px auto;
+ }
+
+ .card-list p {
+     text-align: end;
+     font-weight: bold;
+     font-size: 30px;
+ }
+
+ .card-show {
+     border: 1px solid #ddd;
+     border-radius: 15px;
+     width: 100%;
+     max-width: 400px;
+     height: 110px;
+     padding: 20px;
+     background-color: #fff;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+     box-sizing: border-box;
+ }
+
+ /* 카드 hover 효과 */
+ .card-show:hover {
+     transform: translateY(-5px);
+     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+ }
+
+ /* 제목 스타일 */
+ .card-show h2 {
+     font-size: 1.3rem;
+     color: #333;
+     font-weight: 600;
+     margin-bottom: 15px;
+     text-align: center;
+ }
+
+ /* 본문 내용 스타일 */
+ .card-show p {
+     font-size: 1.7rem;
+     color: #555;
+     line-height: 1.6;
+     text-align: center;
+     margin: 0;
+ }
+
+ /* 작은 화면에서 카드 크기 조정 */
+ @media (max-width: 768px) {
+     .card-show {
+         width: 90%;
+         margin: 15px auto;
+     }
+
+    .card-show h2 {
+        font-size: 1.0rem; /* 작은 화면에서 제목 크기 줄이기 */
+    }
+
+    .card-show p {
+        font-size: 1.3rem; /* 작은 화면에서 본문 크기 줄이기 */
+    }
+ }
+
+
+ .privacy-change {
+     border: 1px solid #f7f7f7;
+     padding: 5px;
+
+     height: 57%;
+     border-radius: 20px 20px;
+     width: 67%;
+     margin: 40px auto;
+     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+     display: flex;
+     justify-content: center;
+     align-items: center;
+ }
+
+
+ /* 제목 */
+ .privacy-title {
+     text-align: center;
+     margin: 10px auto;
+     font-size: 22px;
+     font-weight: bold;
+ }
+
+ /* 폼 영역 */
+ .privacy-form {
+     display: flex;
+     flex-direction: column;
+     padding: 0 30px;
+     gap: 10px;
+     width: 100%; /* 부모 너비에 맞추기 */
+     max-width: 800px; /* 최대 너비 설정 */
+     margin: 0 auto; /* 수평 중앙 정렬 */
+ }
+
+ /* 한 줄 */
+ .form-group {
+     display: flex;
+     flex-direction: column;
+ }
+
+ /* 라벨 */
+ .form-group label {
+     font-size: 14px;
+     margin-bottom: 6px;
+     color: #555;
+ }
+
+ /* 입력창 */
+ .form-group input {
+     padding: 12px;
+     border-radius: 8px;
+     border: 1px solid #ccc;
+     font-size: 14px;
+     transition: border-color 0.3s;
+ }
+
+ .form-group input:focus {
+     border-color: #4f46e5;
+     outline: none;
+ }
+
+  /* 버튼 */
+  .privacy-btns {
+    display: flex;
+    gap: 15px;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.privacy-btn {
+    padding: 12px 20px;
+    background-color: #2c3e50;;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.privacy-btn:hover {
+    background-color: #4338ca;
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.privacy-btn:active {
+    background-color: #3b37a4;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .privacy-btn {
+        padding: 10px 18px;
+        font-size: 14px;
+    }
+
+    .privacy-change {
+        height: 57%;
+    }
+}
