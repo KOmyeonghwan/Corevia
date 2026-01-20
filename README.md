@@ -32,6 +32,7 @@
 
 
 ## 4. ERD
+<img width="7644" height="5826" alt="corevia_last_db" src="https://github.com/user-attachments/assets/642d149a-35b7-4049-9a74-96e224bf63a2" />
 
 
 ## 5. 프로젝트 폴더 구조
