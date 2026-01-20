@@ -87,61 +87,52 @@
 
 ## 7. 시연 영상 
 [사용자]
-- 일정
-  
-- 메일
-![메일_자막](https://github.com/user-attachments/assets/bbb4a059-5171-4f43-b084-9221eea4515a)
-
-- 메신저
-![1대1 통신 자막](https://github.com/user-attachments/assets/639cfeec-3931-44f4-bffc-0924d3cbabce)
-<br>
-![그룹채팅 3명](https://github.com/user-attachments/assets/c84ab392-1761-4690-9ca6-d8f4c44b8726)
-
-- 게시판
-![게시판_자막](https://github.com/user-attachments/assets/b72f60fc-be61-476c-987e-e15923056311)
-
-- 전자결재
-![전자결재_자막](https://github.com/user-attachments/assets/04be79c2-df36-42cd-b13d-4e9161810e01)
-
-- 개인정보 변경
-![마이페이지 비버 변경_자막](https://github.com/user-attachments/assets/318e543e-51c0-4b6d-adbb-6e528665ce80)
+- 메일  
+  ![메일_자막](https://github.com/user-attachments/assets/c794b08f-7706-40c2-a33c-1b2627eeb630)
 
 
+- 메신저  
+  ![1대1 통신 자막](https://github.com/user-attachments/assets/1111fead-eb23-46ac-aa42-cc1fb80e5246)
+  ![그룹채팅 3명](https://github.com/user-attachments/assets/c84ab392-1761-4690-9ca6-d8f4c44b8726)
 
-[부서별]
-- 부서별 관리
-- 팀 형업
+- 게시판  
+  ![게시판_자막](https://github.com/user-attachments/assets/b72f60fc-be61-476c-987e-e15923056311)
+
+- 전자결재  
+  ![전자결재_자막](https://github.com/user-attachments/assets/04be79c2-df36-42cd-b13d-4e9161810e01)
+
+- 개인정보 변경  
+  ![마이페이지 비버 변경_자막](https://github.com/user-attachments/assets/318e543e-51c0-4b6d-adbb-6e528665ce80)
+
+
 [관리자]
-- 대시보드
-![관리자 대시보드_자막](https://github.com/user-attachments/assets/40351050-aa37-4575-8400-c26743125972)
-<br>
-![관리자 -  사용자_ 자막](https://github.com/user-attachments/assets/096f247a-3bd6-4e6e-b6c9-0d87087d4d19)
+- 대시보드  
+  ![관리자 대시보드_자막](https://github.com/user-attachments/assets/40351050-aa37-4575-8400-c26743125972)
 
-- 권한 관리
-![관리자 인사관리_자막](https://github.com/user-attachments/assets/67c7ee28-4f39-4f84-bb54-ef668cb8a56b)
-<br>
-![관리자 부서관리_자막](https://github.com/user-attachments/assets/2bcee773-efdc-4073-ae49-711a4abbf81d)
+- 권한 관리  
+  ![관리자 -  사용자가_ 자막](https://github.com/user-attachments/assets/096f247a-3bd6-4e6e-b6c9-0d87087d4d19)
 
-- 전자결재 관리
-![전자결재_자막](https://github.com/user-attachments/assets/a961370d-ca9f-48a4-b53c-628334b8d225)
+  ![관리자 인사관리_자막](https://github.com/user-attachments/assets/67c7ee28-4f39-4f84-bb54-ef668cb8a56b)  
+  ![관리자 부서관리_자막](https://github.com/user-attachments/assets/2bcee773-efdc-4073-ae49-711a4abbf81d)
 
-<br>
-![전자결재 문서함   삭제 자막](https://github.com/user-attachments/assets/09a5f44b-12dc-4f34-aaee-7b22ad86ffc2)
+- 전자결재 관리  
+  ![전자결재_자막](https://github.com/user-attachments/assets/a961370d-ca9f-48a4-b53c-628334b8d225)
 
-- 게시판 관리
-![게시판추가_자막](https://github.com/user-attachments/assets/6c16cc81-42c7-487b-a492-7fe4d6c42d1d)
-<br>
+  ![전자결재 문서함   삭제 자막](https://github.com/user-attachments/assets/09a5f44b-12dc-4f34-aaee-7b22ad86ffc2)
 
-![게시판 삭제_ 자막](https://github.com/user-attachments/assets/1422332a-298c-4f2b-8745-690383c68b89)
+- 게시판 관리  
+  ![게시판추가_자막](https://github.com/user-attachments/assets/6c16cc81-42c7-487b-a492-7fe4d6c42d1d)
 
-<br>
-![관리자 페이지 게시글_자막](https://github.com/user-attachments/assets/0a457de6-ddb6-44cc-922f-9628ac8fd8fd)
+  ![게시판 삭제_ 자막](https://github.com/user-attachments/assets/1422332a-298c-4f2b-8745-690383c68b89)
 
-- 보고서 확인 & 승인
-![게시판_자막](https://github.com/user-attachments/assets/d8d8b60a-0d9e-418b-b16e-978669924182)
-  
-- 보안 확인
-![시스템관리자 로그인_자막](https://github.com/user-attachments/assets/b5890d24-f928-4406-8f30-f21441775091)
+  ![관리자 페이지 게시글_자막](https://github.com/user-attachments/assets/0a457de6-ddb6-44cc-922f-9628ac8fd8fd)
+
+- 보고서 확인 & 승인  
+  ![게시판_자막](https://github.com/user-attachments/assets/d8d8b60a-0d9e-418b-b16e-978669924182)
+
+- 보안 확인  
+  ![시스템관리자 로그인_자막](https://github.com/user-attachments/assets/b5890d24-f928-4406-8f30-f21441775091)
+
 
 
 ## 8. 팀구성 
