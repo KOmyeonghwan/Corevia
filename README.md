@@ -57,7 +57,6 @@
    │  │           ├─ 📁 admin
    │  │           ├─ 📁 client
    │  │           ├─ 📁 common
-   │  │           ├─ 📁 db
    │  │           ├─ 📁 entity
    │  │           ├─ 📁 showpagecont
    │  │           ├─ 📄 CorenetApplication.java
