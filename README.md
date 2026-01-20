@@ -88,14 +88,18 @@
 ## 7. 시연 영상 
 [사용자]
 - 일정
-- 
+  
 - 메일
 ![메일_자막](https://github.com/user-attachments/assets/bbb4a059-5171-4f43-b084-9221eea4515a)
 
 - 메신저
+![1대1 통신 자막](https://github.com/user-attachments/assets/639cfeec-3931-44f4-bffc-0924d3cbabce)
+![그룹 채팅 자막](https://github.com/user-attachments/assets/8f7ef783-1c63-4435-849c-ad5392d3f4cd)
+
 - 게시판
 - 전자결재
 - 개인정보 변경
+
 
 [부서별]
 - 부서별 관리
@@ -104,6 +108,8 @@
 [관리자]
 - 권한 관리
 - 승인
+![전자결재 문서함   삭제 자막](https://github.com/user-attachments/assets/55e12fcd-f7b4-499d-8d7e-7522af80fa18)
+
 - 보고서 확인
 - 보안 확인
 
