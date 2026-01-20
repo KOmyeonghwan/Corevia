@@ -330,25 +330,6 @@ public class BoardManagerService {
         }
 
         // 게시글 추가
-        // public void savePost(String boardCode, String title, String content, Integer
-        // userId, String userName,
-        // Integer deptCode,
-        // String fileUrl, String fileName) {
-
-        // String tableName = "board_" + boardCode;
-
-        // String finalFileUrl = (fileUrl != null && !fileUrl.isEmpty()) ? fileUrl :
-        // null;
-
-        // String sql = String.format(
-        // "INSERT INTO %s (board_code, title, content, user_id, user_name, dept_code,
-        // file_url, file_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        // tableName);
-
-        // jdbcTemplate.update(sql, boardCode, title, content, userId, userName,
-        // deptCode, finalFileUrl, fileName);
-        // }
-
         public Long savePost(String boardCode, String title, String content, Integer userId, String userName,
                         Integer deptCode, String fileUrl, String fileName) {
 
@@ -685,7 +666,7 @@ public class BoardManagerService {
                         throw new IllegalArgumentException("File not found");
                 }
 
-                // 👉 앞의 / 제거
+                // 앞의 / 제거
                 if (fileUrl.startsWith("/")) {
                         fileUrl = fileUrl.substring(1);
                 }

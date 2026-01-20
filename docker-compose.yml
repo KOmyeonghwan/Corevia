@@ -1,45 +1,56 @@
 version: "3.8"
-
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: corenet-app
-    ports:
-      - "127.0.0.1:8080:8080"   # 🔥 외부 직접 접근 차단 (Nginx만 접근)
+    # :x: 외부 포트 노출 제거 (Nginx만 접근)
+    expose:
+      - "8080"
     env_file:
       - .env
     environment:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      SPRING.JPA.HIBERNATE.DDL-AUTO=UPDATE
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      TZ: Asia/Seoul
     depends_on:
       - db
     volumes:
       - uploads:/uploads
     networks:
       - corenet-net
-
   db:
-    image: mariadb:11.8
+    image: mariadb:10.11
     container_name: corenet-mariadb
     env_file:
       - .env
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
       TZ: Asia/Seoul
     volumes:
       - db-data:/var/lib/mysql
     networks:
       - corenet-net
-
+  nginx:
+    image: nginx:latest
+    container_name: corenet-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - corenet-net
 volumes:
   db-data:
   uploads:
-
 networks:
   corenet-net:
     driver: bridge

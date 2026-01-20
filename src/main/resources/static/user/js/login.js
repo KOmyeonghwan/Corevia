@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+  
   // 모달 요소들
   const signupModal = document.getElementById("signup-modal");
   const findIdModal = document.getElementById("find-id-modal");
@@ -12,14 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 닫기 버튼 (모달 내 .close 전부 수집)
   const closeBtns = document.querySelectorAll(".modal .close");
-
-  // 회원가입 폼
-  const signupForm = document.getElementById("signupForm");
-
-  if (!signupModal || !signupForm || !openSignupBtn) {
-    console.error("회원가입 관련 요소가 없습니다.");
-    return;
-  }
 
   // 모달 열기
   openSignupBtn.addEventListener("click", (e) => {
@@ -46,7 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // 회원가입 폼
+  const signupForm = document.getElementById("signupForm");
 
+  if (!signupModal || !signupForm || !openSignupBtn) {
+    console.error("회원가입 관련 요소가 없습니다.");
+    return;
+  }
 
   //[[------실시간 유효성 검사------]]
   const dangerPattern = /[<>'";()_+=-]/;
@@ -134,7 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (value.length < 6 || value.length > 50) {
           this.errMsg.textContent = "비밀번호는 6~50자 사이여야 합니다.";
-          console.log("비밀번호:", value, "길이:", value.length);
 
           return false;
         }
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
         this.errMsg.textContent = "";
         return true;
       },
-    }
+    },
   };
 
   // --- 실시간 이벤트 등록 ---
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
   signupForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    console.log("Submit 직전 password:", fields.password.input.value);
+    // console.log("Submit 직전 password:", fields.password.input.value);
 
     let isValid = true;
     for (const key in fields) {
@@ -192,11 +192,48 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (isValid) {
-      signupForm.submit();
+      const csrfToken = document
+        .querySelector('meta[name="_csrf"]')
+        .getAttribute("content");
+      const csrfHeader = document
+        .querySelector('meta[name="_csrf_header"]')
+        .getAttribute("content");
+
+      // 유효성 검사 통과 후 AJAX 요청 보내기
+      const formData = new FormData(signupForm);
+
+      fetch("/register", {
+        method: "POST",
+        body: formData,
+        headers: {
+          [csrfHeader]: csrfToken
+        }
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.text().then(t => {
+            throw new Error(t);
+          });
+        }
+        return res.json();
+      })
+        .then((data) => {
+          if (data.success) {
+            location.href = "/login"; // 성공 시 로그인 페이지로 리디렉션
+            alert("회원가입 성공!")
+          } else {
+            alert("회원가입 실패: " + data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("오류:", error);
+          alert("서버 오류가 발생했습니다.");
+        });
     } else {
       alert("입력값을 다시 확인해주세요.");
     }
   });
+
 
 
 });

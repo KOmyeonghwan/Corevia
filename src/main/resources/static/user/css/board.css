@@ -147,7 +147,7 @@ tbody a:hover {
 /* 게시글 작성 버튼 */
 #open-compose {
   position: fixed;
-  bottom: 20px;
+  bottom: 70px;
   right: 20px;
   padding: 10px 16px;
   background-color: #007bff;

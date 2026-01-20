@@ -123,6 +123,9 @@ public class SecurityConfig {
                                                 // 🔓 로그인
                                                 .requestMatchers("/login").permitAll()
 
+                                                // 🔓 회원가입
+                                                .requestMatchers("/register").permitAll()
+
                                                 // 🔐 관리자 페이지
                                                 .requestMatchers("/admin/**")
                                                 .hasRole("ADMIN")

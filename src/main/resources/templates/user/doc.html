@@ -70,11 +70,16 @@
               </tbody>
             </table>
 
-            <div id="pagination"></div>
+            <div id="pagination" class="pagination"></div>
           </div>
         </div>
       </section>
     </div>
+
+    <footer>
+      <p>프로젝트명: corevia | 주소: https://github.com/KOmyeonghwan | 팀명: 9k9k / 팀원: 고명환(기획자), 김현희</p>
+    </footer>
+
   </main>
 
   <script>
@@ -185,6 +190,7 @@
         });
       }
 
+      // 페이지네이션
       function updatePagination(current, total) {
         const pagination = document.getElementById("pagination");
         pagination.innerHTML = "";
@@ -200,6 +206,8 @@
           pagination.appendChild(btn);
         }
       }
+
+      
     });
   </script>
 

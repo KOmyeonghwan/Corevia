@@ -461,7 +461,7 @@ public class DocManagerService {
         String statusCheck = ((String) docData.get("doc_status")).toUpperCase();
         if (statusCheck == null) {
             System.out.println("Status not found.");
-        } 
+        }
 
         // use_approval 체크
         String approvalSql = "SELECT use_approval FROM doc_manager WHERE doc_code = ?";
@@ -716,16 +716,15 @@ public class DocManagerService {
         }
 
         // 상태 필터
-        if (status != null && !status.trim().isEmpty() && !"all".equalsIgnoreCase(status)) {
-            conditions.add("LOWER(doc_status) = LOWER(?)");
-            params.add(status);
+        if (status != null && !status.isBlank()) {
+            conditions.add("doc_status = ?");
+            params.add(status.toUpperCase());
         }
 
-        // jobCode → doc_no LIKE
+        // jobCode → doc_no LIKE (완전히 동일)
         if (jobCode != null) {
-            String docNoPattern = jobCode + "%";
             conditions.add("doc_no LIKE ?");
-            params.add(docNoPattern);
+            params.add("%-" + jobCode + "-%");
         }
 
         // WHERE 조합

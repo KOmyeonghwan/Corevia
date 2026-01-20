@@ -26,7 +26,6 @@ import com.example.corenet.client.mypage.service.MypageService;
 import com.example.corenet.client.notification.dto.NotificationDTO;
 import com.example.corenet.client.notification.serv.NotificationService;
 import com.example.corenet.common.dto.LoginUserDTO;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -141,6 +140,9 @@ public class UserShowPageController {
         // 알림 --> fragments에서 사용
         Integer userPk = (loginUser != null && loginUser.getUserPk() != null) ? loginUser.getUserPk() : null;
         model.addAttribute("userPk", userPk);
+        
+        model.addAttribute("boardCode", boardCode);
+        model.addAttribute("boardId", id);
 
         return "user/board-detail";
     }
@@ -226,6 +228,9 @@ public class UserShowPageController {
 
         int totalPages = (int) Math.ceil((double) totalDocs / pageSize);
 
+        // System.out.println("totalDocs > : " + totalDocs);
+        // System.out.println("totalPages > : " + totalPages);
+
         Map<String, Object> response = new HashMap<>();
         response.put("doclist", doclist);
         response.put("currentPage", page);
@@ -258,10 +263,6 @@ public class UserShowPageController {
         if (loginUser == null) {
             return "redirect:/login";
         }
-
-        // System.out.println("docType = " + docType);
-        // System.out.println("status = " + status);
-        // System.out.println("docId = " + docId);
 
         // 알림용
         Integer userPk = loginUser.getUserPk();
