@@ -31,7 +31,11 @@
    # <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"/> <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white"/> <img src="https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> 
 
 
-## 4. 프로젝트 폴더 구조
+## 4. ERD 구조
+<img width="7644" height="5826" alt="corevia_last_db" src="https://github.com/user-attachments/assets/19b2424f-d01c-47b6-8995-b1e6a3f1b6f7" />
+
+
+## 5. 프로젝트 폴더 구조
 ```
 📁 프로젝트 루트
 ├─ ⚙️ .env
@@ -75,6 +79,9 @@
 ```
 
 
-## 5. 시연 영상 
+## 6. 시연 영상 
 
-## 6. 팀원 
+
+
+
+## 7. 팀원 
