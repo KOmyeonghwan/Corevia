@@ -110,12 +110,11 @@
 
 
 [관리자]
-- 대시보드  
+- 대시보드
+  ![관리자 -  사용자가_ 자막](https://github.com/user-attachments/assets/096f247a-3bd6-4e6e-b6c9-0d87087d4d19)
   ![관리자 대시보드_자막](https://github.com/user-attachments/assets/40351050-aa37-4575-8400-c26743125972)
 
 - 권한 관리  
-  ![관리자 -  사용자가_ 자막](https://github.com/user-attachments/assets/096f247a-3bd6-4e6e-b6c9-0d87087d4d19)
-
   ![관리자 인사관리_자막](https://github.com/user-attachments/assets/67c7ee28-4f39-4f84-bb54-ef668cb8a56b)  
   ![관리자 부서관리_자막](https://github.com/user-attachments/assets/2bcee773-efdc-4073-ae49-711a4abbf81d)
 
