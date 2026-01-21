@@ -111,7 +111,7 @@
 
 [관리자]
 - 대시보드
-  ![관리자_사용자가_ 자막](https://github.com/user-attachments/assets/096f247a-3bd6-4e6e-b6c9-0d87087d4d19)
+  ![관리자_사용자가 자막](https://github.com/user-attachments/assets/096f247a-3bd6-4e6e-b6c9-0d87087d4d19)
 
   ![관리자 대시보드_자막](https://github.com/user-attachments/assets/40351050-aa37-4575-8400-c26743125972)
 
