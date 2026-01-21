@@ -90,57 +90,51 @@
 - 메일  
   ![메일_자막](https://github.com/user-attachments/assets/c794b08f-7706-40c2-a33c-1b2627eeb630)
 
-
 - 메신저  
   ![1대1 통신 자막](https://github.com/user-attachments/assets/1111fead-eb23-46ac-aa42-cc1fb80e5246)
   ![그룹채팅 3명](https://github.com/user-attachments/assets/c84ab392-1761-4690-9ca6-d8f4c44b8726)
 
-- 게시판  
-  ![게시판_자막_part1](https://github.com/user-attachments/assets/6d867daf-64c9-4422-93df-2c0ba56a38ce)
-  ![게시판_자막_part2](https://github.com/user-attachments/assets/9e5599f1-1c7c-4d13-ae44-7269b0929f11)
+- 게시판(사용자 화면)<br/>
+  ![사용자게시글_자막](https://github.com/user-attachments/assets/c5671cc0-934b-4edb-b2d5-c5bdc693cf7b)
 
-
-- 전자결재  
-  ![전자결재_자막_part1](https://github.com/user-attachments/assets/bf711f08-e471-41ae-bc42-5517aece8705)
-  ![전자결재_자막_part2](https://github.com/user-attachments/assets/9d1c0b4d-d7d8-45d4-b6bb-994826e6ce83)
-
+- 전자결재(사용자 화면)<br/>
+  ![전자결재_임시저장 제출_자막](https://github.com/user-attachments/assets/b12f5e83-3c14-4451-bc3c-512ba13a5744)
+  ![전자결재 수정 삭제_자막](https://github.com/user-attachments/assets/ac855cdf-2877-4f17-8066-eee69337a08f)
 
 - 개인정보 변경  
   ![마이페이지 비버 변경_자막](https://github.com/user-attachments/assets/318e543e-51c0-4b6d-adbb-6e528665ce80)
 
 
 [관리자]
-- 대시보드
+- 대시보드<br/>
   ![admin to user](https://github.com/user-attachments/assets/fa5fd1fd-105c-4181-9a1c-9c3e257a54a6)
-
   ![관리자 대시보드_자막](https://github.com/user-attachments/assets/40351050-aa37-4575-8400-c26743125972)
   
 - 권한 관리  
   ![관리자 인사관리_자막](https://github.com/user-attachments/assets/67c7ee28-4f39-4f84-bb54-ef668cb8a56b)  
   ![관리자 부서관리_자막](https://github.com/user-attachments/assets/2bcee773-efdc-4073-ae49-711a4abbf81d)
 
-- 전자결재 관리  
-  ![전자결재_자막](https://github.com/user-attachments/assets/a961370d-ca9f-48a4-b53c-628334b8d225)
+- 게시판 관리(관리자 | 사용자)<br/>
+  ![게시판_자막_part1](https://github.com/user-attachments/assets/6d867daf-64c9-4422-93df-2c0ba56a38ce)
+  ![게시판_자막_part2](https://github.com/user-attachments/assets/9e5599f1-1c7c-4d13-ae44-7269b0929f11)
 
+- 전자결재 관리<br/>
+  ![전자결재_자막_part1](https://github.com/user-attachments/assets/bf711f08-e471-41ae-bc42-5517aece8705)
+  ![전자결재_자막_part2](https://github.com/user-attachments/assets/9d1c0b4d-d7d8-45d4-b6bb-994826e6ce83)
   ![전자결재 문서함   삭제 자막](https://github.com/user-attachments/assets/09a5f44b-12dc-4f34-aaee-7b22ad86ffc2)
-
-- 게시판 관리  
-  ![게시판추가_자막](https://github.com/user-attachments/assets/6c16cc81-42c7-487b-a492-7fe4d6c42d1d)
-
-  ![게시판 삭제_ 자막](https://github.com/user-attachments/assets/1422332a-298c-4f2b-8745-690383c68b89)
-
-  ![관리자 페이지 게시글_자막](https://github.com/user-attachments/assets/0a457de6-ddb6-44cc-922f-9628ac8fd8fd)
-
-- 보고서 확인 & 승인  
-  ![게시판_자막](https://github.com/user-attachments/assets/d8d8b60a-0d9e-418b-b16e-978669924182)
 
 - 보안 확인  
   ![systemadminlogin_part1](https://github.com/user-attachments/assets/d6e68c83-0e6a-4ea2-8966-d943133465b8)
 
 
+## 8. 개선사항
+“당시에는 서비스 동작 확인을 우선해서 80 포트만 열었는데,
+ 이후 HTTPS 구성과 443 포트의 중요성을 더 깊게 이해하게 되었습니다.
+ 다음에는 초기부터 SSL 설정을 포함해서 구성할 계획입니다.”<br/>
+“개발 및 테스트 단계에서는 접근성을 위해 SSH를 0.0.0.0, 즉 모든 IP에서 접속 가능하도록 열어두었고, 실제 운영 환경에서는 특정 IP만 허용하도록 보안 그룹과 방화벽을 설정할 계획입니다.
+ 테스트 환경과 운영 환경의 접근 정책을 구분하는 것이 보안상 중요하다는 점을 이번 프로젝트를 통해 다시 확인했습니다.”
 
-
-## 8. 팀구성 
+## 9. 팀구성 
 | 팀명 | 팀장 | 팀원 |
 | - | - | - |
 | 9k9k | 고명환 | 김현희 |  
