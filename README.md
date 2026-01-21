@@ -10,7 +10,7 @@
 |------|------|---------|----------|
 | 관리자 | CEO | ceo | 1111 |
 | 시스템 관리자 | System Admin | admin | 0000 |
-| 개발 부서 | 개발부장 | devTeamLeader | 0000 |
+| 개발 부서 | 개발부장 | devTeamLeader | 1234 |
 | 기획 부서 | 기획부장 | PlanningTeamLeader | 0000 |
 | 인사 부서 | 인사부장 | HRTeamLeader | 0000 |
 | 마케팅 부서 | 마케팅부장 | MarketingTeamLeader | 0000 
