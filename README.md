@@ -96,10 +96,14 @@
   ![그룹채팅 3명](https://github.com/user-attachments/assets/c84ab392-1761-4690-9ca6-d8f4c44b8726)
 
 - 게시판  
-  ![게시판_자막](https://github.com/user-attachments/assets/b72f60fc-be61-476c-987e-e15923056311)
+  ![게시판_자막_part1](https://github.com/user-attachments/assets/6d867daf-64c9-4422-93df-2c0ba56a38ce)
+  ![게시판_자막_part2](https://github.com/user-attachments/assets/9e5599f1-1c7c-4d13-ae44-7269b0929f11)
+
 
 - 전자결재  
-  ![전자결재_자막](https://github.com/user-attachments/assets/04be79c2-df36-42cd-b13d-4e9161810e01)
+  ![전자결재_자막_part1](https://github.com/user-attachments/assets/bf711f08-e471-41ae-bc42-5517aece8705)
+  ![전자결재_자막_part2](https://github.com/user-attachments/assets/9d1c0b4d-d7d8-45d4-b6bb-994826e6ce83)
+
 
 - 개인정보 변경  
   ![마이페이지 비버 변경_자막](https://github.com/user-attachments/assets/318e543e-51c0-4b6d-adbb-6e528665ce80)
