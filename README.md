@@ -134,7 +134,8 @@
   ![게시판_자막](https://github.com/user-attachments/assets/d8d8b60a-0d9e-418b-b16e-978669924182)
 
 - 보안 확인  
-  ![시스템관리자 로그인_자막](https://github.com/user-attachments/assets/b5890d24-f928-4406-8f30-f21441775091)
+  ![systemadminlogin_part1](https://github.com/user-attachments/assets/d6e68c83-0e6a-4ea2-8966-d943133465b8)
+
 
 
 
