@@ -5,12 +5,15 @@
 - 서비스 URL : http://13.124.195.150/login<br/>
 (⚠️ '서비스 URL' 로그인 시 접속자의 공인 IP가 '관리자 > 로그 조회 페이지'에 기록됩니다.)
 
-- 관리자 ceo 비번 1111
-- 시스템관리자 admin 비번 0000
-- 개발부장 devTeamLeader 비번 0000
-- 기획부장 PlanningTeamLeader 비번 0000
-- 인사부장 HRTeamLeader 비번 0000
-- 마케팅부장 MarketingTeamLeader 비번 0000
+### 🔐 테스트용 계정 정보 (Sample Accounts)
+| 구분 | 역할 | 계정 ID | 비밀번호 |
+|------|------|---------|----------|
+| 관리자 | CEO | ceo | 1111 |
+| 시스템 관리자 | System Admin | admin | 0000 |
+| 개발 부서 | 개발부장 | devTeamLeader | 0000 |
+| 기획 부서 | 기획부장 | PlanningTeamLeader | 0000 |
+| 인사 부서 | 인사부장 | HRTeamLeader | 0000 |
+| 마케팅 부서 | 마케팅부장 | MarketingTeamLeader | 0000 
 
 ## 2. 서비스 대상
 - 전사 직원 → 일반 사용자, 공지 확인, 문서 열람/협업<br>
