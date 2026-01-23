@@ -124,9 +124,7 @@ public class UsersService {
         User user = usersRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // ===============================
-        // 1️⃣ 부서 변경
-        // ===============================
+        //  부서 변경
         if (departmentId != null) {
             if (user.getDepartment() == null ||
                     !user.getDepartment().getId().equals(departmentId)) {
@@ -137,9 +135,7 @@ public class UsersService {
             }
         }
 
-        // ===============================
-        // 2️⃣ 직책 변경
-        // ===============================
+        //  직책 변경
         if (positionId != null) {
 
             Integer oldPositionId = user.getPosition() != null
@@ -151,9 +147,7 @@ public class UsersService {
 
             Integer deptId = user.getDepartment().getId();
 
-            // ===============================
-            // 🔥 비부장 → 부장
-            // ===============================
+            //  비부장 → 부장
             if (positionId == 2) {
 
                 // 기존 부장 강등
@@ -179,9 +173,7 @@ public class UsersService {
                 user.setRole(0);
             }
 
-            // ===============================
-            // 🔥 부장 → 비부장
-            // ===============================
+            // 부장 → 비부장
             if (oldPositionId != null && oldPositionId == 2 && positionId != 2) {
                 user.setJobcode(generateJobcode(deptId));
             }
@@ -203,7 +195,7 @@ public class UsersService {
     }
 
     /**
-     * 로그인한 사용자 기준으로 조회 가능한 사용자 목록 반환
+      로그인한 사용자 기준으로 조회 가능한 사용자 목록 반환
      */
     public List<User> getUsersForViewer(LoginUserDTO loginUser) {
 
@@ -214,12 +206,12 @@ public class UsersService {
             return List.of();
         }
 
-        // 🔥 CEO
+        // CEO
         if (positionId == 1) {
             return usersRepository.findAllOrderByCeoFirst();
         }
 
-        // 🔥 부장 / 과장
+        // 부장 / 과장
         if (positionId == 2 || positionId == 3) {
             if (departmentId != null) {
                 return usersRepository.findByDepartmentOrderByManagerFirst(departmentId);
@@ -227,14 +219,14 @@ public class UsersService {
             return List.of();
         }
 
-        // 🔥 그 외 (대리/사원)
+        // 그 외 (대리/사원)
         return usersRepository.findById(loginUser.getUserPk())
                 .map(List::of)
                 .orElse(List.of());
     }
 
     /**
-     * 부서별 부장 지정
+     부서별 부장 지정
      */
     @Transactional
     public void assignDepartmentManager(Integer userId, Integer departmentId) {
@@ -259,7 +251,7 @@ public class UsersService {
                 // 직책 강등
                 manager.setPosition(employeePosition);
 
-                // 🔥 사번 재발급 (001 유지 금지)
+                // 사번 재발급 (001 유지 금지)
                 Integer newJobcode = generateJobcode(department.getId());
                 manager.setJobcode(newJobcode);
 
@@ -286,25 +278,25 @@ public class UsersService {
     @Transactional
     public void changePassword(Integer userPk, String newPassword, HttpServletRequest request) {
 
-        // 1️⃣ 비밀번호 정책 검사
+        // 비밀번호 정책 검사
         validatePassword(newPassword);
 
         User user = usersRepository.findById(userPk)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // 2️⃣ 이전 비밀번호 재사용 방지 ⭐
+        // 이전 비밀번호 재사용 방지 ⭐
         if (passwordEncoder.matches(newPassword, user.getPassword())) {
             throw new IllegalArgumentException("이전 비밀번호는 사용할 수 없습니다.");
         }
 
-        // 3️⃣ 비밀번호 암호화
+        // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
 
-        // ⭐⭐⭐ 핵심: 강제 변경 상태 해제
+        //  강제 변경 상태 해제
         user.setPasswordResetRequired(false);
 
-        // 4️⃣ 보안 로그 기록
+        //  보안 로그 기록
         securityLogService.logEvent(
                 user,
                 SecurityLog.EventType.password_change,
@@ -313,7 +305,7 @@ public class UsersService {
                 request.getHeader("User-Agent"),
                 request.getRequestURI());
 
-        // 5️⃣ 세션 무효화 (강제 로그아웃)
+        //  세션 무효화 (강제 로그아웃)
         request.getSession().invalidate();
     }
 
@@ -352,7 +344,7 @@ public class UsersService {
         User user = usersRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // 🔥 고정 비밀번호
+        //  고정 비밀번호
         String resetPassword = "123456789";
 
         user.setPassword(passwordEncoder.encode(resetPassword));
@@ -401,3 +393,4 @@ public class UsersService {
     }
 
 }
+
