@@ -88,7 +88,7 @@ public class UserMailController {
         String attachmentPath = null;
 
         try {
-            // ✅ 여기서 기존 if 블록을 이걸로 "교체"
+            //  여기서 기존 if 블록을 이걸로 "교체"
             if (attachment != null
                     && !attachment.isEmpty()
                     && attachment.getOriginalFilename() != null
@@ -130,10 +130,10 @@ public class UserMailController {
             return "redirect:/login";
         }
 
-        // 1️⃣ 먼저 DB에서 DTO 가져오기
+        //  먼저 DB에서 DTO 가져오기
         MailDetailDTO mail = mailService.getMailDetail(mailId, loginUser.getCompanyEmail());
 
-        // 2️⃣ Mustache 안전하게 null 처리
+        //  Mustache 안전하게 null 처리
         mail = MailDetailDTO.builder()
                 .id(mail.getId())
                 .senderEmail(mail.getSenderEmail() != null ? mail.getSenderEmail() : "")
@@ -146,20 +146,20 @@ public class UserMailController {
                 .createdAt(mail.getCreatedAt())
                 .build();
 
-        // 3️⃣ 화면에 필요한 데이터 추가
+        // 화면에 필요한 데이터 추가
         model.addAttribute("mail", mail);
         model.addAttribute("mailCreatedAt",
                 mail.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         model.addAttribute("loginUser", loginUser);
 
-        // 4️⃣ 첨부파일 처리
+        // 첨부파일 처리
         List<String> attachments = new ArrayList<>();
         if (mail.getAttachmentPath() != null && !mail.getAttachmentPath().trim().isEmpty()) {
             attachments.add(mail.getAttachmentPath());
         }
         model.addAttribute("attachments", attachments);
 
-        // 5️⃣ CSRF 토큰 처리
+        //  CSRF 토큰 처리
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         if (csrfToken == null) {
             HttpSessionCsrfTokenRepository repo = new HttpSessionCsrfTokenRepository();
@@ -254,14 +254,14 @@ public class UserMailController {
             return "redirect:/login";
         }
 
-        // 🔥 내가 보낸 메일 리스트
+        // 내가 보낸 메일 리스트
         model.addAttribute("mailList",
                 mailService.getSentMail(loginUser.getCompanyEmail()));
 
-        // 🔥 화면에서 구분용
+        // 화면에서 구분용
         model.addAttribute("boxType", "sent");
 
-        // ⛔ 기존 방식 그대로 CSRF 처리
+        // 기존 방식 그대로 CSRF 처리
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         if (csrfToken == null) {
             HttpSessionCsrfTokenRepository repo = new HttpSessionCsrfTokenRepository();
