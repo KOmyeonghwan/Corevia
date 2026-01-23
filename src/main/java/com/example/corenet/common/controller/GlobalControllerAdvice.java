@@ -23,7 +23,7 @@ public class GlobalControllerAdvice {
         return (LoginUserDTO) session.getAttribute("loginUser");
     }
 
-    // ✅ 시스템 관리자 여부 전역 노출
+    // 시스템 관리자 여부 전역 노출
     @ModelAttribute("isSystemAdmin")
     public boolean addIsSystemAdmin() {
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("loginUser");
@@ -31,7 +31,7 @@ public class GlobalControllerAdvice {
         return loginUser != null && loginUser.getPosition_id() == 6;
     }
 
-    // ✅ CSRF 토큰 전역 노출 (Mustache용)
+    //  CSRF 토큰 전역 노출 (Mustache용)
     @ModelAttribute("_csrf")
     public CsrfToken csrf(CsrfToken token) {
         return token;
