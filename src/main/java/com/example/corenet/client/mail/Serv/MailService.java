@@ -43,15 +43,15 @@ public class MailService {
 
                 mailRepository.save(mail);
 
-                // ✅ 수신자 userId 조회
+                // 수신자 userId 조회
                 Integer receiverUserId = usersRepository
                                 .findByCompanyEmail(dto.getRecipientEmail())
                                 .orElseThrow(() -> new IllegalArgumentException("수신자 없음"))
                                 .getId();
 
-                // ✅ 메일 알림 생성
+                // 메일 알림 생성
                 notificationService.create(
-                                receiverUserId, // ✅ 받는 사람
+                                receiverUserId, // 받는 사람
                                 null,
                                 NotificationType.mail,
                                 mail.getId(), // 메일 ID
@@ -81,13 +81,13 @@ public class MailService {
                 Mail mail = mailRepository.findById(mailId)
                                 .orElseThrow(() -> new IllegalArgumentException("메일 없음"));
 
-                // ✅ 권한 체크 (받은 사람 or 보낸 사람)
+                //  권한 체크 (받은 사람 or 보낸 사람)
                 if (!mail.getRecipientEmail().equals(loginEmail)
                                 && !mail.getSenderEmail().equals(loginEmail)) {
                         throw new SecurityException("권한 없음");
                 }
 
-                // ✅ 읽음 처리는 받은 메일만
+                // 읽음 처리는 받은 메일만
                 if (mail.getRecipientEmail().equals(loginEmail)
                                 && mail.getStatus() == MailStatus.sent) {
                         mail.setStatus(MailStatus.read);
@@ -113,7 +113,7 @@ public class MailService {
                                 .stream()
                                 .map(mail -> MailListDTO.builder()
                                                 .id(mail.getId())
-                                                // 🔥 보낸 메일함에서는 "받는 사람"이 보이게
+                                                //  보낸 메일함에서는 "받는 사람"이 보이게
                                                 .senderName(mail.getRecipientEmail())
                                                 .title(mail.getTitle())
                                                 .status(mail.getStatus().name())
@@ -128,7 +128,7 @@ public class MailService {
                 Mail mail = mailRepository.findById(mailId)
                                 .orElseThrow(() -> new IllegalArgumentException("메일 없음"));
 
-                // 🔒 권한 체크
+                // 권한 체크
                 if (!mail.getRecipientEmail().equals(loginEmail)
                                 && !mail.getSenderEmail().equals(loginEmail)) {
                         throw new SecurityException("권한 없음");
