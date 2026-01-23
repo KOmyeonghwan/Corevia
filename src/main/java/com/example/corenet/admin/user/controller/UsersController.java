@@ -43,7 +43,7 @@ public class UsersController {
             HttpServletRequest request) {
 
         try {
-            // 🔑 세션에서 관리자 User 조회
+            // 세션에서 관리자 User 조회
             User adminUser = usersService.findById(loginUser.getUserPk().longValue())
                     .orElseThrow(() -> new IllegalArgumentException("관리자 정보를 찾을 수 없습니다."));
 
@@ -82,5 +82,6 @@ public class UsersController {
             return "fail";
         }
     }
+
 
 }
