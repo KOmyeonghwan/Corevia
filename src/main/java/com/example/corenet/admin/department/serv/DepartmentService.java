@@ -24,9 +24,7 @@ public class DepartmentService {
     }
 
     /*
-     * ==========================
      * 부서 추가
-     * ==========================
      */
     public Department createDepartment(Integer deptCode, String departmentName) {
 
@@ -51,9 +49,7 @@ public class DepartmentService {
     }
 
     /*
-     * ==========================
      * 부서 수정
-     * ==========================
      */
     public Department updateDepartment(Integer id, Integer deptCode, String departmentName) {
 
@@ -76,9 +72,7 @@ public class DepartmentService {
     }
 
     /*
-     * ==========================
      * 부서 삭제
-     * ==========================
      */
     public void deleteDepartment(Integer id) {
         departmentRepository.delete(getDepartmentById(id));
@@ -92,3 +86,4 @@ public class DepartmentService {
         return departmentRepository.findAll();
     }
 }
+
