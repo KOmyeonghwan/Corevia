@@ -20,8 +20,8 @@ public class DepartmentController {
     private final DepartmentService departmentService;
     private final UsersRepository usersRepository;
 
-    /**
-     * 부서 추가
+    /*
+      부서 추가
      */
     @PostMapping("/add")
     @ResponseBody
@@ -35,8 +35,8 @@ public class DepartmentController {
         return ResponseEntity.ok(saved);
     }
 
-    /**
-     * 부서 수정
+    /*
+     부서 수정
      */
     @PostMapping("/update")
     @ResponseBody
@@ -54,8 +54,8 @@ public class DepartmentController {
         return ResponseEntity.ok(updated);
     }
 
-    /**
-     * 부서 삭제
+    /*
+     부서 삭제
      */
     @PostMapping("/delete")
     @ResponseBody
@@ -76,3 +76,4 @@ public class DepartmentController {
         return ResponseEntity.ok("부서가 삭제되었습니다.");
     }
 }
+
