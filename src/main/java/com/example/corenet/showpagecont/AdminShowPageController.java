@@ -72,7 +72,7 @@ public class AdminShowPageController {
         if (loginUser == null) // 로그인 유저가 없다면 로그인 페이지로 리다이렉트
             return "redirect:/login";
 
-        // 🔹 DB에서 최신 loginUser 정보 가져오기
+        //  DB에서 최신 loginUser 정보 가져오기
         LoginUserDTO freshLoginUser = usersService.getLoginUserById(loginUser.getUserPk()); // getId() -> getUserPk()
 
         // positionLevel 최신화
@@ -172,7 +172,7 @@ public class AdminShowPageController {
 
         Integer deptCode = loginUser.getDepartment_id();
 
-        // 🔹 이전 / 다음 게시글 ID (단건)
+        // 이전 / 다음 게시글 ID (단건)
         Long prevPostId = boardManagerService
                 .findPrevPostIds(boardCode, postId, deptCode)
                 .stream().findFirst().orElse(null);
@@ -291,31 +291,6 @@ public class AdminShowPageController {
 
         return "admin/adcomment";
     }
-
-    // @GetMapping("/adcommentdetail/{boardCode}/{postId}")
-    // public String showAdminCommentDetail(
-    // @PathVariable("boardCode") String boardCode,
-    // @PathVariable("postId") Long postId,
-    // @ModelAttribute("loginUser") LoginUserDTO loginUser,
-    // Model model) {
-
-    // // 댓글 상세를 원댓글+대댓글 구조로 가져오기
-    // List<CommentGroupDTO> commentGroups = commentService.getCommentGroups(
-    // boardCode,
-    // postId,
-    // loginUser.getDepartment_id());
-
-    // if (!commentGroups.isEmpty()) {
-    // model.addAttribute("commentGroups",
-    // Collections.singletonList(commentGroups.get(0)));
-    // } else {
-    // model.addAttribute("commentGroups", Collections.emptyList());
-    // }
-
-    // //model.addAttribute("commentGroups", commentGroups);
-
-    // return "admin/adcommentdetail";
-    // }
 
     // 관리자 코멘트 디테일
     @GetMapping("/adcommentdetail/{boardCode}/{commentId}")
@@ -519,12 +494,12 @@ public class AdminShowPageController {
     public String showAdminLogPage(
             @ModelAttribute("loginUser") LoginUserDTO loginUser) {
 
-        // 1️⃣ 로그인 체크
+        // 1️로그인 체크
         if (loginUser == null) {
             return "redirect:/login";
         }
 
-        // 2️⃣ 시스템 관리자 체크 (position_id = 6)
+        // 2️시스템 관리자 체크 (position_id = 6)
         Integer positionId = loginUser.getPosition_id();
         if (positionId == null || positionId != 6) {
             // 권한 없으면 관리자 대시보드 또는 메인으로
@@ -536,3 +511,4 @@ public class AdminShowPageController {
     }
 
 }
+
