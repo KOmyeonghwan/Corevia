@@ -55,16 +55,6 @@ public class UserShowPageController {
             return "redirect:/login";
         }
 
-        // Integer posLevel = loginUser.getPositionLevel();
-
-        // // posLevel 0~3, 10~11은 사용자 페이지 접근 허용
-        // boolean isAdminRestricted = (posLevel != null)
-        // && !((posLevel >= 0 && posLevel <= 3) || (posLevel == 10 || posLevel == 11));
-
-        // if (isAdminRestricted) {
-        // return "redirect:/admindashboard"; // 관리자 전용 페이지
-        // }
-
         // 알림 가져오기
         Integer userPk = loginUser.getUserPk();
         List<NotificationDTO> noticeList = noticeService.getMainNotices(userPk);
@@ -360,7 +350,7 @@ public class UserShowPageController {
         return "user/doc-detail-edit";
     }
 
-    // ==================
+
 
     // 채탕 모달
     @GetMapping("/chat-modal")
@@ -408,3 +398,4 @@ public class UserShowPageController {
     }
 
 }
+
