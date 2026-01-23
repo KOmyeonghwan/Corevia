@@ -17,15 +17,15 @@ public class DocFile {
     private Long fileId;
 
     /**
-     * 문서 타입
-     * 예: draft, meeting, report
+      문서 타입
+      예: draft, meeting, report
      */
     @Column(name = "doc_type", nullable = false, length = 50)
     private String docType;
 
     /**
-     * 문서 테이블의 PK 값
-     * (doc_draft.doc_id, doc_meeting.doc_id 등)
+      문서 테이블의 PK 값
+      (doc_draft.doc_id, doc_meeting.doc_id 등)
      */
     @Column(name = "doc_id", nullable = false)
     private Long docId;
