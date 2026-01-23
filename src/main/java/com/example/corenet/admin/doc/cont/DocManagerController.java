@@ -182,15 +182,11 @@ public class DocManagerController {
                     docManagerService.getDocTableName(docCode),
                     screenData);
 
-            // -----------------------------
             // 1. 문서 저장 (doc 테이블)
-            // -----------------------------
             String status = (String) dbData.get("status");
             Long docId = docManagerService.saveDocumentAndGetId(docCode, dbData);
 
-            // -----------------------------
             // 2. 기존 첨부파일 삭제 및 새 파일 저장
-            // -----------------------------
             if (attachFile != null && !attachFile.isEmpty()) {
                 // 기존 첨부파일 삭제
                 docManagerService.deleteExistingFiles(docId);
@@ -266,9 +262,7 @@ public class DocManagerController {
                     docManagerService.getDocTableName(docCode),
                     screenData);
 
-            // -----------------------------
             // 1. 문서 업데이트 (UPDATE)
-            // -----------------------------
             String docTableName = docManagerService.getDocTableName(docCode);
             docManagerService.updateDocument(docTableName, docId, dbData);
 
@@ -281,9 +275,7 @@ public class DocManagerController {
                 docApproverService.updateApprovalStatusAndComment(docId, docCode, "PENDING");
             }
 
-            // -----------------------------
             // 2. 기존 첨부파일 삭제 및 새 파일 저장
-            // -----------------------------
             if (attachFile != null && !attachFile.isEmpty()) {
                 // 기존 첨부파일 삭제
                 docManagerService.deleteExistingFiles(docId);
