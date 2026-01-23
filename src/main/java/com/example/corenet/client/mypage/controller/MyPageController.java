@@ -38,7 +38,7 @@ public class MyPageController {
                                 dto.getNewPassword(),
                                 request);
 
-                // ⭐ 세션 무효화
+                // 세션 무효화
                 request.getSession().invalidate();
 
                 return Map.of(
