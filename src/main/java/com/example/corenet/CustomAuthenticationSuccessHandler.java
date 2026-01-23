@@ -38,16 +38,14 @@ public class CustomAuthenticationSuccessHandler
                 System.out.println("WL-Proxy-Client-IP = " + request.getHeader("WL-Proxy-Client-IP"));
                 System.out.println("Remote = " + request.getRemoteAddr());
 
-                // ✅ 1. 로그인 아이디
+                // 1. 로그인 아이디
                 String userId = authentication.getName();
 
-                // ✅ 2. 사용자 조회
+                // 2. 사용자 조회
                 User user = usersRepository.findByUserId(userId)
                                 .orElseThrow();
 
-                // ==============================
-                // 🔐 로그인 성공 보안 로그 추가
-                // ==============================
+                // 로그인 성공 보안 로그 추가
                 String ip = IpUtil.getClientIp(request);
                 String userAgent = request.getHeader("User-Agent");
                 String pageUrl = request.getRequestURI();
@@ -68,11 +66,11 @@ public class CustomAuthenticationSuccessHandler
                                 pageUrl);
                 // ==============================
 
-                // ✅ 3. 로그인 시간
+                // 3. 로그인 시간
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm a");
                 String formattedLoginTime = LocalDateTime.now().format(formatter);
 
-                // ✅ 4. LoginUserDTO 생성
+                // 4. LoginUserDTO 생성
                 LoginUserDTO loginUserDTO = LoginUserDTO.builder()
                                 .userPk(user.getId())
                                 .userId(user.getUserId())
@@ -102,7 +100,7 @@ public class CustomAuthenticationSuccessHandler
                                 .loginDateTime(formattedLoginTime)
                                 .build();
 
-                // ✅ 5. 세션 저장
+                // 5. 세션 저장
                 request.getSession().setAttribute("loginUser", loginUserDTO);
 
                 if (user.isPasswordResetRequired()) {
@@ -110,8 +108,8 @@ public class CustomAuthenticationSuccessHandler
                         return;
                 }
                 
-                // ✅ 6. 관리자 판단
-                // ✅ 관리자 조건: posLevel 0~3, 10,11
+                // 6. 관리자 판단
+                // 관리자 조건: posLevel 0~3, 10,11
                 Integer positionLevel = loginUserDTO.getPositionLevel();
                 boolean isAdmin = (positionLevel != null) && ((positionLevel >= 0 && positionLevel <= 3)
                                 || positionLevel == 10 || positionLevel == 11);
