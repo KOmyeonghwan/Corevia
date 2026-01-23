@@ -263,9 +263,7 @@ public class DocManagerService {
             sql.append("dept_code int(30) COMMENT '작성자 부서코드', ");
             sql.append("write_date DATE COMMENT '작성일자', ");
         }
-
-        // ====================
-
+      
         // 기안자
         if (useDrafter) {
             sql.append("drafter_emp_no VARCHAR(30) COMMENT '기안자 사번', ");
@@ -972,8 +970,7 @@ public class DocManagerService {
     }
 
     /**
-     * 문서 업데이트 [수정 중]
-     * 
+     * 문서 업데이트
      * @param docTableName DB 테이블명 (docCode에 따라 동적)
      * @param docId        업데이트할 문서 ID
      * @param dbData       컬럼명-값 매핑
