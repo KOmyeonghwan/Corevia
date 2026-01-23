@@ -35,7 +35,7 @@ public class ChatRoomService {
 
     public List<ChatRoomDTO> getChatRooms(Long currentUserId) {
 
-        // 1️⃣ 참여 방 ID 가져오기
+        // 참여 방 ID 가져오기
         List<Long> roomIds = participantRepository.findByUserId(currentUserId)
                 .stream()
                 .map(p -> p.getRoomId())
@@ -43,10 +43,10 @@ public class ChatRoomService {
         if (roomIds.isEmpty())
             return List.of();
 
-        // 2️⃣ 방 정보 가져오기
+        // 방 정보 가져오기
         List<ChatRoom> rooms = chatRoomRepository.findAllById(roomIds);
 
-        // 3️⃣ DTO 변환
+        // DTO 변환
         return rooms.stream().map(room -> {
             List<User> users = usersRepository.findByChatRoomId(room.getId());
             String roomName;
@@ -113,4 +113,5 @@ public class ChatRoomService {
 
         return false; // 참가자가 남아있으면 삭제되지 않음
     }
+
 }
