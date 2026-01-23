@@ -619,19 +619,17 @@ public class BoardManagerService {
                 }
 
                 /*
-                 * =================================================
                  * 여러 부서가 사용하는 게시판
-                 * =================================================
                  */
                 if (deptCount > 1) {
 
-                        // 🔹 해당 부서의 게시글 ID 조회
+                        //  해당 부서의 게시글 ID 조회
                         List<Long> postIds = jdbcTemplate.queryForList(
                                         "SELECT id FROM " + boardTable + " WHERE dept_code = ?",
                                         Long.class,
                                         deptCode);
 
-                        // 🔹 댓글 삭제
+                        //  댓글 삭제
                         if (!postIds.isEmpty()) {
                                 String inSql = postIds.stream()
                                                 .map(id -> "?")
@@ -642,12 +640,12 @@ public class BoardManagerService {
                                                 postIds.toArray());
                         }
 
-                        // 🔹 게시글 삭제
+                        //  게시글 삭제
                         jdbcTemplate.update(
                                         "DELETE FROM " + boardTable + " WHERE dept_code = ?",
                                         deptCode);
 
-                        // 🔹 board_manager에서 해당 부서만 제거
+                        //  board_manager에서 해당 부서만 제거
                         jdbcTemplate.update(
                                         "DELETE FROM board_manager WHERE board_code = ? AND dept_code = ?",
                                         boardCode,
@@ -656,10 +654,8 @@ public class BoardManagerService {
                         return;
                 }
 
-                /*
-                 * =================================================
-                 * 3️⃣ 단일 부서만 사용하는 게시판
-                 * =================================================
+                /*                
+                  단일 부서만 사용하는 게시판                 
                  */
                 if (deptCount == 1) {
 
