@@ -96,17 +96,17 @@ public class ChatService {
             participantRepository.save(p);
         }
 
-        // 1️⃣ 메시지 저장
+        //  메시지 저장
         ChatMessage msg = new ChatMessage();
         msg.setRoomId(roomId);
         msg.setSenderId(senderId);
         msg.setMessage(text);
         messageRepository.save(msg);
 
-        // 2️⃣ 방 참여자 조회
+        // 방 참여자 조회
         List<ChatRoomParticipant> participants = participantRepository.findByRoomId(roomId);
 
-        // 3️⃣ 참여자들에게 알림 생성 (본인 제외)
+        //  참여자들에게 알림 생성 (본인 제외)
         for (ChatRoomParticipant p : participants) {
             if (p.getUserId().equals(senderId))
                 continue;
@@ -122,5 +122,6 @@ public class ChatService {
 
         return msg;
     }
+
 
 }
